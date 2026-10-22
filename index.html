@@ -555,6 +555,14 @@
       return TACTICAL_POSITIONS.find(p => p.name === posName) || TACTICAL_POSITIONS[0];
     }
 
+    // Extrae limpiamente el apellido o primer nombre sin incluir el club entre paréntesis
+    function getCleanPlayerName(fullName) {
+      if (!fullName) return "";
+      const clean = fullName.split("(")[0].trim();
+      const parts = clean.split(" ");
+      return parts.length > 1 ? parts[parts.length - 1] : clean;
+    }
+
     const AFA_CLUBS = [
       { id: "CASLA", name: "San Lorenzo", colors: ["#1e3a8a", "#dc2626"], rep: 86 },
       { id: "RIV", name: "River Plate", colors: ["#ffffff", "#dc2626"], rep: 91 },
@@ -610,7 +618,7 @@
     };
 
     let gameState = {
-      version: 7,
+      version: 8,
       managedClubId: "CASLA",
       week: 1,
       season: 2027,
@@ -658,7 +666,7 @@
     }
 
     function initNewGame(clubId = "CASLA") {
-      gameState.version = 7;
+      gameState.version = 8;
       gameState.managedClubId = clubId;
       gameState.squad = generateSquadForClub(clubId);
       gameState.standings = AFA_CLUBS.map(c => ({
@@ -687,7 +695,7 @@
           date: "Semana 1",
           from: "Comisión Directiva",
           title: `Bienvenido al mando de ${myClub.name}`,
-          body: "Configuradas las 17 posiciones tácticas del fútbol argentino. Botones de secretaría operativos."
+          body: "Configuración táctica completada correctamente."
         }
       ];
       saveToLocalStorage();
@@ -717,7 +725,7 @@
     }
 
     function renderAll() {
-      if (!gameState.squad || gameState.squad.length === 0 || !gameState.version || gameState.version < 7) {
+      if (!gameState.squad || gameState.squad.length === 0 || !gameState.version || gameState.version < 8) {
         initNewGame(gameState.managedClubId);
         return;
       }
@@ -893,13 +901,13 @@
         const info = getPosInfo(player.pos);
         usedCounts[info.id] = (usedCounts[info.id] || 0) + 1;
         const offset = usedCounts[info.id] > 1 ? (usedCounts[info.id] - 1) * 7 : 0;
-        const shortName = player.name.split(" ").slice(-1)[0];
+        const cleanName = getCleanPlayerName(player.name);
         return `
           <div style="left:${Math.min(92, info.px + offset)}%; top:${info.py}%" class="absolute -translate-x-1/2 -translate-y-1/2 flex flex-col items-center">
             <div class="w-7 h-7 rounded-full bg-sky-500 border-2 border-white text-white text-[9px] font-extrabold flex items-center justify-center shadow">
               ${info.code}
             </div>
-            <span class="bg-slate-950/90 text-white text-[10px] px-1.5 rounded mt-0.5 font-semibold whitespace-nowrap">${shortName}</span>
+            <span class="bg-slate-950/90 text-white text-[10px] px-1.5 rounded mt-0.5 font-semibold whitespace-nowrap">${cleanName}</span>
           </div>
         `;
       }).join("");
@@ -1124,7 +1132,7 @@
           id: p.id,
           team: "home",
           label: c.code,
-          name: p.name.split(" ").slice(-1)[0],
+          name: getCleanPlayerName(p.name),
           baseX: c.x,
           baseY: c.y,
           x: c.x,
@@ -1162,6 +1170,7 @@
           entity.baseX = c.x;
           entity.baseY = c.y;
           entity.label = c.code;
+          entity.name = getCleanPlayerName(p.name);
         }
       });
     }
@@ -1268,6 +1277,7 @@
         const opp = opponents[(gameState.week - 1) % opponents.length];
         const starters = gameState.squad.filter(p => p.status === "XI");
         const scorer = starters[Math.floor(Math.random() * starters.length)] || gameState.squad[0];
+        const cleanScorerName = getCleanPlayerName(scorer.name);
 
         if (Math.random() < 0.56) {
           homeShots++;
@@ -1275,9 +1285,9 @@
           if (Math.random() < 0.32) {
             homeGoals++;
             playSound('goal');
-            addCommentary(`${minInt}' ¡GOOOOOL DE ${club.name.toUpperCase()}! Gran intervención de ${scorer.name} (${scorer.pos}).`, "text-emerald-400 font-bold bg-emerald-950/50 border border-emerald-700");
+            addCommentary(`${minInt}' ¡GOOOOOL DE ${club.name.toUpperCase()}! Gran intervención de ${cleanScorerName} (${scorer.pos}).`, "text-emerald-400 font-bold bg-emerald-950/50 border border-emerald-700");
           } else {
-            addCommentary(`${minInt}' Llegada profunda de ${scorer.name} (${scorer.pos}) que exige al arquero.`, "text-sky-300 bg-slate-800/70");
+            addCommentary(`${minInt}' Llegada profunda de ${cleanScorerName} (${scorer.pos}) que exige al arquero.`, "text-sky-300 bg-slate-800/70");
           }
         } else {
           awayShots++;
@@ -1324,7 +1334,7 @@
         outP.status = "SUB";
         inP.status = "XI";
         inP.pos = inheritedPos;
-        addCommentary(`Cambio en vivo: Ingresa ${inP.name} como ${inheritedPos} por ${outP.name}.`, "text-indigo-300 bg-indigo-950/40 font-semibold");
+        addCommentary(`Cambio en vivo: Ingresa ${getCleanPlayerName(inP.name)} como ${inheritedPos} por ${getCleanPlayerName(outP.name)}.`, "text-indigo-300 bg-indigo-950/40 font-semibold");
         saveToLocalStorage();
         renderSquad();
         renderTacticPreview();
@@ -1394,7 +1404,7 @@
       }
     };
 
-    function saveToLocalStorage() { localStorage.setItem("DT_ARG_2027_SAVE_V7", JSON.stringify(gameState)); }
+    function saveToLocalStorage() { localStorage.setItem("DT_ARG_2027_SAVE_V8", JSON.stringify(gameState)); }
     function exportSaveFile() {
       const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(gameState, null, 2));
       const a = document.createElement("a");
@@ -1414,7 +1424,7 @@
     }
 
     window.addEventListener("DOMContentLoaded", () => {
-      const saved = localStorage.getItem("DT_ARG_2027_SAVE_V7");
+      const saved = localStorage.getItem("DT_ARG_2027_SAVE_V8");
       if (saved) {
         try {
           gameState = JSON.parse(saved);
