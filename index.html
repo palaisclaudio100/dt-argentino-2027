@@ -1,158 +1,1425 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DT Argentino 2027 - San Lorenzo</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Inter', sans-serif; }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#0b132b" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>DT Argentino 2027 - AFA & Conmebol Manager</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap');
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #090d16;
+      color: #e2e8f0;
+      user-select: none;
+      overflow-x: hidden;
+    }
+    .custom-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
+    .custom-scroll::-webkit-scrollbar-track { background: #111827; }
+    .custom-scroll::-webkit-scrollbar-thumb { background: #374151; border-radius: 3px; }
+    .pitch-bg {
+      background: repeating-linear-gradient(
+        90deg,
+        #15803d,
+        #15803d 40px,
+        #166534 40px,
+        #166534 80px
+      );
+    }
+  </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col">
+<body class="h-screen flex flex-col overflow-hidden">
 
-    <!-- HEADER -->
-    <header class="bg-slate-900 border-b border-slate-800 px-4 py-3 flex items-center justify-between shrink-0">
-        <div class="flex items-center space-x-3">
-            <div class="bg-blue-600 font-bold px-3 py-1.5 rounded-lg text-white">CASLA</div>
-            <div>
-                <h1 class="font-bold text-lg text-white">San Lorenzo</h1>
-                <p class="text-xs text-slate-400">Semana 1 - Temporada 2027 | Liga Profesional AFA & Conmebol</p>
-            </div>
+  <!-- BARRA SUPERIOR -->
+  <header class="bg-slate-900 border-b border-slate-800 px-4 py-2.5 flex items-center justify-between shrink-0 z-20">
+    <div class="flex items-center gap-3">
+      <div id="club-badge" class="w-10 h-10 rounded-lg flex items-center justify-center font-extrabold text-sm shadow-md border border-white/20" style="background: linear-gradient(135deg, #1e3a8a 50%, #dc2626 50%);">
+        CASLA
+      </div>
+      <div>
+        <div class="flex items-center gap-2">
+          <h1 id="header-club-name" class="font-extrabold text-base md:text-lg tracking-tight text-white">San Lorenzo</h1>
+          <span class="text-xs bg-sky-900/70 text-sky-300 border border-sky-700/50 px-2 py-0.5 rounded font-semibold">DT Primera</span>
         </div>
-        <button id="btn-avanzar" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-4 py-2 rounded-lg text-sm transition">
-            AVANZAR / JUGAR ▶
-        </button>
-    </header>
-
-    <!-- MAIN CONTAINER -->
-    <div class="flex flex-1 overflow-hidden">
-        
-        <!-- SIDEBAR -->
-        <aside class="w-64 bg-slate-900 border-r border-slate-800 hidden md:flex flex-col p-4 space-y-2">
-            <a href="#" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-slate-300 hover:bg-slate-800 transition">Despacho del DT</a>
-            <a href="#" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-slate-300 hover:bg-slate-800 transition">Plantel Principal</a>
-            <a href="#" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-slate-300 hover:bg-slate-800 transition">Pizarra Táctica</a>
-            <a href="#" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg bg-blue-600 text-white font-semibold shadow">Secretaría Técnica</a>
-            <a href="#" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-slate-300 hover:bg-slate-800 transition">AFA y Conmebol</a>
-        </aside>
-
-        <!-- CONTENT AREA -->
-        <main class="flex-1 p-6 overflow-y-auto grid grid-cols-1 lg:grid-cols-2 gap-6">
-            
-            <!-- SECRRETARÍA TÉCNICA: SOLICITAR REFUERZO -->
-            <section class="bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-lg flex flex-col justify-between">
-                <div>
-                    <h2 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
-                        <span>⚖️</span> Solicitar Refuerzo al Manager / CD
-                    </h2>
-                    
-                    <div class="space-y-4">
-                        <div>
-                            <label class="block text-xs text-slate-400 mb-1">Puesto específico a reforzar (1 a 17)</label>
-                            <select id="select-puesto" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-sm text-white focus:outline-none focus:border-blue-500">
-                                <option value="1">1. Arquero</option>
-                                <option value="2">2. Lateral derecho</option>
-                                <option value="3">3. Central derecho</option>
-                            </select>
-                        </div>
-
-                        <div>
-                            <label class="block text-xs text-slate-400 mb-1">Perfil Buscado</label>
-                            <select id="select-perfil" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-sm text-white focus:outline-none focus:border-blue-500">
-                                <option value="Titular Inmediato">Titular Inmediato (Jerarquía)</option>
-                                <option value="Proyecto">Proyecto / Recambio</option>
-                            </select>
-                        </div>
-
-                        <div>
-                            <label class="block text-xs text-slate-400 mb-1">Nombre específico sugerido (Opcional)</label>
-                            <input id="input-nombre-sugerido" type="text" placeholder="Dejar en blanco o escribir nombre..." class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-sm text-white focus:outline-none focus:border-blue-500">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="mt-6">
-                    <button id="btn-enviar-pedido" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-2.5 rounded-lg text-sm transition shadow">
-                        Enviar Pedido Formal a la Dirigencia
-                    </button>
-                </div>
-
-                <!-- GESTIONES EN CURSO -->
-                <div class="mt-6 pt-4 border-t border-slate-800">
-                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Gestiones en curso</h3>
-                    <div id="contenedor-gestiones" class="text-xs text-slate-500">
-                        Sin pedidos activos.
-                    </div>
-                </div>
-            </section>
-
-            <!-- OFERTAS DE VENTA -->
-            <section class="bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-lg flex flex-col justify-between">
-                <div>
-                    <h2 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
-                        <span>⚖️</span> Ofertas de Venta (Visto Bueno DT)
-                    </h2>
-
-                    <div id="contenedor-ofertas" class="space-y-4">
-                        <!-- Ejemplo de oferta activa -->
-                        <div class="bg-slate-800/60 border border-slate-700/60 rounded-xl p-4 flex flex-col justify-between gap-3">
-                            <div>
-                                <span class="font-bold text-white text-sm">Daniel Herrera (Racing)</span>
-                                <p class="text-xs text-slate-400">4. Central defensivo - Oferta de: Palmeiras (Brasil)</p>
-                            </div>
-                            <div class="flex gap-2">
-                                <button data-accion="autorizar" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold py-2 rounded-lg transition">Autorizar Venta</button>
-                                <button data-accion="vetar" class="flex-1 bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold py-2 rounded-lg transition">Vetar</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-        </main>
+        <p id="header-date" class="text-xs text-slate-400">Semana 1 - Temporada 2027 | Liga Profesional AFA</p>
+      </div>
     </div>
 
-    <!-- SCRIPT DE CONTROL SEGURO -->
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // Manejo del botón de Enviar Pedido
-            const btnEnviarPedido = document.getElementById('btn-enviar-pedido');
-            const contenedorGestiones = document.getElementById('contenedor-gestiones');
+    <div class="flex items-center gap-2">
+      <select id="club-selector" onchange="changeManagedClub(this.value)" class="bg-slate-800 border border-slate-700 text-xs rounded-lg px-2.5 py-1.5 text-slate-200 focus:outline-none focus:border-sky-500">
+      </select>
+      <button onclick="advanceDay()" id="btn-continue" class="bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white font-bold text-xs md:text-sm px-4 py-2 rounded-lg shadow-lg flex items-center gap-2 transition cursor-pointer">
+        <span>AVANZAR / JUGAR</span>
+        <i class="fa-solid fa-play text-xs"></i>
+      </button>
+    </div>
+  </header>
 
-            if (btnEnviarPedido) {
-                btnEnviarPedido.addEventListener('click', () => {
-                    const puesto = document.getElementById('select-puesto').selectedOptions[0].text;
-                    const perfil = document.getElementById('select-perfil').value;
-                    const nombre = document.getElementById('input-nombre-sugerido').value || 'Sugerencia libre';
+  <!-- CONTENEDOR PRINCIPAL -->
+  <div class="flex-1 flex overflow-hidden">
+    <!-- SIDEBAR DE NAVEGACIÓN (CON CLICS BLINDADOS) -->
+    <aside class="hidden md:flex flex-col w-60 bg-slate-900/90 border-r border-slate-800 shrink-0 justify-between z-10">
+      <nav class="p-3 space-y-1">
+        <button onclick="switchTab('dashboard')" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold text-left transition bg-sky-600 text-white cursor-pointer" data-tab="dashboard">
+          <i class="fa-solid fa-house w-5 text-center"></i> Despacho del DT
+        </button>
+        <button onclick="switchTab('squad')" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold text-left text-slate-400 hover:bg-slate-800 hover:text-white transition cursor-pointer" data-tab="squad">
+          <i class="fa-solid fa-users w-5 text-center"></i> Plantel Principal
+        </button>
+        <button onclick="switchTab('tactics')" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold text-left text-slate-400 hover:bg-slate-800 hover:text-white transition cursor-pointer" data-tab="tactics">
+          <i class="fa-solid fa-chess-board w-5 text-center"></i> Pizarra Táctica
+        </button>
+        <button onclick="switchTab('training')" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold text-left text-slate-400 hover:bg-slate-800 hover:text-white transition cursor-pointer" data-tab="training">
+          <i class="fa-solid fa-dumbbell w-5 text-center"></i> Entrenamiento y Charlas
+        </button>
+        <button onclick="switchTab('board')" class="nav-btn w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-semibold text-left text-slate-400 hover:bg-slate-800 hover:text-white transition cursor-pointer" data-tab="board">
+          <span class="flex items-center gap-3"><i class="fa-solid fa-briefcase w-5 text-center"></i> Secretaría Técnica</span>
+          <span id="badge-offers" class="bg-amber-500 text-slate-950 text-xs font-extrabold px-1.5 py-0.5 rounded-full">1</span>
+        </button>
+        <button onclick="switchTab('competitions')" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold text-left text-slate-400 hover:bg-slate-800 hover:text-white transition cursor-pointer" data-tab="competitions">
+          <i class="fa-solid fa-trophy w-5 text-center"></i> AFA y Conmebol
+        </button>
+        <button onclick="switchTab('match')" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold text-left text-slate-400 hover:bg-slate-800 hover:text-white transition cursor-pointer" data-tab="match">
+          <i class="fa-solid fa-futbol w-5 text-center"></i> Cancha 2D (En Vivo)
+        </button>
+        <button onclick="switchTab('cloud')" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold text-left text-slate-400 hover:bg-slate-800 hover:text-white transition cursor-pointer" data-tab="cloud">
+          <i class="fa-brands fa-google-drive w-5 text-center"></i> Guardado Google Drive
+        </button>
+      </nav>
+      <div class="p-3 border-t border-slate-800 text-xs text-slate-500">
+        <div>Modo: <span class="text-slate-300 font-semibold">Sólo DT 1ra División</span></div>
+        <div class="mt-1">Confianza CD: <span id="sidebar-trust" class="text-emerald-400 font-bold">85%</span></div>
+      </div>
+    </aside>
 
-                    contenedorGestiones.innerHTML = `
-                        <div class="bg-slate-800 p-3 rounded-lg border border-slate-700">
-                            <span class="font-semibold text-emerald-400">Pedido enviado con éxito</span>
-                            <p class="text-slate-300 mt-1">${puesto} | ${perfil} (${nombre})</p>
-                        </div>
-                    `;
-                });
-            }
+    <!-- CONTENEDOR PRINCIPAL -->
+    <main class="flex-1 overflow-y-auto custom-scroll p-3 md:p-6 pb-36 md:pb-6">
 
-            // Manejo de botones de Ofertas (Autorizar / Vetar) usando delegación de eventos
-            document.body.addEventListener('click', (e) => {
-                const btn = e.target.closest('button[data-accion]');
-                if (!btn) return;
+      <!-- 1. DESPACHO DEL DT -->
+      <section id="tab-dashboard" class="tab-content space-y-4">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 shadow-lg">
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-xs font-bold uppercase tracking-wider text-sky-400">Próximo Compromiso</span>
+              <span id="next-comp-badge" class="text-xs bg-slate-800 px-2 py-0.5 rounded text-slate-300">Liga Profesional - Fecha 1</span>
+            </div>
+            <div class="flex items-center justify-around py-3">
+              <div class="text-center">
+                <div id="next-home-badge" class="w-12 h-12 rounded-full mx-auto flex items-center justify-center font-bold text-sm border border-white/20 bg-blue-900">LOC</div>
+                <p id="next-home-name" class="text-xs font-bold mt-2">San Lorenzo</p>
+              </div>
+              <div class="text-center">
+                <span class="text-xl font-black text-slate-500">VS</span>
+                <p class="text-[11px] text-slate-400 mt-1">Estadio Principal</p>
+              </div>
+              <div class="text-center">
+                <div id="next-away-badge" class="w-12 h-12 rounded-full mx-auto flex items-center justify-center font-bold text-sm border border-white/20 bg-red-800">VIS</div>
+                <p id="next-away-name" class="text-xs font-bold mt-2">Huracán</p>
+              </div>
+            </div>
+            <button onclick="switchTab('match')" class="w-full mt-2 bg-sky-600 hover:bg-sky-500 text-white font-bold py-2 rounded-lg text-xs transition cursor-pointer">
+              Ir a la Cancha 2D / Preparar Partido
+            </button>
+          </div>
 
-                const accion = btn.getAttribute('data-accion');
-                const cardOferta = btn.closest('#contenedor-ofertas > div');
+          <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 shadow-lg">
+            <span class="text-xs font-bold uppercase tracking-wider text-emerald-400">Clima del Vestuario y CD</span>
+            <div class="mt-3 space-y-3">
+              <div>
+                <div class="flex justify-between text-xs mb-1">
+                  <span>Moral del Plantel Profesional</span>
+                  <span id="dash-morale" class="font-bold text-emerald-400">82% (Alta)</span>
+                </div>
+                <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                  <div id="bar-morale" class="bg-emerald-500 h-full" style="width: 82%"></div>
+                </div>
+              </div>
+              <div>
+                <div class="flex justify-between text-xs mb-1">
+                  <span>Familiaridad Táctica</span>
+                  <span id="dash-familiarity" class="font-bold text-sky-400">76%</span>
+                </div>
+                <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                  <div id="bar-familiarity" class="bg-sky-500 h-full" style="width: 76%"></div>
+                </div>
+              </div>
+              <div>
+                <div class="flex justify-between text-xs mb-1">
+                  <span>Respaldo Comisión Directiva</span>
+                  <span id="dash-trust" class="font-bold text-amber-400">85%</span>
+                </div>
+                <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                  <div id="bar-trust" class="bg-amber-500 h-full" style="width: 85%"></div>
+                </div>
+              </div>
+            </div>
+          </div>
 
-                if (accion === 'autorizar') {
-                    alert('¡Venta autorizada correctamente!');
-                    if (cardOferta) cardOferta.remove();
-                } else if (accion === 'vetar') {
-                    alert('Has vetado la venta del jugador.');
-                    if (cardOferta) cardOferta.remove();
-                }
-            });
+          <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 shadow-lg">
+            <span class="text-xs font-bold uppercase tracking-wider text-amber-400">Frentes Activos (AFA / Conmebol)</span>
+            <ul class="mt-3 space-y-2 text-xs">
+              <li class="flex justify-between items-center bg-slate-800/60 p-2 rounded">
+                <span><i class="fa-solid fa-shield-halved text-sky-400 mr-1.5"></i> Liga Profesional AFA</span>
+                <span id="dash-lpf-pos" class="font-bold">Posición: 1° (0 pts)</span>
+              </li>
+              <li class="flex justify-between items-center bg-slate-800/60 p-2 rounded">
+                <span><i class="fa-solid fa-trophy text-amber-400 mr-1.5"></i> Copa Libertadores</span>
+                <span id="dash-lib-status" class="font-bold text-emerald-400">Fase de Grupos</span>
+              </li>
+              <li class="flex justify-between items-center bg-slate-800/60 p-2 rounded">
+                <span><i class="fa-solid fa-award text-indigo-400 mr-1.5"></i> Copa Argentina</span>
+                <span class="font-bold">32avos de Final</span>
+              </li>
+              <li class="flex justify-between items-center bg-slate-800/60 p-2 rounded">
+                <span><i class="fa-solid fa-star text-rose-400 mr-1.5"></i> Copa de la Liga / Trofeo</span>
+                <span class="font-bold text-slate-400">Segundo Semestre</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 shadow-lg">
+          <h2 class="text-sm font-bold text-white mb-3 flex items-center gap-2">
+            <i class="fa-solid fa-envelope-open-text text-sky-400"></i> Comunicaciones Internas (Secretaría Técnica y Cuerpo Técnico)
+          </h2>
+          <div id="inbox-list" class="space-y-2 max-h-64 overflow-y-auto custom-scroll pr-1">
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. PLANTEL PRINCIPAL -->
+      <section id="tab-squad" class="tab-content hidden space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-2 bg-slate-900 p-4 rounded-xl border border-slate-800">
+          <div>
+            <h2 class="text-base font-bold text-white">Plantel de Primera División (17 Posiciones Tácticas)</h2>
+            <p class="text-xs text-slate-400">Cambiá el estado (XI / SUB / RES) y asigná cualquiera de las 17 posiciones específicas a cada jugador.</p>
+          </div>
+          <div class="flex flex-wrap gap-2 text-xs">
+            <span class="bg-emerald-900/60 text-emerald-300 border border-emerald-700 px-2.5 py-1 rounded font-bold">Titulares: <span id="count-starters">11</span>/11</span>
+            <button onclick="autoPickLineup()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-1 rounded border border-slate-700 font-semibold cursor-pointer">
+              11 Ideal Automático
+            </button>
+            <button onclick="resetCurrentClubSquad()" class="bg-rose-900/60 hover:bg-rose-800 text-rose-200 px-3 py-1 rounded border border-rose-700 font-semibold cursor-pointer">
+              Reiniciar Plantel 2027
+            </button>
+          </div>
+        </div>
+
+        <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-lg mb-12">
+          <div class="overflow-x-auto max-h-[60vh] custom-scroll">
+            <table class="w-full text-left border-collapse text-xs">
+              <thead class="bg-slate-950 text-slate-400 border-b border-slate-800 uppercase sticky top-0 z-10">
+                <tr>
+                  <th class="p-3">Estado</th>
+                  <th class="p-3">Jugador</th>
+                  <th class="p-3">Posición Táctica Asignada (1 a 17)</th>
+                  <th class="p-3">Edad</th>
+                  <th class="p-3">Media</th>
+                  <th class="p-3">Físico</th>
+                  <th class="p-3">Moral</th>
+                </tr>
+              </thead>
+              <tbody id="squad-tbody" class="divide-y divide-slate-800/60">
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. PIZARRA TÁCTICA COMPLETA -->
+      <section id="tab-tactics" class="tab-content hidden space-y-4">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          <div class="lg:col-span-2 bg-slate-900 border border-slate-800 rounded-xl p-4 space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+              <div>
+                <h2 class="text-base font-bold text-white">Instrucciones Tácticas del Director Técnico</h2>
+                <p class="text-xs text-slate-400">Podés aplicar un dibujo base o personalizar puesto por puesto entre las 17 posiciones.</p>
+              </div>
+              <select id="tactic-formation" onchange="applyPresetFormation(this.value)" class="bg-sky-900/60 border border-sky-600 text-white font-bold text-xs rounded-lg px-3 py-2 cursor-pointer">
+                <option value="Personalizada">Dibujo Personalizado (Por Posición)</option>
+                <option value="4-3-3">4-3-3 (Con Punteros)</option>
+                <option value="4-3-1-2">4-3-1-2 (Con Enganche)</option>
+                <option value="4-4-2">4-4-2 (Clásico)</option>
+                <option value="5-3-2">5-3-2 (Líbero y Stoppers)</option>
+              </select>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+              <div class="bg-slate-800/50 p-3 rounded-lg border border-slate-800">
+                <label class="font-bold text-sky-400 block mb-1">1. Mentalidad de Juego</label>
+                <select id="tactic-mentality" onchange="updateTactics()" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-white cursor-pointer">
+                  <option value="Catenaccio">Ultra Defensiva (Cerrar el partido)</option>
+                  <option value="Contraataque">Calculada / Contraataque Directo</option>
+                  <option value="Equilibrada" selected>Equilibrada</option>
+                  <option value="Ofensiva">Ofensiva / Protagonista</option>
+                  <option value="Todo o Nada">Ataque Total (Todo o Nada)</option>
+                </select>
+              </div>
+
+              <div class="bg-slate-800/50 p-3 rounded-lg border border-slate-800">
+                <label class="font-bold text-sky-400 block mb-1">2. Estilo de Pases y Salida</label>
+                <select id="tactic-passing" onchange="updateTactics()" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-white cursor-pointer">
+                  <option value="Corto">Salir jugando desde el arquero (Posesión corta)</option>
+                  <option value="Mixto" selected>Pases Mixtos con búsqueda de espacios</option>
+                  <option value="Directo">Juego Directo / Segunda pelota</option>
+                </select>
+              </div>
+
+              <div class="bg-slate-800/50 p-3 rounded-lg border border-slate-800">
+                <label class="font-bold text-emerald-400 block mb-1">3. Altura de Bloque y Presión</label>
+                <select id="tactic-pressing" onchange="updateTactics()" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-white cursor-pointer">
+                  <option value="Bajo">Bloque Bajo (Esperar en campo propio)</option>
+                  <option value="Medio" selected>Bloque Medio + Presión coordinada</option>
+                  <option value="Alto">Línea Adelantada + Presión Alta</option>
+                </select>
+              </div>
+
+              <div class="bg-slate-800/50 p-3 rounded-lg border border-slate-800">
+                <label class="font-bold text-emerald-400 block mb-1">4. Intensidad en las Divididas</label>
+                <select id="tactic-tackling" onchange="updateTactics()" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-white cursor-pointer">
+                  <option value="Cuidadoso">Cuidarse de las tarjetas</option>
+                  <option value="Normal" selected>Firme en los duelos</option>
+                  <option value="Pierna Fuerte">Pierna Fuerte / Estilo Libertadores</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Pizarra Interactiva de las 17 Posiciones -->
+          <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 flex flex-col">
+            <h3 class="text-sm font-bold text-white mb-2">Ubicación Real según las 17 Posiciones</h3>
+            <div id="tactic-board-preview" class="flex-1 min-h-[340px] rounded-xl pitch-bg border-2 border-white/30 relative overflow-hidden">
+              <div class="absolute inset-x-0 top-1/2 border-t border-white/30"></div>
+              <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-20 h-20 rounded-full border border-white/30"></div>
+              <div id="formation-nodes" class="absolute inset-0"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 4. ENTRENAMIENTO Y CHARLAS -->
+      <section id="tab-training" class="tab-content hidden space-y-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 space-y-3">
+            <h2 class="text-base font-bold text-white"><i class="fa-solid fa-stopwatch text-sky-400 mr-2"></i>Planificación Semanal en el Predio</h2>
+            <div class="space-y-2 text-xs">
+              <label class="flex items-center justify-between p-3 rounded-lg bg-slate-800/70 border border-slate-700 cursor-pointer">
+                <span><strong>Táctico y Pelota Parada:</strong> Sube la familiaridad táctica y eficacia en córners.</span>
+                <input type="radio" name="training-focus" value="tactico" checked onchange="setTrainingFocus(this.value)" />
+              </label>
+              <label class="flex items-center justify-between p-3 rounded-lg bg-slate-800/70 border border-slate-700 cursor-pointer">
+                <span><strong>Definición y Transiciones:</strong> Mejora la puntería de los delanteros y volantes.</span>
+                <input type="radio" name="training-focus" value="ofensivo" onchange="setTrainingFocus(this.value)" />
+              </label>
+              <label class="flex items-center justify-between p-3 rounded-lg bg-slate-800/70 border border-slate-700 cursor-pointer">
+                <span><strong>Recuperación Física y Kinesiología:</strong> Recupera +15% de energía antes de viajes de Copa.</span>
+                <input type="radio" name="training-focus" value="recuperacion" onchange="setTrainingFocus(this.value)" />
+              </label>
+            </div>
+            <button onclick="runTrainingSession()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 rounded-lg text-xs transition cursor-pointer">
+              Ejecutar Práctica de Fútbol Formal Ahora
+            </button>
+          </div>
+
+          <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 space-y-3">
+            <h2 class="text-base font-bold text-white"><i class="fa-solid fa-comments text-amber-400 mr-2"></i>Charla al Plantel / Manejo de Grupo</h2>
+            <div class="grid grid-cols-1 gap-2 text-xs">
+              <button onclick="teamTalk('exigir')" class="p-3 bg-slate-800 hover:bg-slate-700 rounded-lg text-left border border-slate-700 transition cursor-pointer">
+                <strong class="text-amber-400 block">"En este club hay que ganar todos los domingos"</strong>
+                <span class="text-slate-400">Aumenta la concentración competitiva.</span>
+              </button>
+              <button onclick="teamTalk('respaldar')" class="p-3 bg-slate-800 hover:bg-slate-700 rounded-lg text-left border border-slate-700 transition cursor-pointer">
+                <strong class="text-emerald-400 block">"Confío a muerte en este grupo de jugadores"</strong>
+                <span class="text-slate-400">Levanta la moral del vestuario.</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 5. SECRETARÍA TÉCNICA -->
+      <section id="tab-board" class="tab-content hidden space-y-4">
+        <div class="bg-amber-950/30 border border-amber-700/50 rounded-xl p-3 text-xs text-amber-200 flex items-center gap-3">
+          <i class="fa-solid fa-user-tie text-xl text-amber-400"></i>
+          <div>
+            <strong>Rol Exclusivo de Director Técnico:</strong> Pedí cualquiera de las 17 posiciones específicas a reforzar y autorizá o vetá ventas.
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 space-y-3">
+            <h2 class="text-base font-bold text-white"><i class="fa-solid fa-file-signature text-sky-400 mr-2"></i>Solicitar Refuerzo al Manager / CD</h2>
+            <div class="space-y-3 text-xs">
+              <div>
+                <label class="block text-slate-400 mb-1">Puesto específico a reforzar (1 a 17)</label>
+                <select id="req-position" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2 text-white cursor-pointer">
+                </select>
+              </div>
+              <div>
+                <label class="block text-slate-400 mb-1">Perfil Buscado</label>
+                <select id="req-profile" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2 text-white cursor-pointer">
+                  <option value="Titular Inmediato (Jerarquía)">Titular Inmediato (Jerarquía)</option>
+                  <option value="Rotación / Recambio">Jugador de recambio para rotación</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-slate-400 mb-1">Nombre específico sugerido (Opcional)</label>
+                <input id="req-name" type="text" placeholder="Dejar en blanco o escribir nombre..." class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2 text-white focus:outline-none focus:border-sky-500" />
+              </div>
+              <button onclick="submitTransferRequest()" class="w-full bg-sky-600 hover:bg-sky-500 text-white font-bold py-2.5 rounded-lg transition cursor-pointer">
+                Enviar Pedido Formal a la Dirigencia
+              </button>
+            </div>
+
+            <div class="pt-3 border-t border-slate-800">
+              <h3 class="text-xs font-bold uppercase text-slate-400 mb-2">Gestiones en Curso</h3>
+              <div id="transfer-requests-list" class="space-y-2 text-xs"></div>
+            </div>
+          </div>
+
+          <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 space-y-3">
+            <div class="flex items-center justify-between">
+              <h2 class="text-base font-bold text-white"><i class="fa-solid fa-scale-balanced text-emerald-400 mr-2"></i>Ofertas de Venta (Visto Bueno DT)</h2>
+              <button onclick="generateIncomingOffer()" class="text-xs bg-slate-800 hover:bg-slate-700 px-2.5 py-1 rounded border border-slate-700 text-slate-300 cursor-pointer">
+                Simular Nueva Oferta
+              </button>
+            </div>
+            <div id="incoming-offers-list" class="space-y-3 text-xs"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 6. COMPETENCIAS AFA Y CONMEBOL -->
+      <section id="tab-competitions" class="tab-content hidden space-y-4">
+        <div class="flex flex-wrap gap-2 bg-slate-900 p-3 rounded-xl border border-slate-800">
+          <button onclick="showCompSubtab('lpf')" class="comp-btn bg-sky-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold cursor-pointer">Liga Profesional (28 Equipos)</button>
+          <button onclick="showCompSubtab('libertadores')" class="comp-btn bg-slate-800 text-slate-300 px-3 py-1.5 rounded-lg text-xs font-bold cursor-pointer">Copa Libertadores / Sudamericana</button>
+          <button onclick="showCompSubtab('copaarg')" class="comp-btn bg-slate-800 text-slate-300 px-3 py-1.5 rounded-lg text-xs font-bold cursor-pointer">Copa Argentina</button>
+        </div>
+
+        <div id="comp-lpf" class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
+          <div class="overflow-x-auto max-h-[420px] custom-scroll">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-slate-900 text-slate-400 sticky top-0">
+                <tr class="border-b border-slate-800">
+                  <th class="p-2.5">#</th>
+                  <th class="p-2.5">Club</th>
+                  <th class="p-2.5">PJ</th>
+                  <th class="p-2.5">G</th>
+                  <th class="p-2.5">E</th>
+                  <th class="p-2.5">P</th>
+                  <th class="p-2.5">DG</th>
+                  <th class="p-2.5 font-extrabold text-white">PTS</th>
+                  <th class="p-2.5">Clasificación</th>
+                </tr>
+              </thead>
+              <tbody id="standings-tbody" class="divide-y divide-slate-800/60"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div id="comp-libertadores" class="hidden bg-slate-900 border border-slate-800 rounded-xl p-4 space-y-4">
+          <h3 class="text-base font-bold text-amber-400"><i class="fa-solid fa-trophy mr-2"></i>CONMEBOL Libertadores 2027 - Grupo C</h3>
+          <table class="w-full text-left text-xs border border-slate-800 rounded-lg overflow-hidden">
+            <thead class="bg-slate-950 text-slate-400">
+              <tr>
+                <th class="p-2.5">Pos</th>
+                <th class="p-2.5">Equipo</th>
+                <th class="p-2.5">País</th>
+                <th class="p-2.5">PJ</th>
+                <th class="p-2.5">PTS</th>
+              </tr>
+            </thead>
+            <tbody id="lib-group-tbody" class="divide-y divide-slate-800"></tbody>
+          </table>
+        </div>
+
+        <div id="comp-copaarg" class="hidden bg-slate-900 border border-slate-800 rounded-xl p-4 space-y-3 text-xs">
+          <h3 class="text-base font-bold text-sky-400">Copa Argentina & Trofeo de Campeones AFA</h3>
+          <p class="text-slate-300">Instancia actual: <strong class="text-emerald-400">32avos de Final</strong></p>
+        </div>
+      </section>
+
+      <!-- 7. MOTOR DE PARTIDO 2D -->
+      <section id="tab-match" class="tab-content hidden space-y-3">
+        <div class="bg-slate-900 border border-slate-800 rounded-xl p-3 flex flex-wrap items-center justify-between gap-3">
+          <div class="flex items-center gap-3">
+            <span id="match-home-name" class="font-extrabold text-sm md:text-base text-white">San Lorenzo</span>
+            <span id="match-score" class="bg-slate-950 border border-slate-700 px-3 py-1 rounded-lg font-black text-lg text-emerald-400">0 - 0</span>
+            <span id="match-away-name" class="font-extrabold text-sm md:text-base text-white">Huracán</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span id="match-timer" class="bg-amber-500/20 text-amber-300 border border-amber-500/40 px-3 py-1 rounded font-mono font-bold text-sm">00:00'</span>
+            <button onclick="startOrPauseMatch()" id="btn-match-play" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-3 py-1.5 rounded-lg text-xs cursor-pointer">
+              <i class="fa-solid fa-play mr-1"></i> Iniciar / Pausar
+            </button>
+            <button onclick="toggleMatchSpeed()" id="btn-match-speed" class="bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold px-3 py-1.5 rounded-lg text-xs border border-slate-700 cursor-pointer">
+              Velocidad: x1
+            </button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-3">
+          <div class="lg:col-span-2 bg-slate-900 border border-slate-800 rounded-xl p-3 flex flex-col items-center">
+            <canvas id="pitch-canvas" width="680" height="420" class="w-full max-w-[680px] rounded-lg border-2 border-white/40 shadow-inner bg-emerald-800"></canvas>
+            <div class="w-full flex flex-wrap items-center justify-between gap-2 mt-3 pt-2 border-t border-slate-800 text-xs">
+              <span class="font-bold text-slate-400"><i class="fa-solid fa-bullhorn text-amber-400 mr-1"></i>Órdenes en vivo:</span>
+              <div class="flex flex-wrap gap-1.5">
+                <button onclick="shoutFromBench('Adelantar líneas')" class="bg-slate-800 hover:bg-sky-700 px-2.5 py-1 rounded text-white transition cursor-pointer">¡Achiquen arriba!</button>
+                <button onclick="shoutFromBench('Cuidar la pelota')" class="bg-slate-800 hover:bg-emerald-700 px-2.5 py-1 rounded text-white transition cursor-pointer">¡Tengan la pelota!</button>
+                <button onclick="makeQuickSub()" class="bg-indigo-700 hover:bg-indigo-600 px-2.5 py-1 rounded text-white font-bold transition cursor-pointer"><i class="fa-solid fa-repeat mr-1"></i>Cambio Rápido</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-slate-900 border border-slate-800 rounded-xl p-3 flex flex-col h-[460px]">
+            <h3 class="text-xs font-bold uppercase text-sky-400 mb-2">Relato en Vivo & Eventos Tácticos</h3>
+            <div id="match-commentary" class="flex-1 overflow-y-auto custom-scroll space-y-2 text-xs pr-1">
+              <div class="p-2 rounded bg-slate-800/70 text-slate-300">Equipos en cancha. Modificá las posiciones de tus 11 titulares abajo en cualquier momento.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PANEL DE CAMBIO DE POSICIÓN EN VIVO -->
+        <div class="bg-slate-900 border border-slate-800 rounded-xl p-4">
+          <h3 class="text-sm font-bold text-amber-400 mb-1"><i class="fa-solid fa-arrows-up-down-left-right mr-1.5"></i>Reubicación Táctica en Vivo (Durante el Partido)</h3>
+          <p class="text-xs text-slate-400 mb-3">Cambiá la posición de cualquier jugador en pleno partido y mirá cómo se reubica inmediatamente en la cancha 2D.</p>
+          <div id="live-positions-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 text-xs">
+          </div>
+        </div>
+      </section>
+
+      <!-- 8. GOOGLE DRIVE -->
+      <section id="tab-cloud" class="tab-content hidden space-y-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-4">
+          <div class="flex items-center gap-3">
+            <i class="fa-brands fa-google-drive text-3xl text-emerald-400"></i>
+            <div>
+              <h2 class="text-base font-bold text-white">Sincronización Multiplataforma (Google Drive)</h2>
+              <p class="text-xs text-slate-400">Carpeta: <strong>DT_Argentino_2027_Saves</strong> (Palais.claudio@gmail.com)</p>
+            </div>
+          </div>
+
+          <div class="flex flex-col gap-2">
+            <button onclick="exportSaveFile()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 px-4 rounded-lg text-xs flex items-center justify-center gap-2 cursor-pointer">
+              <i class="fa-solid fa-download"></i> Descargar Partida (DT_Argentino_Save.json)
+            </button>
+            <label class="bg-sky-600 hover:bg-sky-500 text-white font-bold py-2.5 px-4 rounded-lg text-xs flex items-center justify-center gap-2 cursor-pointer">
+              <i class="fa-solid fa-upload"></i> Cargar Partida desde Archivo (.JSON)
+              <input type="file" accept=".json" onchange="importSaveFile(event)" class="hidden" />
+            </label>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- NAVEGACIÓN MÓVIL -->
+  <nav class="md:hidden fixed bottom-0 inset-x-0 bg-slate-900 border-t border-slate-800 flex justify-around py-2 z-30 text-[11px]">
+    <button onclick="switchTab('dashboard')" class="flex flex-col items-center text-sky-400"><i class="fa-solid fa-house text-base"></i><span>DT</span></button>
+    <button onclick="switchTab('squad')" class="flex flex-col items-center text-slate-400"><i class="fa-solid fa-users text-base"></i><span>Plantel</span></button>
+    <button onclick="switchTab('tactics')" class="flex flex-col items-center text-slate-400"><i class="fa-solid fa-chess-board text-base"></i><span>Táctica</span></button>
+    <button onclick="switchTab('board')" class="flex flex-col items-center text-slate-400"><i class="fa-solid fa-briefcase text-base"></i><span>Refuerzos</span></button>
+    <button onclick="switchTab('competitions')" class="flex flex-col items-center text-slate-400"><i class="fa-solid fa-trophy text-base"></i><span>Torneos</span></button>
+    <button onclick="switchTab('match')" class="flex flex-col items-center text-slate-400"><i class="fa-solid fa-futbol text-base"></i><span>2D</span></button>
+    <button onclick="switchTab('cloud')" class="flex flex-col items-center text-slate-400"><i class="fa-brands fa-google-drive text-base"></i><span>Drive</span></button>
+  </nav>
+
+  <script>
+    const TACTICAL_POSITIONS = [
+      { id: 1,  code: "ARQ", name: "1. Arquero",                    px: 50, py: 90 },
+      { id: 2,  code: "LD",  name: "2. Lateral derecho",            px: 84, py: 72 },
+      { id: 3,  code: "ID",  name: "3. Interior derecho",           px: 74, py: 52 },
+      { id: 4,  code: "CD",  name: "4. Central defensivo",          px: 50, py: 74 },
+      { id: 5,  code: "STD", name: "5. Stopper por derecha",        px: 66, py: 74 },
+      { id: 6,  code: "LIB", name: "6. Líbero",                     px: 50, py: 80 },
+      { id: 7,  code: "STI", name: "7. Stopper por izquierda",      px: 34, py: 74 },
+      { id: 8,  code: "LI",  name: "8. Lateral izquierdo",          px: 16, py: 72 },
+      { id: 9,  code: "II",  name: "9. Interior izquierdo",         px: 26, py: 52 },
+      { id: 10, code: "MCR", name: "10. Mediocampista recuperador", px: 50, py: 60 },
+      { id: 11, code: "MCO", name: "11. Mediocampista organizador", px: 50, py: 48 },
+      { id: 12, code: "MOF", name: "12. Mediocampista ofensivo",    px: 64, py: 38 },
+      { id: 13, code: "ENG", name: "13. Enganche",                  px: 50, py: 32 },
+      { id: 14, code: "SD",  name: "14. Segundo delantero",         px: 40, py: 22 },
+      { id: 15, code: "PD",  name: "15. Puntero derecho",           px: 82, py: 20 },
+      { id: 16, code: "DC",  name: "16. Centrodelantero",           px: 50, py: 14 },
+      { id: 17, code: "PI",  name: "17. Puntero izquierdo",         px: 18, py: 20 }
+    ];
+
+    function getPosInfo(posName) {
+      return TACTICAL_POSITIONS.find(p => p.name === posName) || TACTICAL_POSITIONS[0];
+    }
+
+    const AFA_CLUBS = [
+      { id: "CASLA", name: "San Lorenzo", colors: ["#1e3a8a", "#dc2626"], rep: 86 },
+      { id: "RIV", name: "River Plate", colors: ["#ffffff", "#dc2626"], rep: 91 },
+      { id: "BOC", name: "Boca Juniors", colors: ["#1d4ed8", "#facc15"], rep: 90 },
+      { id: "RAC", name: "Racing Club", colors: ["#38bdf8", "#ffffff"], rep: 87 },
+      { id: "IND", name: "Independiente", colors: ["#dc2626", "#991b1b"], rep: 85 },
+      { id: "EST", name: "Estudiantes LP", colors: ["#dc2626", "#ffffff"], rep: 85 },
+      { id: "VEL", name: "Vélez Sarsfield", colors: ["#ffffff", "#1e40af"], rep: 85 },
+      { id: "TAL", name: "Talleres (Cba)", colors: ["#1e3a8a", "#ffffff"], rep: 84 },
+      { id: "HUR", name: "Huracán", colors: ["#ffffff", "#dc2626"], rep: 81 },
+      { id: "LAN", name: "Lanús", colors: ["#7f1d1d", "#ffffff"], rep: 82 },
+      { id: "ARG", name: "Argentinos Jrs", colors: ["#dc2626", "#ffffff"], rep: 82 },
+      { id: "DEF", name: "Defensa y Justicia", colors: ["#eab308", "#15803d"], rep: 81 },
+      { id: "ROS", name: "Rosario Central", colors: ["#1d4ed8", "#facc15"], rep: 82 },
+      { id: "NOB", name: "Newell's Old Boys", colors: ["#dc2626", "#111827"], rep: 81 },
+      { id: "BEL", name: "Belgrano (Cba)", colors: ["#38bdf8", "#111827"], rep: 80 },
+      { id: "IACC", name: "Instituto (Cba)", colors: ["#dc2626", "#ffffff"], rep: 79 },
+      { id: "GOD", name: "Godoy Cruz", colors: ["#1d4ed8", "#ffffff"], rep: 80 },
+      { id: "UNN", name: "Unión (Santa Fe)", colors: ["#dc2626", "#ffffff"], rep: 79 },
+      { id: "GIM", name: "Gimnasia LP", colors: ["#ffffff", "#1e3a8a"], rep: 78 },
+      { id: "BAN", name: "Banfield", colors: ["#15803d", "#ffffff"], rep: 78 },
+      { id: "TIG", name: "Tigre", colors: ["#1e3a8a", "#dc2626"], rep: 78 },
+      { id: "PLA", name: "Platense", colors: ["#78350f", "#ffffff"], rep: 78 },
+      { id: "ATU", name: "Atlético Tucumán", colors: ["#38bdf8", "#ffffff"], rep: 78 },
+      { id: "CCSE", name: "Central Córdoba (SdE)", colors: ["#111827", "#ffffff"], rep: 77 },
+      { id: "BAR", name: "Barracas Central", colors: ["#dc2626", "#ffffff"], rep: 76 },
+      { id: "SAR", name: "Sarmiento (Junín)", colors: ["#15803d", "#ffffff"], rep: 75 },
+      { id: "IRV", name: "Independiente Rivadavia", colors: ["#1e3a8a", "#ffffff"], rep: 76 },
+      { id: "RIE", name: "Deportivo Riestra", colors: ["#111827", "#ffffff"], rep: 75 }
+    ];
+
+    const INITIAL_SQUAD_TEMPLATES = {
+      "CASLA": [
+        { name: "Orlando Gill",        pos: "1. Arquero",                    age: 25, ovr: 78, status: "XI" },
+        { name: "Gastón Gómez",        pos: "1. Arquero",                    age: 29, ovr: 76, status: "SUB" },
+        { name: "Nahuel Arias",        pos: "2. Lateral derecho",            age: 21, ovr: 75, status: "XI" },
+        { name: "Jhohan Romaña",       pos: "5. Stopper por derecha",        age: 27, ovr: 83, status: "XI" },
+        { name: "Gastón Hernández",    pos: "7. Stopper por izquierda",      age: 28, ovr: 82, status: "XI" },
+        { name: "Elías Báez",          pos: "8. Lateral izquierdo",          age: 21, ovr: 76, status: "XI" },
+        { name: "Daniel Herrera",      pos: "4. Central defensivo",          age: 22, ovr: 76, status: "SUB" },
+        { name: "Fabricio López",      pos: "2. Lateral derecho",            age: 23, ovr: 74, status: "SUB" },
+        { name: "Elián Irala",         pos: "10. Mediocampista recuperador", age: 21, ovr: 80, status: "XI" },
+        { name: "Nicolás Tripichio",   pos: "3. Interior derecho",           age: 29, ovr: 80, status: "XI" },
+        { name: "Iker Muniain",        pos: "13. Enganche",                  age: 33, ovr: 85, status: "XI" },
+        { name: "Eric Remedi",         pos: "11. Mediocampista organizador", age: 30, ovr: 77, status: "SUB" },
+        { name: "Nahuel Barrios",      pos: "9. Interior izquierdo",         age: 27, ovr: 77, status: "SUB" },
+        { name: "Ezequiel Cerutti",    pos: "15. Puntero derecho",           age: 33, ovr: 76, status: "XI" },
+        { name: "Matías Reali",        pos: "17. Puntero izquierdo",         age: 28, ovr: 79, status: "XI" },
+        { name: "Alexis Cuello",       pos: "16. Centrodelantero",           age: 25, ovr: 80, status: "XI" },
+        { name: "Andrés Vombergar",    pos: "16. Centrodelantero",           age: 31, ovr: 78, status: "SUB" },
+        { name: "Agustín Hausch",      pos: "14. Segundo delantero",         age: 22, ovr: 74, status: "RES" }
+      ]
+    };
+
+    let gameState = {
+      version: 6,
+      managedClubId: "CASLA",
+      week: 1,
+      season: 2027,
+      morale: 84,
+      familiarity: 78,
+      boardTrust: 86,
+      trainingFocus: "tactico",
+      tactics: {
+        formation: "Personalizada",
+        mentality: "Equilibrada",
+        passing: "Mixto",
+        pressing: "Medio",
+        tackling: "Normal"
+      },
+      squad: [],
+      standings: [],
+      libertadoresGroup: [],
+      transferRequests: [],
+      incomingOffers: [],
+      inbox: []
+    };
+
+    function generateSquadForClub(clubId) {
+      if (INITIAL_SQUAD_TEMPLATES[clubId]) {
+        return JSON.parse(JSON.stringify(INITIAL_SQUAD_TEMPLATES[clubId])).map((p, idx) => ({
+          ...p, id: idx + 1, stamina: 98, morale: 85
+        }));
+      }
+      const club = AFA_CLUBS.find(c => c.id === clubId) || AFA_CLUBS[0];
+      const baseOvr = club.rep - 4;
+      const defaultPositions = TACTICAL_POSITIONS.map(tp => tp.name);
+      const apellidos = ["González", "Rodríguez", "Gómez", "Fernández", "López", "Díaz", "Martínez", "Pérez", "Romero", "Sánchez", "Domínguez", "Peralta", "Castro", "Medina", "Rojas", "Silva", "Juárez", "Moreno"];
+      const nombres = ["Facundo", "Lautaro", "Santiago", "Matías", "Nicolás", "Agustín", "Franco", "Enzo", "Lucas", "Ramiro", "Joaquín", "Tomás", "Ignacio", "Federico", "Thiago", "Gonzalo", "Alan", "Bruno"];
+      
+      return defaultPositions.map((posName, i) => ({
+        id: i + 1,
+        name: `${nombres[i % nombres.length]} ${apellidos[(i * 3) % apellidos.length]}`,
+        pos: posName,
+        age: 20 + (i % 12),
+        ovr: baseOvr + (i < 11 ? (i % 4) : -2),
+        status: i < 11 ? "XI" : i < 18 ? "SUB" : "RES",
+        stamina: 98,
+        morale: 82
+      }));
+    }
+
+    function initNewGame(clubId = "CASLA") {
+      gameState.version = 6;
+      gameState.managedClubId = clubId;
+      gameState.squad = generateSquadForClub(clubId);
+      gameState.standings = AFA_CLUBS.map(c => ({
+        id: c.id, name: c.name, pj: 0, g: 0, e: 0, p: 0, gf: 0, gc: 0, pts: 0
+      }));
+      const myClub = AFA_CLUBS.find(c => c.id === clubId);
+      gameState.libertadoresGroup = [
+        { name: myClub.name, country: "ARG", pj: 0, pts: 0 },
+        { name: "Palmeiras", country: "BRA", pj: 0, pts: 0 },
+        { name: "Nacional", country: "URU", pj: 0, pts: 0 },
+        { name: "Colo-Colo", country: "CHI", pj: 0, pts: 0 }
+      ];
+      gameState.transferRequests = [];
+      gameState.incomingOffers = [
+        {
+          id: 101,
+          playerName: gameState.squad[3].name,
+          pos: gameState.squad[3].pos,
+          ovr: gameState.squad[3].ovr,
+          buyingClub: "Palmeiras (Brasil)",
+          fee: "USD 6.400.000"
+        }
+      ];
+      gameState.inbox = [
+        {
+          date: "Semana 1",
+          from: "Comisión Directiva",
+          title: `Bienvenido al mando de ${myClub.name}`,
+          body: "Configuradas las 17 posiciones tácticas del fútbol argentino. Sistema operativo."
+        }
+      ];
+      saveToLocalStorage();
+      renderAll();
+    }
+
+    function resetCurrentClubSquad() {
+      if (confirm("¿Reiniciar el plantel con las 17 posiciones tácticas?")) {
+        initNewGame(gameState.managedClubId);
+      }
+    }
+
+    function populateSelectors() {
+      const sel = document.getElementById("club-selector");
+      sel.innerHTML = AFA_CLUBS.map(c => `<option value="${c.id}" ${c.id === gameState.managedClubId ? 'selected' : ''}>DT de: ${c.name}</option>`).join("");
+
+      const reqPos = document.getElementById("req-position");
+      reqPos.innerHTML = TACTICAL_POSITIONS.map(tp => `<option value="${tp.name}">${tp.name}</option>`).join("");
+    }
+
+    function changeManagedClub(newClubId) {
+      if (confirm("¿Asumir como DT de este club?")) {
+        initNewGame(newClubId);
+      } else {
+        document.getElementById("club-selector").value = gameState.managedClubId;
+      }
+    }
+
+    function renderAll() {
+      if (!gameState.squad || gameState.squad.length === 0 || !gameState.version || gameState.version < 6) {
+        initNewGame(gameState.managedClubId);
+        return;
+      }
+
+      const club = AFA_CLUBS.find(c => c.id === gameState.managedClubId);
+      document.getElementById("header-club-name").innerText = club.name;
+      document.getElementById("club-badge").innerText = club.id;
+      document.getElementById("club-badge").style.background = `linear-gradient(135deg, ${club.colors[0]} 50%, ${club.colors[1]} 50%)`;
+      document.getElementById("header-date").innerText = `Semana ${gameState.week} - Temporada ${gameState.season} | AFA & Conmebol`;
+
+      const opponents = AFA_CLUBS.filter(c => c.id !== gameState.managedClubId);
+      const nextOpp = opponents[(gameState.week - 1) % opponents.length];
+      document.getElementById("next-comp-badge").innerText = gameState.week % 3 === 0 ? "CONMEBOL Libertadores" : `Liga Profesional - Fecha ${gameState.week}`;
+      document.getElementById("next-home-name").innerText = club.name;
+      document.getElementById("next-home-badge").innerText = club.id;
+      document.getElementById("next-away-name").innerText = nextOpp.name;
+      document.getElementById("next-away-badge").innerText = nextOpp.id;
+
+      document.getElementById("dash-morale").innerText = `${gameState.morale}%`;
+      document.getElementById("bar-morale").style.width = `${gameState.morale}%`;
+      document.getElementById("dash-familiarity").innerText = `${gameState.familiarity}%`;
+      document.getElementById("bar-familiarity").style.width = `${gameState.familiarity}%`;
+      document.getElementById("dash-trust").innerText = `${gameState.boardTrust}%`;
+      document.getElementById("bar-trust").style.width = `${gameState.boardTrust}%`;
+      document.getElementById("sidebar-trust").innerText = `${gameState.boardTrust}%`;
+
+      document.getElementById("inbox-list").innerHTML = gameState.inbox.map(msg => `
+        <div class="bg-slate-800/75 border border-slate-700/70 rounded-lg p-3 text-xs">
+          <div class="flex justify-between text-slate-400 mb-1">
+            <span class="font-bold text-sky-400">${msg.from}</span>
+            <span>${msg.date}</span>
+          </div>
+          <div class="font-bold text-white mb-1">${msg.title}</div>
+          <p class="text-slate-300">${msg.body}</p>
+        </div>
+      `).join("");
+
+      renderSquad();
+      renderTacticPreview();
+      renderBoardTab();
+      renderCompetitions();
+      setupMatchHeader(club, nextOpp);
+      renderLivePositionsPanel();
+    }
+
+    function buildPositionOptionsHTML(selectedPos) {
+      return TACTICAL_POSITIONS.map(tp =>
+        `<option value="${tp.name}" ${tp.name === selectedPos ? 'selected' : ''}>${tp.name}</option>`
+      ).join("");
+    }
+
+    function renderSquad() {
+      const tbody = document.getElementById("squad-tbody");
+      document.getElementById("count-starters").innerText = gameState.squad.filter(p => p.status === "XI").length;
+
+      tbody.innerHTML = gameState.squad.map(p => {
+        const badgeClass = p.status === "XI" ? "bg-emerald-600 text-white" : p.status === "SUB" ? "bg-amber-600 text-white" : "bg-slate-700 text-slate-300";
+        return `
+          <tr class="hover:bg-slate-800/50 transition">
+            <td class="p-2.5">
+              <button onclick="cyclePlayerStatus(${p.id})" class="${badgeClass} font-bold px-2.5 py-1 rounded text-[11px] w-14 text-center cursor-pointer">
+                ${p.status}
+              </button>
+            </td>
+            <td class="p-2.5 font-semibold text-white">${p.name}</td>
+            <td class="p-2.5">
+              <select onchange="changePlayerPosition(${p.id}, this.value)" class="bg-slate-800 border border-sky-700/70 rounded px-2 py-1 text-sky-300 font-semibold text-xs w-full max-w-[240px] cursor-pointer">
+                ${buildPositionOptionsHTML(p.pos)}
+              </select>
+            </td>
+            <td class="p-2.5 text-slate-400">${p.age}</td>
+            <td class="p-2.5"><span class="bg-slate-800 border border-slate-700 px-2 py-0.5 rounded font-bold text-amber-400">${p.ovr}</span></td>
+            <td class="p-2.5 text-emerald-400 font-semibold">${p.stamina}%</td>
+            <td class="p-2.5 text-sky-300">${p.morale}%</td>
+          </tr>
+        `;
+      }).join("");
+    }
+
+    function changePlayerPosition(playerId, newPosName) {
+      const p = gameState.squad.find(x => x.id === playerId);
+      if (!p) return;
+      p.pos = newPosName;
+      saveToLocalStorage();
+      renderSquad();
+      renderTacticPreview();
+      renderLivePositionsPanel();
+      update2DBasePositionsFromTactics();
+      drawPitch2D();
+    }
+
+    function cyclePlayerStatus(id) {
+      const p = gameState.squad.find(x => x.id === id);
+      if (!p) return;
+      if (p.status === "XI") p.status = "SUB";
+      else if (p.status === "SUB") p.status = "RES";
+      else p.status = "XI";
+      saveToLocalStorage();
+      renderSquad();
+      renderTacticPreview();
+      renderLivePositionsPanel();
+      init2DEntities();
+      drawPitch2D();
+    }
+
+    function autoPickLineup() {
+      const sorted = [...gameState.squad].sort((a, b) => b.ovr - a.ovr);
+      sorted.forEach((p, idx) => {
+        if (idx < 11) p.status = "XI";
+        else if (idx < 18) p.status = "SUB";
+        else p.status = "RES";
+      });
+      saveToLocalStorage();
+      renderAll();
+    }
+
+    function applyPresetFormation(preset) {
+      gameState.tactics.formation = preset;
+      const starters = gameState.squad.filter(p => p.status === "XI");
+      const presetsMap = {
+        "4-3-3": [
+          "1. Arquero", "2. Lateral derecho", "5. Stopper por derecha", "7. Stopper por izquierda", "8. Lateral izquierdo",
+          "10. Mediocampista recuperador", "3. Interior derecho", "9. Interior izquierdo",
+          "15. Puntero derecho", "16. Centrodelantero", "17. Puntero izquierdo"
+        ],
+        "4-3-1-2": [
+          "1. Arquero", "2. Lateral derecho", "5. Stopper por derecha", "7. Stopper por izquierda", "8. Lateral izquierdo",
+          "10. Mediocampista recuperador", "3. Interior derecho", "9. Interior izquierdo",
+          "13. Enganche", "14. Segundo delantero", "16. Centrodelantero"
+        ],
+        "4-4-2": [
+          "1. Arquero", "2. Lateral derecho", "5. Stopper por derecha", "7. Stopper por izquierda", "8. Lateral izquierdo",
+          "3. Interior derecho", "10. Mediocampista recuperador", "11. Mediocampista organizador", "9. Interior izquierdo",
+          "14. Segundo delantero", "16. Centrodelantero"
+        ],
+        "5-3-2": [
+          "1. Arquero", "2. Lateral derecho", "5. Stopper por derecha", "6. Líbero", "7. Stopper por izquierda", "8. Lateral izquierdo",
+          "3. Interior derecho", "10. Mediocampista recuperador", "9. Interior izquierdo",
+          "14. Segundo delantero", "16. Centrodelantero"
+        ]
+      };
+      if (presetsMap[preset]) {
+        starters.forEach((p, idx) => {
+          if (presetsMap[preset][idx]) p.pos = presetsMap[preset][idx];
         });
-    </script>
+      }
+      saveToLocalStorage();
+      renderSquad();
+      renderTacticPreview();
+      renderLivePositionsPanel();
+      update2DBasePositionsFromTactics();
+      drawPitch2D();
+    }
+
+    function updateTactics() {
+      gameState.tactics.mentality = document.getElementById("tactic-mentality").value;
+      gameState.tactics.passing = document.getElementById("tactic-passing").value;
+      gameState.tactics.pressing = document.getElementById("tactic-pressing").value;
+      gameState.tactics.tackling = document.getElementById("tactic-tackling").value;
+      saveToLocalStorage();
+      renderTacticPreview();
+    }
+
+    function renderTacticPreview() {
+      document.getElementById("preview-form-label").innerText = gameState.tactics.formation;
+      const starters = gameState.squad.filter(p => p.status === "XI");
+      const container = document.getElementById("formation-nodes");
+      if (!container) return;
+
+      const usedCounts = {};
+      container.innerHTML = starters.map((player) => {
+        const info = getPosInfo(player.pos);
+        usedCounts[info.id] = (usedCounts[info.id] || 0) + 1;
+        const offset = usedCounts[info.id] > 1 ? (usedCounts[info.id] - 1) * 7 : 0;
+        const shortName = player.name.split(" ").slice(-1)[0];
+        return `
+          <div style="left:${Math.min(92, info.px + offset)}%; top:${info.py}%" class="absolute -translate-x-1/2 -translate-y-1/2 flex flex-col items-center">
+            <div class="w-7 h-7 rounded-full bg-sky-500 border-2 border-white text-white text-[9px] font-extrabold flex items-center justify-center shadow">
+              ${info.code}
+            </div>
+            <span class="bg-slate-950/90 text-white text-[10px] px-1.5 rounded mt-0.5 font-semibold whitespace-nowrap">${shortName}</span>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function renderLivePositionsPanel() {
+      const grid = document.getElementById("live-positions-grid");
+      if (!grid) return;
+      const starters = gameState.squad.filter(p => p.status === "XI");
+      grid.innerHTML = starters.map((p) => {
+        const info = getPosInfo(p.pos);
+        return `
+          <div class="bg-slate-800/80 border border-slate-700 rounded-lg p-2 flex items-center justify-between gap-2">
+            <div class="truncate">
+              <span class="bg-sky-900 text-sky-300 font-bold px-1.5 py-0.5 rounded text-[10px] mr-1">${info.code}</span>
+              <strong class="text-white">${p.name}</strong>
+            </div>
+            <select onchange="changePlayerPosition(${p.id}, this.value)" class="bg-slate-900 border border-slate-600 rounded px-2 py-1 text-amber-300 font-semibold text-[11px] shrink-0 cursor-pointer">
+              ${buildPositionOptionsHTML(p.pos)}
+            </select>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function setTrainingFocus(val) { gameState.trainingFocus = val; }
+    function runTrainingSession() {
+      if (gameState.trainingFocus === "tactico") gameState.familiarity = Math.min(100, gameState.familiarity + 5);
+      else if (gameState.trainingFocus === "ofensivo") gameState.morale = Math.min(100, gameState.morale + 3);
+      else gameState.squad.forEach(p => p.stamina = Math.min(100, p.stamina + 12));
+      saveToLocalStorage();
+      renderAll();
+      alert("Práctica formal completada con éxito.");
+    }
+
+    function teamTalk(type) {
+      if (type === "exigir") gameState.familiarity = Math.min(100, gameState.familiarity + 3);
+      if (type === "respaldar") gameState.morale = Math.min(100, gameState.morale + 6);
+      saveToLocalStorage();
+      renderAll();
+    }
+
+    function renderBoardTab() {
+      document.getElementById("badge-offers").innerText = gameState.incomingOffers.length;
+      const reqList = document.getElementById("transfer-requests-list");
+      reqList.innerHTML = gameState.transferRequests.length === 0 ? `<p class="text-slate-500">Sin pedidos activos.</p>` : gameState.transferRequests.map(r => `
+        <div class="bg-slate-800 p-2.5 rounded-lg border border-slate-700 flex justify-between items-center">
+          <div>
+            <strong class="text-sky-400 block">${r.targetName}</strong>
+            <span class="text-slate-400 text-[11px]">${r.pos} | ${r.profile}</span>
+          </div>
+          <button onclick="approveSignPlayer(${r.id})" class="bg-emerald-600 hover:bg-emerald-500 px-3 py-1 rounded text-white font-bold cursor-pointer">Sumar</button>
+        </div>
+      `).join("");
+
+      const offList = document.getElementById("incoming-offers-list");
+      offList.innerHTML = gameState.incomingOffers.length === 0 ? `<p class="text-slate-500">Sin ofertas de venta.</p>` : gameState.incomingOffers.map(o => `
+        <div class="bg-slate-800 p-3 rounded-lg border border-slate-700 space-y-2">
+          <div>
+            <strong class="text-white">${o.playerName} (${o.fee})</strong>
+            <span class="block text-slate-400 text-[11px]">${o.pos} - Oferta de: ${o.buyingClub}</span>
+          </div>
+          <div class="flex gap-2">
+            <button onclick="decideSale(${o.id}, true)" class="flex-1 bg-emerald-600 hover:bg-emerald-500 py-1.5 rounded font-bold text-white cursor-pointer">Autorizar Venta</button>
+            <button onclick="decideSale(${o.id}, false)" class="flex-1 bg-rose-700 hover:bg-rose-600 py-1.5 rounded font-bold text-white cursor-pointer">Vetar</button>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    const RANDOM_REINFORCEMENTS_POOL = [
+      "Rodrigo Rey (Independiente)", "Guido Herrera (Talleres)", "Tomás Marchiori (Vélez)", "Gabriel Arias (Racing)",
+      "Kevin Lomónaco (Independiente)", "Valentín Gómez (Vélez)", "Leonardo Godoy (Estudiantes)", "Marco Di Cesare (Racing)",
+      "Gastón Benavídez (Talleres)", "Claudio Aquino (Vélez)", "Santiago Ascacíbar (Estudiantes)", "Rodrigo Echeverría (Huracán)",
+      "Marcelino Moreno (Lanús)", "Juan Nardoni (Racing)", "Rubén Botta (Talleres)", "Matko Miljevic (Argentinos)",
+      "Adrián 'Maravilla' Martínez (Racing)", "Miguel Merentiel (Boca)", "Braian Romero (Vélez)", "Walter Bou (Lanús)",
+      "Sebastián Villa (Ind. Rivadavia)", "Jaminton Campaz (Rosario Central)", "Franco Jara (Belgrano)", "Gabriel Ávalos (Independiente)"
+    ];
+
+    function submitTransferRequest() {
+      const pos = document.getElementById("req-position").value;
+      const profile = document.getElementById("req-profile").value;
+      const customName = document.getElementById("req-name").value.trim();
+
+      const available = RANDOM_REINFORCEMENTS_POOL.filter(name =>
+        !gameState.transferRequests.some(r => r.targetName === name)
+      );
+      const poolToUse = available.length > 0 ? available : RANDOM_REINFORCEMENTS_POOL;
+      const randomPick = poolToUse[Math.floor(Math.random() * poolToUse.length)];
+      const targetName = customName || randomPick;
+
+      gameState.transferRequests.unshift({ id: Date.now(), pos, profile, targetName, ready: true });
+      document.getElementById("req-name").value = "";
+      saveToLocalStorage();
+      renderBoardTab();
+    }
+
+    function approveSignPlayer(id) {
+      const req = gameState.transferRequests.find(r => r.id === id);
+      if (!req) return;
+      gameState.squad.push({
+        id: Date.now(),
+        name: req.targetName,
+        pos: req.pos,
+        age: 26,
+        ovr: 81,
+        status: "SUB",
+        stamina: 98,
+        morale: 90
+      });
+      gameState.transferRequests = gameState.transferRequests.filter(r => r.id !== id);
+      saveToLocalStorage();
+      renderAll();
+    }
+
+    function decideSale(id, approved) {
+      const offer = gameState.incomingOffers.find(o => o.id === id);
+      if (!offer) return;
+      if (approved) {
+        gameState.squad = gameState.squad.filter(p => p.name !== offer.playerName);
+        gameState.boardTrust = Math.min(100, gameState.boardTrust + 4);
+      }
+      gameState.incomingOffers = gameState.incomingOffers.filter(o => o.id !== id);
+      saveToLocalStorage();
+      renderAll();
+    }
+
+    function generateIncomingOffer() {
+      if (gameState.squad.length <= 12) return;
+      const t = gameState.squad[Math.floor(Math.random() * gameState.squad.length)];
+      const buyers = ["Flamengo (Brasil)", "Botafogo (Brasil)", "Monterrey (México)", "Villarreal (España)", "Inter Miami (MLS)", "Palmeiras (Brasil)"];
+      const randomBuyer = buyers[Math.floor(Math.random() * buyers.length)];
+      gameState.incomingOffers.push({ id: Date.now(), playerName: t.name, pos: t.pos, ovr: t.ovr, buyingClub: randomBuyer, fee: `USD ${((t.ovr - 70) * 0.6 + 2.8).toFixed(1)}M` });
+      saveToLocalStorage();
+      renderBoardTab();
+    }
+
+    function renderCompetitions() {
+      const sorted = [...gameState.standings].sort((a, b) => b.pts - a.pts);
+      document.getElementById("standings-tbody").innerHTML = sorted.map((t, idx) => `
+        <tr class="${t.id === gameState.managedClubId ? 'bg-sky-900/40 font-bold text-white' : ''}">
+          <td class="p-2.5">${idx + 1}</td>
+          <td class="p-2.5">${t.name}</td>
+          <td class="p-2.5">${t.pj}</td>
+          <td class="p-2.5">${t.g}</td>
+          <td class="p-2.5">${t.e}</td>
+          <td class="p-2.5">${t.p}</td>
+          <td class="p-2.5">${t.gf - t.gc}</td>
+          <td class="p-2.5 font-extrabold text-emerald-400">${t.pts}</td>
+          <td class="p-2.5">${idx < 4 ? '<span class="text-amber-400 font-bold">Libertadores</span>' : idx < 10 ? '<span class="text-sky-400">Sudamericana</span>' : '-'}</td>
+        </tr>
+      `).join("");
+
+      document.getElementById("lib-group-tbody").innerHTML = gameState.libertadoresGroup.map((t, i) => `
+        <tr><td class="p-2.5">${i + 1}°</td><td class="p-2.5 font-bold">${t.name}</td><td class="p-2.5">${t.country}</td><td class="p-2.5">${t.pj}</td><td class="p-2.5 font-bold">${t.pts}</td></tr>
+      `).join("");
+    }
+
+    function showCompSubtab(sub) {
+      document.getElementById("comp-lpf").classList.toggle("hidden", sub !== "lpf");
+      document.getElementById("comp-libertadores").classList.toggle("hidden", sub !== "libertadores");
+      document.getElementById("comp-copaarg").classList.toggle("hidden", sub !== "copaarg");
+    }
+
+    let matchLoop = null, matchRunning = false, matchSpeed = 1, matchMinute = 0;
+    let homeGoals = 0, awayGoals = 0, homeShots = 0, awayShots = 0;
+    let ball = { x: 340, y: 210, vx: 2.2, vy: 1.6 };
+    let players2D = [];
+
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    function playSound(type) {
+      if (!audioCtx) return;
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+
+      if (type === 'whistle') {
+        osc.frequency.setValueAtTime(2600, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(1900, audioCtx.currentTime + 0.18);
+        gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.22);
+        osc.start(); osc.stop(audioCtx.currentTime + 0.22);
+      } else if (type === 'goal') {
+        osc.frequency.setValueAtTime(420, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(840, audioCtx.currentTime + 0.45);
+        gain.gain.setValueAtTime(0.22, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
+        osc.start(); osc.stop(audioCtx.currentTime + 0.5);
+      }
+    }
+
+    function convertPosToCanvasCoords(posName, isHome) {
+      const info = getPosInfo(posName);
+      const attackDepth = 100 - info.py;
+      const canvasX = isHome
+        ? 35 + (attackDepth / 100) * 560
+        : 645 - (attackDepth / 100) * 560;
+      const canvasY = 30 + (info.px / 100) * 360;
+      return { x: canvasX, y: canvasY, code: info.code };
+    }
+
+    function setupMatchHeader(home, away) {
+      document.getElementById("match-home-name").innerText = home.name;
+      document.getElementById("match-away-name").innerText = away.name;
+      init2DEntities();
+      drawPitch2D();
+    }
+
+    function init2DEntities() {
+      players2D = [];
+      const starters = gameState.squad.filter(p => p.status === "XI").slice(0, 11);
+      starters.forEach((p) => {
+        const c = convertPosToCanvasCoords(p.pos, true);
+        players2D.push({
+          id: p.id,
+          team: "home",
+          label: c.code,
+          name: p.name.split(" ").slice(-1)[0],
+          baseX: c.x,
+          baseY: c.y,
+          x: c.x,
+          y: c.y
+        });
+      });
+
+      const awayDefault = [
+        "1. Arquero", "2. Lateral derecho", "5. Stopper por derecha", "7. Stopper por izquierda", "8. Lateral izquierdo",
+        "10. Mediocampista recuperador", "3. Interior derecho", "9. Interior izquierdo", "13. Enganche",
+        "14. Segundo delantero", "16. Centrodelantero"
+      ];
+      awayDefault.forEach((posName, idx) => {
+        const c = convertPosToCanvasCoords(posName, false);
+        players2D.push({
+          id: 900 + idx,
+          team: "away",
+          label: String(idx + 1),
+          name: "",
+          baseX: c.x,
+          baseY: c.y,
+          x: c.x,
+          y: c.y
+        });
+      });
+      ball = { x: 340, y: 210, vx: 2.2, vy: 1.6 };
+    }
+
+    function update2DBasePositionsFromTactics() {
+      const starters = gameState.squad.filter(p => p.status === "XI").slice(0, 11);
+      starters.forEach((p) => {
+        const entity = players2D.find(e => e.id === p.id && e.team === "home");
+        if (entity) {
+          const c = convertPosToCanvasCoords(p.pos, true);
+          entity.baseX = c.x;
+          entity.baseY = c.y;
+          entity.label = c.code;
+        }
+      });
+    }
+
+    function drawPitch2D() {
+      const canvas = document.getElementById("pitch-canvas");
+      if (!canvas) return;
+      const ctx = canvas.getContext("2d");
+      const w = canvas.width, h = canvas.height;
+
+      for (let i = 0; i < 10; i++) {
+        ctx.fillStyle = i % 2 === 0 ? "#15803d" : "#166534";
+        ctx.fillRect((w / 10) * i, 0, w / 10, h);
+      }
+
+      ctx.strokeStyle = "rgba(255,255,255,0.65)";
+      ctx.lineWidth = 2;
+      ctx.strokeRect(15, 15, w - 30, h - 30);
+      ctx.beginPath(); ctx.moveTo(w / 2, 15); ctx.lineTo(w / 2, h - 15); ctx.stroke();
+      ctx.beginPath(); ctx.arc(w / 2, h / 2, 45, 0, Math.PI * 2); ctx.stroke();
+      ctx.strokeRect(15, h / 2 - 80, 80, 160);
+      ctx.strokeRect(w - 95, h / 2 - 80, 80, 160);
+
+      const club = AFA_CLUBS.find(c => c.id === gameState.managedClubId);
+      players2D.forEach(p => {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, 11, 0, Math.PI * 2);
+        ctx.fillStyle = p.team === "home" ? club.colors[0] : "#ef4444";
+        ctx.fill();
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = p.team === "home" ? club.colors[1] : "#ffffff";
+        ctx.stroke();
+
+        ctx.fillStyle = "#ffffff";
+        ctx.font = "bold 8px Inter";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(p.label, p.x, p.y);
+
+        if (p.team === "home" && p.name) {
+          ctx.fillStyle = "rgba(0,0,0,0.75)";
+          ctx.fillRect(p.x - 22, p.y + 12, 44, 11);
+          ctx.fillStyle = "#e2e8f0";
+          ctx.font = "600 8px Inter";
+          ctx.fillText(p.name, p.x, p.y + 17.5);
+        }
+      });
+
+      ctx.beginPath();
+      ctx.arc(ball.x, ball.y, 5.5, 0, Math.PI * 2);
+      ctx.fillStyle = "#facc15";
+      ctx.fill();
+      ctx.strokeStyle = "#000";
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+    }
+
+    function startOrPauseMatch() {
+      if (matchMinute >= 90) resetMatchState();
+      matchRunning = !matchRunning;
+      if (matchRunning) {
+        playSound('whistle');
+        matchLoop = setInterval(stepMatchSimulation, Math.floor(320 / matchSpeed));
+      } else {
+        clearInterval(matchLoop);
+      }
+    }
+
+    function toggleMatchSpeed() {
+      matchSpeed = matchSpeed === 1 ? 2 : matchSpeed === 2 ? 4 : 1;
+      document.getElementById("btn-match-speed").innerText = `Velocidad: x${matchSpeed}`;
+      if (matchRunning) {
+        clearInterval(matchLoop);
+        matchLoop = setInterval(stepMatchSimulation, Math.floor(320 / matchSpeed));
+      }
+    }
+
+    function stepMatchSimulation() {
+      matchMinute += 0.5;
+      const minInt = Math.floor(matchMinute);
+      document.getElementById("match-timer").innerText = `${String(minInt).padStart(2, '0')}:${matchMinute % 1 === 0 ? '00' : '30'}'`;
+
+      const mentalityShift = gameState.tactics.mentality === "Ofensiva" ? 25 : gameState.tactics.mentality === "Todo o Nada" ? 45 : gameState.tactics.mentality === "Catenaccio" ? -25 : 0;
+
+      players2D.forEach(p => {
+        const shift = p.team === "home" ? mentalityShift : 0;
+        const targetX = p.baseX + shift + (ball.x - 340) * 0.2 + (Math.random() - 0.5) * 6;
+        const targetY = p.baseY + (ball.y - 210) * 0.18 + (Math.random() - 0.5) * 6;
+        p.x += (targetX - p.x) * 0.18;
+        p.y += (targetY - p.y) * 0.18;
+      });
+
+      ball.x += ball.vx * (Math.random() * 3.5 + 1.5);
+      ball.y += ball.vy * (Math.random() * 3.5 + 1.5);
+
+      if (ball.x < 25 || ball.x > 655) ball.vx *= -1;
+      if (ball.y < 25 || ball.y > 395) ball.vy *= -1;
+
+      drawPitch2D();
+
+      if (matchMinute % 4 === 0 && Math.random() < 0.45) {
+        const club = AFA_CLUBS.find(c => c.id === gameState.managedClubId);
+        const opponents = AFA_CLUBS.filter(c => c.id !== gameState.managedClubId);
+        const opp = opponents[(gameState.week - 1) % opponents.length];
+        const starters = gameState.squad.filter(p => p.status === "XI");
+        const scorer = starters[Math.floor(Math.random() * starters.length)] || gameState.squad[0];
+
+        if (Math.random() < 0.56) {
+          homeShots++;
+          ball.x = 625; ball.y = 210;
+          if (Math.random() < 0.32) {
+            homeGoals++;
+            playSound('goal');
+            addCommentary(`${minInt}' ¡GOOOOOL DE ${club.name.toUpperCase()}! Gran intervención de ${scorer.name} (${scorer.pos}).`, "text-emerald-400 font-bold bg-emerald-950/50 border border-emerald-700");
+          } else {
+            addCommentary(`${minInt}' Llegada profunda de ${scorer.name} (${scorer.pos}) que exige al arquero.`, "text-sky-300 bg-slate-800/70");
+          }
+        } else {
+          awayShots++;
+          ball.x = 55; ball.y = 210;
+          if (Math.random() < 0.24) {
+            awayGoals++;
+            playSound('goal');
+            addCommentary(`${minInt}' Gol de ${opp.name}.`, "text-rose-400 font-bold bg-rose-950/50 border border-rose-700");
+          } else {
+            addCommentary(`${minInt}' Corte clave de tu defensa para frenar el avance de ${opp.name}.`, "text-slate-300 bg-slate-800/70");
+          }
+        }
+        document.getElementById("match-score").innerText = `${homeGoals} - ${awayGoals}`;
+      }
+
+      if (matchMinute >= 90) {
+        clearInterval(matchLoop);
+        matchRunning = false;
+        playSound('whistle');
+        addCommentary(`90' ¡Final del partido! Resultado: ${homeGoals} - ${awayGoals}.`, "text-white font-extrabold bg-sky-900");
+        finishMatchAndRecordResult();
+      }
+    }
+
+    function addCommentary(text, classes) {
+      const box = document.getElementById("match-commentary");
+      const div = document.createElement("div");
+      div.className = `p-2 rounded ${classes}`;
+      div.innerText = text;
+      box.prepend(div);
+    }
+
+    function shoutFromBench(msg) {
+      addCommentary(`Orden del DT: "${msg}".`, "text-amber-300 bg-amber-950/40 font-semibold");
+    }
+
+    function makeQuickSub() {
+      const subs = gameState.squad.filter(p => p.status === "SUB");
+      const starters = gameState.squad.filter(p => p.status === "XI");
+      if (subs.length > 0 && starters.length > 0) {
+        const outP = starters[starters.length - 1];
+        const inP = subs[0];
+        const inheritedPos = outP.pos;
+        outP.status = "SUB";
+        inP.status = "XI";
+        inP.pos = inheritedPos;
+        addCommentary(`Cambio en vivo: Ingresa ${inP.name} como ${inheritedPos} por ${outP.name}.`, "text-indigo-300 bg-indigo-950/40 font-semibold");
+        saveToLocalStorage();
+        renderSquad();
+        renderTacticPreview();
+        renderLivePositionsPanel();
+        init2DEntities();
+        drawPitch2D();
+      }
+    }
+
+    function finishMatchAndRecordResult() {
+      const club = AFA_CLUBS.find(c => c.id === gameState.managedClubId);
+      const opponents = AFA_CLUBS.filter(c => c.id !== gameState.managedClubId);
+      const opp = opponents[(gameState.week - 1) % opponents.length];
+
+      const myRow = gameState.standings.find(s => s.id === club.id);
+      const oppRow = gameState.standings.find(s => s.id === opp.id);
+      if (myRow && oppRow) {
+        myRow.pj++; oppRow.pj++;
+        myRow.gf += homeGoals; myRow.gc += awayGoals;
+        oppRow.gf += awayGoals; oppRow.gc += homeGoals;
+        if (homeGoals > awayGoals) { myRow.g++; myRow.pts += 3; oppRow.p++; }
+        else if (homeGoals < awayGoals) { oppRow.g++; oppRow.pts += 3; myRow.p++; }
+        else { myRow.e++; oppRow.e++; myRow.pts++; oppRow.pts++; }
+      }
+      gameState.week++;
+      saveToLocalStorage();
+      renderAll();
+    }
+
+    function resetMatchState() {
+      matchMinute = 0; homeGoals = 0; awayGoals = 0; homeShots = 0; awayShots = 0;
+      document.getElementById("match-score").innerText = "0 - 0";
+      document.getElementById("match-timer").innerText = "00:00'";
+      document.getElementById("match-commentary").innerHTML = `<div class="p-2 rounded bg-slate-800/70 text-slate-300">Pitazo inicial en marcha.</div>`;
+      init2DEntities();
+      drawPitch2D();
+    }
+
+    function advanceDay() {
+      switchTab("match");
+      if (!matchRunning) {
+        resetMatchState();
+        startOrPauseMatch();
+      }
+    }
+
+    function switchTab(tabId) {
+      document.querySelectorAll(".tab-content").forEach(el => el.classList.add("hidden"));
+      document.getElementById(`tab-${tabId}`).classList.remove("hidden");
+
+      document.querySelectorAll(".nav-btn").forEach(btn => {
+        if (btn.dataset.tab === tabId) {
+          btn.classList.add("bg-sky-600", "text-white");
+          btn.classList.remove("text-slate-400");
+        } else {
+          btn.classList.remove("bg-sky-600", "text-white");
+          btn.classList.add("text-slate-400");
+        }
+      });
+
+      if (tabId === "match") {
+        renderLivePositionsPanel();
+        drawPitch2D();
+      } else if (tabId === "tactics") {
+        renderTacticPreview();
+      }
+    }
+
+    function saveToLocalStorage() { localStorage.setItem("DT_ARG_2027_SAVE_V6", JSON.stringify(gameState)); }
+    function exportSaveFile() {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(gameState, null, 2));
+      const a = document.createElement("a");
+      a.setAttribute("href", dataStr);
+      a.setAttribute("download", `DT_Argentino_2027_${gameState.managedClubId}_Sem${gameState.week}.json`);
+      a.click();
+    }
+    function importSaveFile(e) {
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        gameState = JSON.parse(evt.target.result);
+        populateSelectors();
+        renderAll();
+        saveToLocalStorage();
+      };
+      reader.readAsText(e.target.files[0]);
+    }
+
+    window.addEventListener("DOMContentLoaded", () => {
+      const saved = localStorage.getItem("DT_ARG_2027_SAVE_V6");
+      if (saved) {
+        try {
+          gameState = JSON.parse(saved);
+        } catch (e) {
+          initNewGame("CASLA");
+        }
+      } else {
+        initNewGame("CASLA");
+      }
+      populateSelectors();
+      renderAll();
+    });
+  </script>
 </body>
 </html>
