@@ -555,7 +555,6 @@
       return TACTICAL_POSITIONS.find(p => p.name === posName) || TACTICAL_POSITIONS[0];
     }
 
-    // Extrae limpiamente el apellido o primer nombre sin incluir el club entre paréntesis
     function getCleanPlayerName(fullName) {
       if (!fullName) return "";
       const clean = fullName.split("(")[0].trim();
@@ -618,7 +617,7 @@
     };
 
     let gameState = {
-      version: 8,
+      version: 9,
       managedClubId: "CASLA",
       week: 1,
       season: 2027,
@@ -666,7 +665,7 @@
     }
 
     function initNewGame(clubId = "CASLA") {
-      gameState.version = 8;
+      gameState.version = 9;
       gameState.managedClubId = clubId;
       gameState.squad = generateSquadForClub(clubId);
       gameState.standings = AFA_CLUBS.map(c => ({
@@ -695,7 +694,7 @@
           date: "Semana 1",
           from: "Comisión Directiva",
           title: `Bienvenido al mando de ${myClub.name}`,
-          body: "Configuración táctica completada correctamente."
+          body: "Mercado de pases adaptado por puesto específico."
         }
       ];
       saveToLocalStorage();
@@ -725,7 +724,7 @@
     }
 
     function renderAll() {
-      if (!gameState.squad || gameState.squad.length === 0 || !gameState.version || gameState.version < 8) {
+      if (!gameState.squad || gameState.squad.length === 0 || !gameState.version || gameState.version < 9) {
         initNewGame(gameState.managedClubId);
         return;
       }
@@ -901,13 +900,13 @@
         const info = getPosInfo(player.pos);
         usedCounts[info.id] = (usedCounts[info.id] || 0) + 1;
         const offset = usedCounts[info.id] > 1 ? (usedCounts[info.id] - 1) * 7 : 0;
-        const cleanName = getCleanPlayerName(player.name);
+        const shortName = getCleanPlayerName(player.name);
         return `
           <div style="left:${Math.min(92, info.px + offset)}%; top:${info.py}%" class="absolute -translate-x-1/2 -translate-y-1/2 flex flex-col items-center">
             <div class="w-7 h-7 rounded-full bg-sky-500 border-2 border-white text-white text-[9px] font-extrabold flex items-center justify-center shadow">
               ${info.code}
             </div>
-            <span class="bg-slate-950/90 text-white text-[10px] px-1.5 rounded mt-0.5 font-semibold whitespace-nowrap">${cleanName}</span>
+            <span class="bg-slate-950/90 text-white text-[10px] px-1.5 rounded mt-0.5 font-semibold whitespace-nowrap">${shortName}</span>
           </div>
         `;
       }).join("");
@@ -978,24 +977,86 @@
       `).join("");
     }
 
-    const RANDOM_REINFORCEMENTS_POOL = [
-      "Rodrigo Rey (Independiente)", "Guido Herrera (Talleres)", "Tomás Marchiori (Vélez)", "Gabriel Arias (Racing)",
-      "Kevin Lomónaco (Independiente)", "Valentín Gómez (Vélez)", "Leonardo Godoy (Estudiantes)", "Marco Di Cesare (Racing)",
-      "Gastón Benavídez (Talleres)", "Claudio Aquino (Vélez)", "Santiago Ascacíbar (Estudiantes)", "Rodrigo Echeverría (Huracán)",
-      "Marcelino Moreno (Lanús)", "Juan Nardoni (Racing)", "Rubén Botta (Talleres)", "Matko Miljevic (Argentinos)",
-      "Adrián 'Maravilla' Martínez (Racing)", "Miguel Merentiel (Boca)", "Braian Romero (Vélez)", "Walter Bou (Lanús)",
-      "Sebastián Villa (Ind. Rivadavia)", "Jaminton Campaz (Rosario Central)", "Franco Jara (Belgrano)", "Gabriel Ávalos (Independiente)"
-    ];
+    // LISTAS DE JUGADORES REALES ESPECÍFICAS PARA CADA UNA DE LAS 17 POSICIONES
+    const POSITIONAL_REINFORCEMENTS = {
+      "1. Arquero": [
+        "Rodrigo Rey (Independiente)", "Guido Herrera (Talleres)", "Tomás Marchiori (Vélez)", 
+        "Gabriel Arias (Racing)", "Matías Mansilla (Estudiantes)", "Agustín Rossi (Flamengo)"
+      ],
+      "2. Lateral derecho": [
+        "Gastón Benavídez (Talleres)", "Eros Mancuso (Estudiantes)", "Agustín Giay (Palmeiras)", 
+        "Juan Pintado (Gimnasia)", "Gonzalo Goñi (Central Córdoba)", "Federico Vera (Independiente)"
+      ],
+      "3. Interior derecho": [
+        "Claudio Aquino (Vélez)", "Marcelino Moreno (Lanús)", "Ignacio Malcorra (Rosario Central)", 
+        "Rubén Botta (Talleres)", "Vicente Taborda (Boca)", "Franco Watson (Lanús)"
+      ],
+      "4. Central defensivo": [
+        "Nazareno Colombo (Racing)", "Cristian Lema (Boca)", "Gonzalo Piovi (Cruz Azul)", 
+        "Lautaro Giannetti (Udinese)", "Joaquín Laso (Independiente)", "Miguel Torrén (Unión)"
+      ],
+      "5. Stopper por derecha": [
+        "Kevin Lomónaco (Independiente)", "Marco Di Cesare (Racing)", "Leandro González Pirez (River)", 
+        "Facundo Roncaglia (Libre)", "Paolo Goltz (Colón)", "Bruno Amione (Santos Laguna)"
+      ],
+      "6. Líbero": [
+        "Víctor Cuesta (Internacional)", "Gonzalo Lollo (Estudiantes)", "Jonathan Schunke (Libre)", 
+        "Carlos Izquierdoz (Lanús)", "Germán Conti (Racing)", "Emanuel Brítez (Fortaleza)"
+      ],
+      "7. Stopper por izquierda": [
+        "Valentín Gómez (Vélez)", "Ramiro Funes Mori (River)", "Gastón Ávila (Ajax)", 
+        "Lucas Merolla (Mazatlán)", "Nazareno Romero (Ferro)", "Abel Luciatti (Atlético Tucumán)"
+      ],
+      "8. Lateral izquierdo": [
+        "Enzo Díaz (River)", "Elías Gómez (Vélez)", "Facundo Zabala (Olimpia)", 
+        "Gabriel Suazo (Toulouse)", "Lucas Esquivel (Athletico Paranaense)", "Milton Valenzuela (Lugano)"
+      ],
+      "9. Interior izquierdo": [
+        "Kevin Zenón (Boca)", "Imanol Machuca (Fortaleza)", "Franco Cervi (Celta de Vigo)", 
+        "Agustín Urzi (Juárez)", "Joaquín Pereyra (Minnesota)", "Gonzalo Martínez (River)"
+      ],
+      "10. Mediocampista recuperador": [
+        "Santiago Ascacíbar (Estudiantes)", "Rodrigo Echeverría (Huracán)", "Agustín Almendra (Racing)", 
+        "Juan Nardoni (Racing)", "Rodrigo Villagra (River)", "Bruno Zuculini (Racing)"
+      ],
+      "11. Mediocampista organizador": [
+        "Ignacio Fernández (River)", "Agustín Martegani (Boca)", "Agustín Palavecino (Necaxa)", 
+        "Williams Alarcón (Huracán)", "Federico Redondo (Inter Miami)", "Ezequiel Bullaude (Boca)"
+      ],
+      "12. Mediocampista ofensivo": [
+        "Esequiel Barco (Spartak Moscú)", "Thiago Almada (Botafogo)", "Alan Velasco (Dallas)", 
+        "Franco Cristaldo (Grêmio)", "Manuel Lanzini (River)", "Matko Miljevic (Argentinos)"
+      ],
+      "13. Enganche": [
+        "Claudio Echeverri (River)", "Rubén Botta (Talleres)", "Lucas Zelarayán (Al-Fateh)", 
+        "Luciano Vietto (Racing)", "Walter Montoya (Central Córdoba)", "Matías Rojas (Inter Miami)"
+      ],
+      "14. Segundo delantero": [
+        "Facundo Colidio (River)", "Pablo Solari (River)", "Milton Giménez (Boca)", 
+        "Lucas Janson (Boca)", "Brian Aguirre (Boca)", "Exequiel Zeballos (Boca)"
+      ],
+      "15. Puntero derecho": [
+        "Santiago Simón (River)", "Maximiliano Lovera (Rosario Central)", "Matías Abaldo (Gimnasia)", 
+        "Benjamín Domínguez (Gimnasia)", "Santiago Solari (Racing)", "Lautaro Acosta (Lanús)"
+      ],
+      "16. Centrodelantero": [
+        "Adrián 'Maravilla' Martínez (Racing)", "Miguel Merentiel (Boca)", "Braian Romero (Vélez)", 
+        "Walter Bou (Lanús)", "Gabriel Ávalos (Independiente)", "Milton Caraglio (Libre)"
+      ],
+      "17. Puntero izquierdo": [
+        "Jaminton Campaz (Rosario Central)", "Edwin Cetré (Estudiantes)", "Gastón Togni (Defensa)", 
+        "Ramón Sosa (Nottingham Forest)", "Lucas Ocampos (Rayados)", "Valentín Carboni (Marsella)"
+      ]
+    };
 
     window.submitTransferRequest = function() {
       const pos = document.getElementById("req-position").value;
       const profile = document.getElementById("req-profile").value;
       const customName = document.getElementById("req-name").value.trim();
 
-      const available = RANDOM_REINFORCEMENTS_POOL.filter(name =>
-        !gameState.transferRequests.some(r => r.targetName === name)
-      );
-      const poolToUse = available.length > 0 ? available : RANDOM_REINFORCEMENTS_POOL;
+      const pool = POSITIONAL_REINFORCEMENTS[pos] || POSITIONAL_REINFORCEMENTS["10. Mediocampista recuperador"];
+      const available = pool.filter(name => !gameState.transferRequests.some(r => r.targetName === name));
+      const poolToUse = available.length > 0 ? available : pool;
       const randomPick = poolToUse[Math.floor(Math.random() * poolToUse.length)];
       const targetName = customName || randomPick;
 
@@ -1012,7 +1073,7 @@
         id: Date.now(),
         name: req.targetName,
         pos: req.pos,
-        age: 26,
+        age: 25,
         ovr: 81,
         status: "SUB",
         stamina: 98,
@@ -1404,7 +1465,7 @@
       }
     };
 
-    function saveToLocalStorage() { localStorage.setItem("DT_ARG_2027_SAVE_V8", JSON.stringify(gameState)); }
+    function saveToLocalStorage() { localStorage.setItem("DT_ARG_2027_SAVE_V9", JSON.stringify(gameState)); }
     function exportSaveFile() {
       const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(gameState, null, 2));
       const a = document.createElement("a");
@@ -1424,7 +1485,7 @@
     }
 
     window.addEventListener("DOMContentLoaded", () => {
-      const saved = localStorage.getItem("DT_ARG_2027_SAVE_V8");
+      const saved = localStorage.getItem("DT_ARG_2027_SAVE_V9");
       if (saved) {
         try {
           gameState = JSON.parse(saved);
