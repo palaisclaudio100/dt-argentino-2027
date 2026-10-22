@@ -97,7 +97,7 @@
       </div>
     </aside>
 
-    <!-- ÁREA DE CONTENIDO (Con padding inferior extra para evitar que la barra móvil tape contenido) -->
+    <!-- ÁREA DE CONTENIDO -->
     <main class="flex-1 overflow-y-auto custom-scroll p-3 md:p-6 pb-36 md:pb-6">
 
       <!-- 1. DESPACHO DEL DT -->
@@ -207,7 +207,6 @@
           </div>
         </div>
 
-        <!-- Tabla con scroll interno y altura suficiente -->
         <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-lg mb-12">
           <div class="overflow-x-auto max-h-[55vh] custom-scroll">
             <table class="w-full text-left border-collapse text-xs">
@@ -901,8 +900,19 @@
       const pos = document.getElementById("req-position").value;
       const profile = document.getElementById("req-profile").value;
       const customName = document.getElementById("req-name").value.trim();
-      const suggestedPool = { "ARQ": ["Rey"], "DEF": ["Lomónaco"], "MED": ["Ascacíbar"], "DEL": ["Merentiel"] };
-      const targetName = customName || suggestedPool[pos][0];
+      
+      // POOL AMPLIADO Y ALEATORIO DE REFUERZOS REALES DEL FÚTBOL ARGENTINO
+      const suggestedPool = {
+        "ARQ": ["Rodrigo Rey (Independiente)", "Guido Herrera (Talleres)", "Tomás Marchiori (Vélez)", "Matías Mansilla (Estudiantes)", "Gabriel Arias (Racing)"],
+        "DEF": ["Kevin Lomónaco (Independiente)", "Valentín Gómez (Vélez)", "Leonardo Godoy (Estudiantes)", "Adonis Frías (Defensa)", "Eros Mancuso (Estudiantes)", "Marco Di Cesare (Racing)"],
+        "MED": ["Santiago Ascacíbar (Estudiantes)", "Rodrigo Echeverría (Huracán)", "Marcelino Moreno (Lanús)", "Agustín Martegani (Boca)", "Ignacio Miramón (Boca)", "Agustín Almendra (Racing)"],
+        "DEL": ["Adrián 'Maravilla' Martínez (Racing)", "Miguel Merentiel (Boca)", "Milton Giménez (Boca)", "Braian Romero (Vélez)", "Mateo Pellegrino (Platense)", "Walter Bou (Lanús)"]
+      };
+
+      const options = suggestedPool[pos] || suggestedPool["MED"];
+      const randomTarget = options[Math.floor(Math.random() * options.length)];
+      const targetName = customName || randomTarget;
+
       gameState.transferRequests.unshift({ id: Date.now(), pos, profile, targetName, ready: true });
       document.getElementById("req-name").value = "";
       renderAll();
@@ -927,7 +937,9 @@
     function generateIncomingOffer() {
       if (gameState.squad.length <= 12) return;
       const t = gameState.squad[Math.floor(Math.random() * gameState.squad.length)];
-      gameState.incomingOffers.push({ id: Date.now(), playerName: t.name, pos: t.pos, ovr: t.ovr, buyingClub: "Flamengo", fee: "USD 4.5M" });
+      const buyers = ["Flamengo (Brasil)", "Botafogo (Brasil)", "Monterrey (México)", "Villarreal (España)", "Inter Miami (MLS)"];
+      const randomBuyer = buyers[Math.floor(Math.random() * buyers.length)];
+      gameState.incomingOffers.push({ id: Date.now(), playerName: t.name, pos: t.pos, ovr: t.ovr, buyingClub: randomBuyer, fee: `USD ${(t.ovr - 70) * 0.7 + 3.1}M` });
       renderBoardTab();
     }
 
