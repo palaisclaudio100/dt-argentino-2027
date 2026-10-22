@@ -457,9 +457,13 @@
             <button onclick="startOrPauseMatch()" id="btn-match-play" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-3 py-1.5 rounded-lg text-xs cursor-pointer">
               <i class="fa-solid fa-play mr-1"></i> Iniciar / Pausar
             </button>
-            <button onclick="toggleMatchSpeed()" id="btn-match-speed" class="bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold px-3 py-1.5 rounded-lg text-xs border border-slate-700 cursor-pointer">
-              Velocidad: x1
-            </button>
+            <select id="match-speed-select" onchange="changeMatchSpeed(this.value)" class="bg-slate-800 border border-slate-700 text-slate-200 font-bold px-3 py-1.5 rounded-lg text-xs cursor-pointer">
+              <option value="1">Velocidad: x1 (Normal - 15 min)</option>
+              <option value="2">Velocidad: x2 (7.5 min)</option>
+              <option value="5">Velocidad: x5 (3 min)</option>
+              <option value="10">Velocidad: x10 (1.5 min)</option>
+              <option value="20">Velocidad: x20 (45 seg)</option>
+            </select>
           </div>
         </div>
 
@@ -509,7 +513,7 @@
               <i class="fa-solid fa-download"></i> Descargar Partida (DT_Argentino_Save.json)
             </button>
             <label class="bg-sky-600 hover:bg-sky-500 text-white font-bold py-2.5 px-4 rounded-lg text-xs flex items-center justify-center gap-2 cursor-pointer">
-              <i class="fa-solid fa-upload"></i> Cargar Partida desde Archivo (.JSON)
+              <i class="fa-solid fa-upload"></i> Cargar Partida desde فایل (.JSON)
               <input type="file" accept=".json" onchange="importSaveFile(event)" class="hidden" />
             </label>
           </div>
@@ -617,7 +621,7 @@
     };
 
     let gameState = {
-      version: 9,
+      version: 11,
       managedClubId: "CASLA",
       week: 1,
       season: 2027,
@@ -665,7 +669,7 @@
     }
 
     function initNewGame(clubId = "CASLA") {
-      gameState.version = 9;
+      gameState.version = 11;
       gameState.managedClubId = clubId;
       gameState.squad = generateSquadForClub(clubId);
       gameState.standings = AFA_CLUBS.map(c => ({
@@ -694,7 +698,7 @@
           date: "Semana 1",
           from: "Comisión Directiva",
           title: `Bienvenido al mando de ${myClub.name}`,
-          body: "Mercado de pases adaptado por puesto específico."
+          body: "Buscador de refuerzos específico por posición y reloj de partido real (15 min en x1) configurados."
         }
       ];
       saveToLocalStorage();
@@ -724,7 +728,7 @@
     }
 
     function renderAll() {
-      if (!gameState.squad || gameState.squad.length === 0 || !gameState.version || gameState.version < 9) {
+      if (!gameState.squad || gameState.squad.length === 0 || !gameState.version || gameState.version < 11) {
         initNewGame(gameState.managedClubId);
         return;
       }
@@ -1054,7 +1058,7 @@
       const profile = document.getElementById("req-profile").value;
       const customName = document.getElementById("req-name").value.trim();
 
-      const pool = POSITIONAL_REINFORCEMENTS[pos] || POSITIONAL_REINFORCEMENTS["10. Mediocampista recuperador"];
+      const pool = POSITIONAL_REINFORCEMENTS[pos] || POSITIONAL_REINFORCEMENTS["1. Arquero"];
       const available = pool.filter(name => !gameState.transferRequests.some(r => r.targetName === name));
       const poolToUse = available.length > 0 ? available : pool;
       const randomPick = poolToUse[Math.floor(Math.random() * poolToUse.length)];
@@ -1166,6 +1170,16 @@
         osc.start(); osc.stop(audioCtx.currentTime + 0.5);
       }
     }
+
+    window.changeMatchSpeed = function(speedVal) {
+      matchSpeed = parseInt(speedVal);
+      if (matchRunning) {
+        clearInterval(matchLoop);
+        // Base de 320ms por minuto a x1 da exactamente 15 minutos reales el partido completo (90 min)
+        const intervalMs = Math.max(15, Math.floor(320 / matchSpeed));
+        matchLoop = setInterval(stepMatchSimulation, intervalMs);
+      }
+    };
 
     function convertPosToCanvasCoords(posName, isHome) {
       const info = getPosInfo(posName);
@@ -1294,18 +1308,10 @@
       matchRunning = !matchRunning;
       if (matchRunning) {
         playSound('whistle');
-        matchLoop = setInterval(stepMatchSimulation, Math.floor(320 / matchSpeed));
+        const intervalMs = Math.max(15, Math.floor(320 / matchSpeed));
+        matchLoop = setInterval(stepMatchSimulation, intervalMs);
       } else {
         clearInterval(matchLoop);
-      }
-    }
-
-    function toggleMatchSpeed() {
-      matchSpeed = matchSpeed === 1 ? 2 : matchSpeed === 2 ? 4 : 1;
-      document.getElementById("btn-match-speed").innerText = `Velocidad: x${matchSpeed}`;
-      if (matchRunning) {
-        clearInterval(matchLoop);
-        matchLoop = setInterval(stepMatchSimulation, Math.floor(320 / matchSpeed));
       }
     }
 
@@ -1465,7 +1471,7 @@
       }
     };
 
-    function saveToLocalStorage() { localStorage.setItem("DT_ARG_2027_SAVE_V9", JSON.stringify(gameState)); }
+    function saveToLocalStorage() { localStorage.setItem("DT_ARG_2027_SAVE_V12", JSON.stringify(gameState)); }
     function exportSaveFile() {
       const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(gameState, null, 2));
       const a = document.createElement("a");
@@ -1485,7 +1491,7 @@
     }
 
     window.addEventListener("DOMContentLoaded", () => {
-      const saved = localStorage.getItem("DT_ARG_2027_SAVE_V9");
+      const saved = localStorage.getItem("DT_ARG_2027_SAVE_V12");
       if (saved) {
         try {
           gameState = JSON.parse(saved);
