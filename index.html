@@ -346,7 +346,7 @@
         <div class="bg-amber-950/30 border border-amber-700/50 rounded-xl p-3 text-xs text-amber-200 flex items-center gap-3">
           <i class="fa-solid fa-user-tie text-xl text-amber-400"></i>
           <div>
-            <strong>Rol Exclusivo de Director Técnico:</strong> Pedí cualquiera de las 17 posiciones específicas a reforzar (con o sin nombre) y autorizá o vetá ventas.
+            <strong>Rol Exclusivo de Director Técnico:</strong> Pedí cualquiera de las 17 posiciones específicas a reforzar y autorizá o vetá ventas.
           </div>
         </div>
 
@@ -368,7 +368,7 @@
               </div>
               <div>
                 <label class="block text-slate-400 mb-1">Nombre específico sugerido (Opcional)</label>
-                <input id="req-name" type="text" placeholder="Dejar en blanco para sugerencia del club o escribir nombre..." class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2 text-white focus:outline-none focus:border-sky-500" />
+                <input id="req-name" type="text" placeholder="Dejar en blanco o escribir nombre..." class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2 text-white focus:outline-none focus:border-sky-500" />
               </div>
               <button onclick="submitTransferRequest()" class="w-full bg-sky-600 hover:bg-sky-500 text-white font-bold py-2.5 rounded-lg transition">
                 Enviar Pedido Formal a la Dirigencia
@@ -479,19 +479,15 @@
           <div class="bg-slate-900 border border-slate-800 rounded-xl p-3 flex flex-col h-[460px]">
             <h3 class="text-xs font-bold uppercase text-sky-400 mb-2">Relato en Vivo & Eventos Tácticos</h3>
             <div id="match-commentary" class="flex-1 overflow-y-auto custom-scroll space-y-2 text-xs pr-1">
-              <div class="p-2 rounded bg-slate-800/70 text-slate-300">Equipos en cancha. Podés modificar las posiciones de tus 11 titulares abajo en cualquier momento del partido.</div>
+              <div class="p-2 rounded bg-slate-800/70 text-slate-300">Equipos en cancha. Modificá las posiciones de tus 11 titulares abajo en cualquier momento.</div>
             </div>
           </div>
         </div>
 
         <!-- PANEL DE CAMBIO DE POSICIÓN EN VIVO -->
         <div class="bg-slate-900 border border-slate-800 rounded-xl p-4">
-          <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
-            <div>
-              <h3 class="text-sm font-bold text-amber-400"><i class="fa-solid fa-arrows-up-down-left-right mr-1.5"></i>Reubicación Táctica en Vivo (Durante el Partido)</h3>
-              <p class="text-xs text-slate-400">Cambiá la posición de cualquier jugador en pleno partido y mirá cómo se reubica inmediatamente en la cancha 2D.</p>
-            </div>
-          </div>
+          <h3 class="text-sm font-bold text-amber-400 mb-1"><i class="fa-solid fa-arrows-up-down-left-right mr-1.5"></i>Reubicación Táctica en Vivo (Durante el Partido)</h3>
+          <p class="text-xs text-slate-400 mb-3">Cambiá la posición de cualquier jugador en pleno partido y mirá cómo se reubica inmediatamente en la cancha 2D.</p>
           <div id="live-positions-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 text-xs">
           </div>
         </div>
@@ -614,7 +610,7 @@
     };
 
     let gameState = {
-      version: 4,
+      version: 5,
       managedClubId: "CASLA",
       week: 1,
       season: 2027,
@@ -662,7 +658,7 @@
     }
 
     function initNewGame(clubId = "CASLA") {
-      gameState.version = 4;
+      gameState.version = 5;
       gameState.managedClubId = clubId;
       gameState.squad = generateSquadForClub(clubId);
       gameState.standings = AFA_CLUBS.map(c => ({
@@ -679,11 +675,11 @@
       gameState.incomingOffers = [
         {
           id: 101,
-          playerName: gameState.squad[2].name,
-          pos: gameState.squad[2].pos,
-          ovr: gameState.squad[2].ovr,
-          buyingClub: "Monterrey (México)",
-          fee: "USD 5.200.000"
+          playerName: gameState.squad[3].name,
+          pos: gameState.squad[3].pos,
+          ovr: gameState.squad[3].ovr,
+          buyingClub: "Palmeiras (Brasil)",
+          fee: "USD 6.400.000"
         }
       ];
       gameState.inbox = [
@@ -691,16 +687,16 @@
           date: "Semana 1",
           from: "Comisión Directiva",
           title: `Bienvenido al mando de ${myClub.name}`,
-          body: "Configuradas las 17 posiciones tácticas del fútbol argentino para tu plantel."
+          body: "Configuradas las 17 posiciones tácticas del fútbol argentino. Botones de secretaría y mercado operativos."
         }
       ];
+      saveToLocalStorage();
       renderAll();
     }
 
     function resetCurrentClubSquad() {
       if (confirm("¿Reiniciar el plantel con las 17 posiciones tácticas?")) {
         initNewGame(gameState.managedClubId);
-        saveToLocalStorage();
       }
     }
 
@@ -715,15 +711,13 @@
     function changeManagedClub(newClubId) {
       if (confirm("¿Asumir como DT de este club?")) {
         initNewGame(newClubId);
-        saveToLocalStorage();
       } else {
         document.getElementById("club-selector").value = gameState.managedClubId;
       }
     }
 
     function renderAll() {
-      // Forzar reseteo de jugadores si la partida vieja no tiene las 17 posiciones
-      if (!gameState.squad || gameState.squad.length === 0 || !gameState.version || gameState.version < 4) {
+      if (!gameState.squad || gameState.squad.length === 0 || !gameState.version || gameState.version < 5) {
         initNewGame(gameState.managedClubId);
         return;
       }
@@ -935,6 +929,7 @@
       if (gameState.trainingFocus === "tactico") gameState.familiarity = Math.min(100, gameState.familiarity + 5);
       else if (gameState.trainingFocus === "ofensivo") gameState.morale = Math.min(100, gameState.morale + 3);
       else gameState.squad.forEach(p => p.stamina = Math.min(100, p.stamina + 12));
+      saveToLocalStorage();
       renderAll();
       alert("Práctica formal completada con éxito.");
     }
@@ -942,6 +937,7 @@
     function teamTalk(type) {
       if (type === "exigir") gameState.familiarity = Math.min(100, gameState.familiarity + 3);
       if (type === "respaldar") gameState.morale = Math.min(100, gameState.morale + 6);
+      saveToLocalStorage();
       renderAll();
     }
 
@@ -954,7 +950,7 @@
             <strong class="text-sky-400 block">${r.targetName}</strong>
             <span class="text-slate-400 text-[11px]">${r.pos} | ${r.profile}</span>
           </div>
-          <button onclick="approveSignPlayer(${r.id})" class="bg-emerald-600 hover:bg-emerald-500 px-3 py-1 rounded text-white font-bold">Sumar</button>
+          <button onclick="approveSignPlayer(${r.id})" class="bg-emerald-600 hover:bg-emerald-500 px-3 py-1 rounded text-white font-bold cursor-pointer">Sumar</button>
         </div>
       `).join("");
 
@@ -966,8 +962,8 @@
             <span class="block text-slate-400 text-[11px]">${o.pos} - Oferta de: ${o.buyingClub}</span>
           </div>
           <div class="flex gap-2">
-            <button onclick="decideSale(${o.id}, true)" class="flex-1 bg-emerald-600 py-1.5 rounded font-bold text-white">Autorizar Venta</button>
-            <button onclick="decideSale(${o.id}, false)" class="flex-1 bg-rose-700 py-1.5 rounded font-bold text-white">Vetar</button>
+            <button onclick="decideSale(${o.id}, true)" class="flex-1 bg-emerald-600 hover:bg-emerald-500 py-1.5 rounded font-bold text-white cursor-pointer">Autorizar Venta</button>
+            <button onclick="decideSale(${o.id}, false)" class="flex-1 bg-rose-700 hover:bg-rose-600 py-1.5 rounded font-bold text-white cursor-pointer">Vetar</button>
           </div>
         </div>
       `).join("");
@@ -1021,7 +1017,10 @@
     function decideSale(id, approved) {
       const offer = gameState.incomingOffers.find(o => o.id === id);
       if (!offer) return;
-      if (approved) gameState.squad = gameState.squad.filter(p => p.name !== offer.playerName);
+      if (approved) {
+        gameState.squad = gameState.squad.filter(p => p.name !== offer.playerName);
+        gameState.boardTrust = Math.min(100, gameState.boardTrust + 4);
+      }
       gameState.incomingOffers = gameState.incomingOffers.filter(o => o.id !== id);
       saveToLocalStorage();
       renderAll();
@@ -1033,6 +1032,7 @@
       const buyers = ["Flamengo (Brasil)", "Botafogo (Brasil)", "Monterrey (México)", "Villarreal (España)", "Inter Miami (MLS)", "Palmeiras (Brasil)"];
       const randomBuyer = buyers[Math.floor(Math.random() * buyers.length)];
       gameState.incomingOffers.push({ id: Date.now(), playerName: t.name, pos: t.pos, ovr: t.ovr, buyingClub: randomBuyer, fee: `USD ${((t.ovr - 70) * 0.6 + 2.8).toFixed(1)}M` });
+      saveToLocalStorage();
       renderBoardTab();
     }
 
@@ -1319,6 +1319,7 @@
         inP.status = "XI";
         inP.pos = inheritedPos;
         addCommentary(`Cambio en vivo: Ingresa ${inP.name} como ${inheritedPos} por ${outP.name}.`, "text-indigo-300 bg-indigo-950/40 font-semibold");
+        saveToLocalStorage();
         renderSquad();
         renderTacticPreview();
         renderLivePositionsPanel();
@@ -1386,7 +1387,7 @@
       }
     }
 
-    function saveToLocalStorage() { localStorage.setItem("DT_ARG_2027_SAVE_V4", JSON.stringify(gameState)); }
+    function saveToLocalStorage() { localStorage.setItem("DT_ARG_2027_SAVE_V5", JSON.stringify(gameState)); }
     function exportSaveFile() {
       const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(gameState, null, 2));
       const a = document.createElement("a");
@@ -1406,7 +1407,7 @@
     }
 
     window.addEventListener("DOMContentLoaded", () => {
-      const saved = localStorage.getItem("DT_ARG_2027_SAVE_V4");
+      const saved = localStorage.getItem("DT_ARG_2027_SAVE_V5");
       if (saved) {
         try {
           gameState = JSON.parse(saved);
