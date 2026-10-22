@@ -49,7 +49,6 @@
       </div>
     </div>
 
-    <!-- Selector de Club Rápido -->
     <div class="flex items-center gap-2">
       <select id="club-selector" onchange="changeManagedClub(this.value)" class="bg-slate-800 border border-slate-700 text-xs rounded-lg px-2.5 py-1.5 text-slate-200 focus:outline-none focus:border-sky-500">
       </select>
@@ -62,7 +61,7 @@
 
   <!-- CONTENEDOR PRINCIPAL -->
   <div class="flex-1 flex overflow-hidden">
-    <!-- SIDEBAR (Desktop) -->
+    <!-- SIDEBAR -->
     <aside class="hidden md:flex flex-col w-60 bg-slate-900/90 border-r border-slate-800 shrink-0 justify-between">
       <nav class="p-3 space-y-1">
         <button onclick="switchTab('dashboard')" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold text-left transition bg-sky-600 text-white" data-tab="dashboard">
@@ -97,7 +96,7 @@
       </div>
     </aside>
 
-    <!-- ÁREA DE CONTENIDO -->
+    <!-- CONTENEDOR PRINCIPAL -->
     <main class="flex-1 overflow-y-auto custom-scroll p-3 md:p-6 pb-36 md:pb-6">
 
       <!-- 1. DESPACHO DEL DT -->
@@ -901,7 +900,6 @@
       const profile = document.getElementById("req-profile").value;
       const customName = document.getElementById("req-name").value.trim();
       
-      // POOL AMPLIADO Y ALEATORIO DE REFUERZOS REALES DEL FÚTBOL ARGENTINO
       const suggestedPool = {
         "ARQ": ["Rodrigo Rey (Independiente)", "Guido Herrera (Talleres)", "Tomás Marchiori (Vélez)", "Matías Mansilla (Estudiantes)", "Gabriel Arias (Racing)"],
         "DEF": ["Kevin Lomónaco (Independiente)", "Valentín Gómez (Vélez)", "Leonardo Godoy (Estudiantes)", "Adonis Frías (Defensa)", "Eros Mancuso (Estudiantes)", "Marco Di Cesare (Racing)"],
@@ -970,8 +968,38 @@
       document.getElementById("comp-copaarg").classList.toggle("hidden", sub !== "copaarg");
     }
 
-    let matchLoop = null, matchRunning = false, matchSpeed = 1, matchMinute = 0, homeGoals = 0, awayGoals = 0, homeShots = 0, awayShots = 0;
-    let ball = { x: 340, y: 210, vx: 2.2, vy: 1.5 }, players2D = [];
+    // =========================================================================
+    // MOTOR DE PARTIDO 2D REAL CON 22 JUGADORES, TIEMPO REAL Y SONIDO
+    // =========================================================================
+    let matchLoop = null, matchRunning = false, matchSpeed = 1, matchMinute = 0;
+    let homeGoals = 0, awayGoals = 0, homeShots = 0, awayShots = 0;
+    let ball = { x: 340, y: 210, vx: 2, vy: 1.5 };
+    let players2D = [];
+
+    // Generador de Sonidos Web (AudioContext nativo sin archivos externos)
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    function playSound(type) {
+      if (!audioCtx) return;
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+
+      if (type === 'whistle') {
+        osc.frequency.setValueAtTime(2500, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(1800, audioCtx.currentTime + 0.15);
+        gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
+        osc.start(); osc.stop(audioCtx.currentTime + 0.2);
+      } else if (type === 'goal') {
+        osc.frequency.setValueAtTime(440, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.4);
+        gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
+        osc.start(); osc.stop(audioCtx.currentTime + 0.5);
+      }
+    }
 
     function setupMatchHeader(home, away) {
       document.getElementById("match-home-name").innerText = home.name;
@@ -983,40 +1011,204 @@
     function init2DEntities() {
       players2D = [];
       const coords = FORMATION_COORDS[gameState.tactics.formation] || FORMATION_COORDS["4-3-3"];
-      coords.forEach((c, i) => players2D.push({ team: "home", num: i + 1, baseX: (100 - c[1]) * 3.2 + 25, baseY: (c[0] / 100) * 380 + 20, x: 100, y: 100 }));
-      coords.forEach((c, i) => players2D.push({ team: "away", num: i + 1, baseX: 680 - ((100 - c[1]) * 3.2 + 25), baseY: (c[0] / 100) * 380 + 20, x: 500, y: 200 }));
+      // 11 locales
+      coords.forEach((c, i) => {
+        players2D.push({
+          team: "home", num: i + 1,
+          baseX: (c[0] / 100) * 300 + 40,
+          baseY: (c[1] / 100) * 360 + 30,
+          x: (c[0] / 100) * 300 + 40,
+          y: (c[1] / 100) * 360 + 30
+        });
+      });
+      // 11 visitantes
+      coords.forEach((c, i) => {
+        players2D.push({
+          team: "away", num: i + 1,
+          baseX: 640 - ((c[0] / 100) * 300 + 40),
+          baseY: (c[1] / 100) * 360 + 30,
+          x: 640 - ((c[0] / 100) * 300 + 40),
+          y: (c[1] / 100) * 360 + 30
+        });
+      });
+      ball = { x: 340, y: 210, vx: 1.8, vy: 1.2 };
     }
 
     function drawPitch2D() {
       const canvas = document.getElementById("pitch-canvas");
       if (!canvas) return;
       const ctx = canvas.getContext("2d");
-      ctx.fillStyle = "#15803d";
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      const w = canvas.width, h = canvas.height;
+
+      // Césped
+      for (let i = 0; i < 10; i++) {
+        ctx.fillStyle = i % 2 === 0 ? "#15803d" : "#166534";
+        ctx.fillRect((w / 10) * i, 0, w / 10, h);
+      }
+
+      // Líneas
+      ctx.strokeStyle = "rgba(255,255,255,0.6)";
+      ctx.lineWidth = 2;
+      ctx.strokeRect(15, 15, w - 30, h - 30);
+      ctx.beginPath(); ctx.moveTo(w / 2, 15); ctx.lineTo(w / 2, h - 15); ctx.stroke();
+      ctx.beginPath(); ctx.arc(w / 2, h / 2, 45, 0, Math.PI * 2); ctx.stroke();
+      ctx.strokeRect(15, h / 2 - 80, 80, 160);
+      ctx.strokeRect(w - 95, h / 2 - 80, 80, 160);
+
+      // Jugadores
       const club = AFA_CLUBS.find(c => c.id === gameState.managedClubId);
       players2D.forEach(p => {
         ctx.beginPath();
-        ctx.arc(p.x, p.y, 9, 0, Math.PI * 2);
+        ctx.arc(p.x, p.y, 10, 0, Math.PI * 2);
         ctx.fillStyle = p.team === "home" ? club.colors[0] : "#ef4444";
         ctx.fill();
+        ctx.lineWidth = 2;
         ctx.strokeStyle = "#ffffff";
         ctx.stroke();
+
+        ctx.fillStyle = "#ffffff";
+        ctx.font = "bold 9px Inter";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(p.num, p.x, p.y);
       });
+
+      // Pelota
+      ctx.beginPath();
+      ctx.arc(ball.x, ball.y, 5, 0, Math.PI * 2);
+      ctx.fillStyle = "#facc15";
+      ctx.fill();
+      ctx.stroke();
     }
 
     function startOrPauseMatch() {
+      if (matchMinute >= 90) resetMatchState();
       matchRunning = !matchRunning;
-      if (matchRunning) matchLoop = setInterval(() => {
-        matchMinute += 1;
-        document.getElementById("match-timer").innerText = `${matchMinute}:00'`;
-        if (matchMinute >= 90) { clearInterval(matchLoop); matchRunning = false; }
-      }, 300);
-      else clearInterval(matchLoop);
+      if (matchRunning) {
+        playSound('whistle');
+        matchLoop = setInterval(stepMatchSimulation, 150 / matchSpeed);
+      } else {
+        clearInterval(matchLoop);
+      }
     }
 
-    function toggleMatchSpeed() { matchSpeed = matchSpeed === 1 ? 2 : 1; }
-    function shoutFromBench(msg) { alert(`Grito del DT: ${msg}`); }
-    function makeQuickSub() { alert("Cambio realizado."); }
+    function toggleMatchSpeed() {
+      matchSpeed = matchSpeed === 1 ? 2 : matchSpeed === 2 ? 4 : 1;
+      document.getElementById("btn-match-speed").innerText = `Velocidad: x${matchSpeed}`;
+      if (matchRunning) {
+        clearInterval(matchLoop);
+        matchLoop = setInterval(stepMatchSimulation, 150 / matchSpeed);
+      }
+    }
+
+    function stepMatchSimulation() {
+      matchMinute += 1;
+      document.getElementById("match-timer").innerText = `${matchMinute}:00'`;
+
+      // Movimiento natural de los 22 jugadores persiguiendo la pelota
+      players2D.forEach(p => {
+        const targetX = p.baseX + (ball.x - p.baseX) * 0.15 + (Math.random() - 0.5) * 8;
+        const targetY = p.baseY + (ball.y - p.baseY) * 0.15 + (Math.random() - 0.5) * 8;
+        p.x += (targetX - p.x) * 0.2;
+        p.y += (targetY - p.y) * 0.2;
+      });
+
+      ball.x += ball.vx * (Math.random() * 3 + 1);
+      ball.y += ball.vy * (Math.random() * 3 + 1);
+
+      if (ball.x < 30 || ball.x > 650) ball.vx *= -1;
+      if (ball.y < 30 || ball.y > 390) ball.vy *= -1;
+
+      drawPitch2D();
+
+      // Eventos y goles durante los 90 minutos
+      if (matchMinute % 10 === 0 && Math.random() < 0.6) {
+        const club = AFA_CLUBS.find(c => c.id === gameState.managedClubId);
+        const opponents = AFA_CLUBS.filter(c => c.id !== gameState.managedClubId);
+        const opp = opponents[(gameState.week - 1) % opponents.length];
+
+        if (Math.random() > 0.5) {
+          homeShots++;
+          if (Math.random() < 0.35) {
+            homeGoals++;
+            playSound('goal');
+            addCommentary(`${matchMinute}' ¡GOOOOOL DE ${club.name.toUpperCase()}! Gran definición en el área.`, "text-emerald-400 font-bold bg-emerald-950/50");
+          } else {
+            addCommentary(`${matchMinute}' Remate peligroso de ${club.name} que se va cerquita.`, "text-sky-300");
+          }
+        } else {
+          awayShots++;
+          if (Math.random() < 0.3) {
+            awayGoals++;
+            addCommentary(`${matchMinute}' Gol de ${opp.name}. Desatención defensiva.`, "text-rose-400 font-bold bg-rose-950/50");
+          } else {
+            addCommentary(`${matchMinute}' Buena respuesta defensiva de tu equipo ante el avance visitante.`, "text-slate-300");
+          }
+        }
+        document.getElementById("match-score").innerText = `${homeGoals} - ${awayGoals}`;
+      }
+
+      if (matchMinute >= 90) {
+        clearInterval(matchLoop);
+        matchRunning = false;
+        playSound('whistle');
+        addCommentary(`90' ¡Final del partido! Resultado final: ${homeGoals} - ${awayGoals}.`, "text-white font-extrabold bg-sky-900");
+        finishMatchAndRecordResult();
+      }
+    }
+
+    function addCommentary(text, classes) {
+      const box = document.getElementById("match-commentary");
+      const div = document.createElement("div");
+      div.className = `p-2 rounded ${classes}`;
+      div.innerText = text;
+      box.prepend(div);
+    }
+
+    function shoutFromBench(msg) {
+      addCommentary(`Grito del DT: "${msg}". El equipo reacciona en la cancha.`, "text-amber-300 bg-amber-950/40 font-semibold");
+    }
+
+    function makeQuickSub() {
+      addCommentary(`Cambio táctico realizado para refrescar piernas en el campo.`, "text-indigo-300 bg-indigo-950/40 font-semibold");
+    }
+
+    function finishMatchAndRecordResult() {
+      const club = AFA_CLUBS.find(c => c.id === gameState.managedClubId);
+      const opponents = AFA_CLUBS.filter(c => c.id !== gameState.managedClubId);
+      const opp = opponents[(gameState.week - 1) % opponents.length];
+
+      const myRow = gameState.standings.find(s => s.id === club.id);
+      const oppRow = gameState.standings.find(s => s.id === opp.id);
+      if (myRow && oppRow) {
+        myRow.pj++; oppRow.pj++;
+        myRow.gf += homeGoals; myRow.gc += awayGoals;
+        oppRow.gf += awayGoals; oppRow.gc += homeGoals;
+        if (homeGoals > awayGoals) { myRow.g++; myRow.pts += 3; oppRow.p++; }
+        else if (homeGoals < awayGoals) { oppRow.g++; oppRow.pts += 3; myRow.p++; }
+        else { myRow.e++; oppRow.e++; myRow.pts++; oppRow.pts++; }
+      }
+      gameState.week++;
+      saveToLocalStorage();
+      renderAll();
+    }
+
+    function resetMatchState() {
+      matchMinute = 0; homeGoals = 0; awayGoals = 0; homeShots = 0; awayShots = 0;
+      document.getElementById("match-score").innerText = "0 - 0";
+      document.getElementById("match-timer").innerText = "00:00'";
+      document.getElementById("match-commentary").innerHTML = `<div class="p-2 rounded bg-slate-800/70 text-slate-300">Equipos listos en cancha. Pitazo inicial.</div>`;
+      init2DEntities();
+      drawPitch2D();
+    }
+
+    function advanceDay() {
+      switchTab("match");
+      if (!matchRunning) {
+        resetMatchState();
+        startOrPauseMatch();
+      }
+    }
 
     function switchTab(tabId) {
       document.querySelectorAll(".tab-content").forEach(el => el.classList.add("hidden"));
