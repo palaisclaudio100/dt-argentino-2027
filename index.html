@@ -489,4 +489,958 @@
           <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
             <div>
               <h3 class="text-sm font-bold text-amber-400"><i class="fa-solid fa-arrows-up-down-left-right mr-1.5"></i>Reubicación Táctica en Vivo (Durante el Partido)</h3>
-              <p
+              <p class="text-xs text-slate-400">Cambiá la posición de cualquier jugador en pleno partido y mirá cómo se reubica inmediatamente en la cancha 2D.</p>
+            </div>
+          </div>
+          <div id="live-positions-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 text-xs">
+          </div>
+        </div>
+      </section>
+
+      <!-- 8. GOOGLE DRIVE -->
+      <section id="tab-cloud" class="tab-content hidden space-y-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-4">
+          <div class="flex items-center gap-3">
+            <i class="fa-brands fa-google-drive text-3xl text-emerald-400"></i>
+            <div>
+              <h2 class="text-base font-bold text-white">Sincronización Multiplataforma (Google Drive)</h2>
+              <p class="text-xs text-slate-400">Carpeta: <strong>DT_Argentino_2027_Saves</strong> (Palais.claudio@gmail.com)</p>
+            </div>
+          </div>
+
+          <div class="flex flex-col gap-2">
+            <button onclick="exportSaveFile()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 px-4 rounded-lg text-xs flex items-center justify-center gap-2">
+              <i class="fa-solid fa-download"></i> Descargar Partida (DT_Argentino_Save.json)
+            </button>
+            <label class="bg-sky-600 hover:bg-sky-500 text-white font-bold py-2.5 px-4 rounded-lg text-xs flex items-center justify-center gap-2 cursor-pointer">
+              <i class="fa-solid fa-upload"></i> Cargar Partida desde Archivo (.JSON)
+              <input type="file" accept=".json" onchange="importSaveFile(event)" class="hidden" />
+            </label>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- NAVEGACIÓN MÓVIL -->
+  <nav class="md:hidden fixed bottom-0 inset-x-0 bg-slate-900 border-t border-slate-800 flex justify-around py-2 z-30 text-[11px]">
+    <button onclick="switchTab('dashboard')" class="flex flex-col items-center text-sky-400"><i class="fa-solid fa-house text-base"></i><span>DT</span></button>
+    <button onclick="switchTab('squad')" class="flex flex-col items-center text-slate-400"><i class="fa-solid fa-users text-base"></i><span>Plantel</span></button>
+    <button onclick="switchTab('tactics')" class="flex flex-col items-center text-slate-400"><i class="fa-solid fa-chess-board text-base"></i><span>Táctica</span></button>
+    <button onclick="switchTab('board')" class="flex flex-col items-center text-slate-400"><i class="fa-solid fa-briefcase text-base"></i><span>Refuerzos</span></button>
+    <button onclick="switchTab('competitions')" class="flex flex-col items-center text-slate-400"><i class="fa-solid fa-trophy text-base"></i><span>Torneos</span></button>
+    <button onclick="switchTab('match')" class="flex flex-col items-center text-slate-400"><i class="fa-solid fa-futbol text-base"></i><span>2D</span></button>
+    <button onclick="switchTab('cloud')" class="flex flex-col items-center text-slate-400"><i class="fa-brands fa-google-drive text-base"></i><span>Drive</span></button>
+  </nav>
+
+  <script>
+    // =========================================================================
+    // LAS 17 POSICIONES TÁCTICAS EXACTAS SOLICITADAS Y SUS COORDENADAS
+    // pizarraX (0 Izq - 100 Der), pizarraY (0 Arriba Ataque - 100 Abajo Arco Propio)
+    // =========================================================================
+    const TACTICAL_POSITIONS = [
+      { id: 1,  code: "ARQ", name: "1. Arquero",                    px: 50, py: 90 },
+      { id: 2,  code: "LD",  name: "2. Lateral derecho",            px: 84, py: 72 },
+      { id: 3,  code: "ID",  name: "3. Interior derecho",           px: 74, py: 52 },
+      { id: 4,  code: "CD",  name: "4. Central defensivo",          px: 50, py: 74 },
+      { id: 5,  code: "STD", name: "5. Stopper por derecha",        px: 66, py: 74 },
+      { id: 6,  code: "LIB", name: "6. Líbero",                     px: 50, py: 80 },
+      { id: 7,  code: "STI", name: "7. Stopper por izquierda",      px: 34, py: 74 },
+      { id: 8,  code: "LI",  name: "8. Lateral izquierdo",          px: 16, py: 72 },
+      { id: 9,  code: "II",  name: "9. Interior izquierdo",         px: 26, py: 52 },
+      { id: 10, code: "MCR", name: "10. Mediocampista recuperador", px: 50, py: 60 },
+      { id: 11, code: "MCO", name: "11. Mediocampista organizador", px: 50, py: 48 },
+      { id: 12, code: "MOF", name: "12. Mediocampista ofensivo",    px: 64, py: 38 },
+      { id: 13, code: "ENG", name: "13. Enganche",                  px: 50, py: 32 },
+      { id: 14, code: "SD",  name: "14. Segundo delantero",         px: 40, py: 22 },
+      { id: 15, code: "PD",  name: "15. Puntero derecho",           px: 82, py: 20 },
+      { id: 16, code: "DC",  name: "16. Centrodelantero",           px: 50, py: 14 },
+      { id: 17, code: "PI",  name: "17. Puntero izquierdo",         px: 18, py: 20 }
+    ];
+
+    function getPosInfo(posName) {
+      return TACTICAL_POSITIONS.find(p => p.name === posName) || TACTICAL_POSITIONS[10];
+    }
+
+    const AFA_CLUBS = [
+      { id: "CASLA", name: "San Lorenzo", colors: ["#1e3a8a", "#dc2626"], rep: 86 },
+      { id: "RIV", name: "River Plate", colors: ["#ffffff", "#dc2626"], rep: 91 },
+      { id: "BOC", name: "Boca Juniors", colors: ["#1d4ed8", "#facc15"], rep: 90 },
+      { id: "RAC", name: "Racing Club", colors: ["#38bdf8", "#ffffff"], rep: 87 },
+      { id: "IND", name: "Independiente", colors: ["#dc2626", "#991b1b"], rep: 85 },
+      { id: "EST", name: "Estudiantes LP", colors: ["#dc2626", "#ffffff"], rep: 85 },
+      { id: "VEL", name: "Vélez Sarsfield", colors: ["#ffffff", "#1e40af"], rep: 85 },
+      { id: "TAL", name: "Talleres (Cba)", colors: ["#1e3a8a", "#ffffff"], rep: 84 },
+      { id: "HUR", name: "Huracán", colors: ["#ffffff", "#dc2626"], rep: 81 },
+      { id: "LAN", name: "Lanús", colors: ["#7f1d1d", "#ffffff"], rep: 82 },
+      { id: "ARG", name: "Argentinos Jrs", colors: ["#dc2626", "#ffffff"], rep: 82 },
+      { id: "DEF", name: "Defensa y Justicia", colors: ["#eab308", "#15803d"], rep: 81 },
+      { id: "ROS", name: "Rosario Central", colors: ["#1d4ed8", "#facc15"], rep: 82 },
+      { id: "NOB", name: "Newell's Old Boys", colors: ["#dc2626", "#111827"], rep: 81 },
+      { id: "BEL", name: "Belgrano (Cba)", colors: ["#38bdf8", "#111827"], rep: 80 },
+      { id: "IACC", name: "Instituto (Cba)", colors: ["#dc2626", "#ffffff"], rep: 79 },
+      { id: "GOD", name: "Godoy Cruz", colors: ["#1d4ed8", "#ffffff"], rep: 80 },
+      { id: "UNN", name: "Unión (Santa Fe)", colors: ["#dc2626", "#ffffff"], rep: 79 },
+      { id: "GIM", name: "Gimnasia LP", colors: ["#ffffff", "#1e3a8a"], rep: 78 },
+      { id: "BAN", name: "Banfield", colors: ["#15803d", "#ffffff"], rep: 78 },
+      { id: "TIG", name: "Tigre", colors: ["#1e3a8a", "#dc2626"], rep: 78 },
+      { id: "PLA", name: "Platense", colors: ["#78350f", "#ffffff"], rep: 78 },
+      { id: "ATU", name: "Atlético Tucumán", colors: ["#38bdf8", "#ffffff"], rep: 78 },
+      { id: "CCSE", name: "Central Córdoba (SdE)", colors: ["#111827", "#ffffff"], rep: 77 },
+      { id: "BAR", name: "Barracas Central", colors: ["#dc2626", "#ffffff"], rep: 76 },
+      { id: "SAR", name: "Sarmiento (Junín)", colors: ["#15803d", "#ffffff"], rep: 75 },
+      { id: "IRV", name: "Independiente Rivadavia", colors: ["#1e3a8a", "#ffffff"], rep: 76 },
+      { id: "RIE", name: "Deportivo Riestra", colors: ["#111827", "#ffffff"], rep: 75 }
+    ];
+
+    const INITIAL_SQUAD_TEMPLATES = {
+      "CASLA": [
+        { name: "Orlando Gill",        pos: "1. Arquero",                    age: 25, ovr: 78, status: "XI" },
+        { name: "Gastón Gómez",        pos: "1. Arquero",                    age: 29, ovr: 76, status: "SUB" },
+        { name: "Nahuel Arias",        pos: "2. Lateral derecho",            age: 21, ovr: 75, status: "XI" },
+        { name: "Jhohan Romaña",       pos: "5. Stopper por derecha",        age: 27, ovr: 83, status: "XI" },
+        { name: "Gastón Hernández",    pos: "7. Stopper por izquierda",      age: 28, ovr: 82, status: "XI" },
+        { name: "Elías Báez",          pos: "8. Lateral izquierdo",          age: 21, ovr: 76, status: "XI" },
+        { name: "Daniel Herrera",      pos: "4. Central defensivo",          age: 22, ovr: 76, status: "SUB" },
+        { name: "Fabricio López",      pos: "2. Lateral derecho",            age: 23, ovr: 74, status: "SUB" },
+        { name: "Elián Irala",         pos: "10. Mediocampista recuperador", age: 21, ovr: 80, status: "XI" },
+        { name: "Nicolás Tripichio",   pos: "3. Interior derecho",           age: 29, ovr: 80, status: "XI" },
+        { name: "Iker Muniain",        pos: "13. Enganche",                  age: 33, ovr: 85, status: "XI" },
+        { name: "Eric Remedi",         pos: "11. Mediocampista organizador", age: 30, ovr: 77, status: "SUB" },
+        { name: "Nahuel Barrios",      pos: "9. Interior izquierdo",         age: 27, ovr: 77, status: "SUB" },
+        { name: "Ezequiel Cerutti",    pos: "15. Puntero derecho",           age: 33, ovr: 76, status: "XI" },
+        { name: "Matías Reali",        pos: "17. Puntero izquierdo",         age: 28, ovr: 79, status: "XI" },
+        { name: "Alexis Cuello",       pos: "16. Centrodelantero",           age: 25, ovr: 80, status: "XI" },
+        { name: "Andrés Vombergar",    pos: "16. Centrodelantero",           age: 31, ovr: 78, status: "SUB" },
+        { name: "Agustín Hausch",      pos: "14. Segundo delantero",         age: 22, ovr: 74, status: "RES" }
+      ]
+    };
+
+    let gameState = {
+      version: 3,
+      managedClubId: "CASLA",
+      week: 1,
+      season: 2027,
+      morale: 84,
+      familiarity: 78,
+      boardTrust: 86,
+      trainingFocus: "tactico",
+      tactics: {
+        formation: "Personalizada",
+        mentality: "Equilibrada",
+        passing: "Mixto",
+        pressing: "Medio",
+        tackling: "Normal"
+      },
+      squad: [],
+      standings: [],
+      libertadoresGroup: [],
+      transferRequests: [],
+      incomingOffers: [],
+      inbox: []
+    };
+
+    function generateSquadForClub(clubId) {
+      if (INITIAL_SQUAD_TEMPLATES[clubId]) {
+        return JSON.parse(JSON.stringify(INITIAL_SQUAD_TEMPLATES[clubId])).map((p, idx) => ({
+          ...p, id: idx + 1, stamina: 98, morale: 85
+        }));
+      }
+      const club = AFA_CLUBS.find(c => c.id === clubId) || AFA_CLUBS[0];
+      const baseOvr = club.rep - 4;
+      const defaultLineupPositions = [
+        "1. Arquero",
+        "2. Lateral derecho",
+        "5. Stopper por derecha",
+        "7. Stopper por izquierda",
+        "8. Lateral izquierdo",
+        "10. Mediocampista recuperador",
+        "3. Interior derecho",
+        "9. Interior izquierdo",
+        "13. Enganche",
+        "15. Puntero derecho",
+        "16. Centrodelantero",
+        "1. Arquero",
+        "4. Central defensivo",
+        "11. Mediocampista organizador",
+        "14. Segundo delantero",
+        "17. Puntero izquierdo"
+      ];
+      const apellidos = ["González", "Rodríguez", "Gómez", "Fernández", "López", "Díaz", "Martínez", "Pérez", "Romero", "Sánchez", "Domínguez", "Peralta"];
+      const nombres = ["Facundo", "Lautaro", "Santiago", "Matías", "Nicolás", "Agustín", "Franco", "Enzo", "Lucas", "Ramiro", "Joaquín", "Tomás"];
+      return defaultLineupPositions.map((posName, i) => ({
+        id: i + 1,
+        name: `${nombres[i % nombres.length]} ${apellidos[(i * 3) % apellidos.length]}`,
+        pos: posName,
+        age: 20 + (i % 12),
+        ovr: baseOvr + (i < 11 ? (i % 4) : -2),
+        status: i < 11 ? "XI" : "SUB",
+        stamina: 98,
+        morale: 82
+      }));
+    }
+
+    function initNewGame(clubId = "CASLA") {
+      gameState.version = 3;
+      gameState.managedClubId = clubId;
+      gameState.squad = generateSquadForClub(clubId);
+      gameState.standings = AFA_CLUBS.map(c => ({
+        id: c.id, name: c.name, pj: 0, g: 0, e: 0, p: 0, gf: 0, gc: 0, pts: 0
+      }));
+      const myClub = AFA_CLUBS.find(c => c.id === clubId);
+      gameState.libertadoresGroup = [
+        { name: myClub.name, country: "ARG", pj: 0, pts: 0 },
+        { name: "Palmeiras", country: "BRA", pj: 0, pts: 0 },
+        { name: "Nacional", country: "URU", pj: 0, pts: 0 },
+        { name: "Colo-Colo", country: "CHI", pj: 0, pts: 0 }
+      ];
+      gameState.transferRequests = [];
+      gameState.incomingOffers = [
+        {
+          id: 101,
+          playerName: gameState.squad[3].name,
+          pos: gameState.squad[3].pos,
+          ovr: gameState.squad[3].ovr,
+          buyingClub: "Monterrey (México)",
+          fee: "USD 5.200.000"
+        }
+      ];
+      gameState.inbox = [
+        {
+          date: "Semana 1",
+          from: "Comisión Directiva",
+          title: `Bienvenido al mando de ${myClub.name}`,
+          body: "Tenés habilitadas las 17 posiciones tácticas del fútbol argentino. Podés cambiar de puesto a cualquier jugador antes o durante el transcurso del partido en vivo."
+        }
+      ];
+      renderAll();
+    }
+
+    function resetCurrentClubSquad() {
+      if (confirm("¿Querés actualizar/reiniciar el plantel con las 17 posiciones tácticas reales?")) {
+        initNewGame(gameState.managedClubId);
+        saveToLocalStorage();
+      }
+    }
+
+    function populateSelectors() {
+      const sel = document.getElementById("club-selector");
+      sel.innerHTML = AFA_CLUBS.map(c => `<option value="${c.id}" ${c.id === gameState.managedClubId ? 'selected' : ''}>DT de: ${c.name}</option>`).join("");
+
+      const reqPos = document.getElementById("req-position");
+      reqPos.innerHTML = TACTICAL_POSITIONS.map(tp => `<option value="${tp.name}">${tp.name}</option>`).join("");
+    }
+
+    function changeManagedClub(newClubId) {
+      if (confirm("¿Querés asumir como Director Técnico de este equipo?")) {
+        initNewGame(newClubId);
+        saveToLocalStorage();
+      } else {
+        document.getElementById("club-selector").value = gameState.managedClubId;
+      }
+    }
+
+    function renderAll() {
+      const club = AFA_CLUBS.find(c => c.id === gameState.managedClubId);
+      document.getElementById("header-club-name").innerText = club.name;
+      document.getElementById("club-badge").innerText = club.id;
+      document.getElementById("club-badge").style.background = `linear-gradient(135deg, ${club.colors[0]} 50%, ${club.colors[1]} 50%)`;
+      document.getElementById("header-date").innerText = `Semana ${gameState.week} - Temporada ${gameState.season} | AFA & Conmebol`;
+
+      const opponents = AFA_CLUBS.filter(c => c.id !== gameState.managedClubId);
+      const nextOpp = opponents[(gameState.week - 1) % opponents.length];
+      document.getElementById("next-comp-badge").innerText = gameState.week % 3 === 0 ? "CONMEBOL Libertadores" : `Liga Profesional - Fecha ${gameState.week}`;
+      document.getElementById("next-home-name").innerText = club.name;
+      document.getElementById("next-home-badge").innerText = club.id;
+      document.getElementById("next-away-name").innerText = nextOpp.name;
+      document.getElementById("next-away-badge").innerText = nextOpp.id;
+
+      document.getElementById("dash-morale").innerText = `${gameState.morale}%`;
+      document.getElementById("bar-morale").style.width = `${gameState.morale}%`;
+      document.getElementById("dash-familiarity").innerText = `${gameState.familiarity}%`;
+      document.getElementById("bar-familiarity").style.width = `${gameState.familiarity}%`;
+      document.getElementById("dash-trust").innerText = `${gameState.boardTrust}%`;
+      document.getElementById("bar-trust").style.width = `${gameState.boardTrust}%`;
+      document.getElementById("sidebar-trust").innerText = `${gameState.boardTrust}%`;
+
+      document.getElementById("inbox-list").innerHTML = gameState.inbox.map(msg => `
+        <div class="bg-slate-800/75 border border-slate-700/70 rounded-lg p-3 text-xs">
+          <div class="flex justify-between text-slate-400 mb-1">
+            <span class="font-bold text-sky-400">${msg.from}</span>
+            <span>${msg.date}</span>
+          </div>
+          <div class="font-bold text-white mb-1">${msg.title}</div>
+          <p class="text-slate-300">${msg.body}</p>
+        </div>
+      `).join("");
+
+      renderSquad();
+      renderTacticPreview();
+      renderBoardTab();
+      renderCompetitions();
+      setupMatchHeader(club, nextOpp);
+      renderLivePositionsPanel();
+    }
+
+    function buildPositionOptionsHTML(selectedPos) {
+      return TACTICAL_POSITIONS.map(tp =>
+        `<option value="${tp.name}" ${tp.name === selectedPos ? 'selected' : ''}>${tp.name}</option>`
+      ).join("");
+    }
+
+    function renderSquad() {
+      const tbody = document.getElementById("squad-tbody");
+      document.getElementById("count-starters").innerText = gameState.squad.filter(p => p.status === "XI").length;
+
+      tbody.innerHTML = gameState.squad.map(p => {
+        const badgeClass = p.status === "XI" ? "bg-emerald-600 text-white" : p.status === "SUB" ? "bg-amber-600 text-white" : "bg-slate-700 text-slate-300";
+        return `
+          <tr class="hover:bg-slate-800/50 transition">
+            <td class="p-2.5">
+              <button onclick="cyclePlayerStatus(${p.id})" class="${badgeClass} font-bold px-2.5 py-1 rounded text-[11px] w-14 text-center">
+                ${p.status}
+              </button>
+            </td>
+            <td class="p-2.5 font-semibold text-white">${p.name}</td>
+            <td class="p-2.5">
+              <select onchange="changePlayerPosition(${p.id}, this.value)" class="bg-slate-800 border border-sky-700/70 rounded px-2 py-1 text-sky-300 font-semibold text-xs w-full max-w-[240px]">
+                ${buildPositionOptionsHTML(p.pos)}
+              </select>
+            </td>
+            <td class="p-2.5 text-slate-400">${p.age}</td>
+            <td class="p-2.5"><span class="bg-slate-800 border border-slate-700 px-2 py-0.5 rounded font-bold text-amber-400">${p.ovr}</span></td>
+            <td class="p-2.5 text-emerald-400 font-semibold">${p.stamina}%</td>
+            <td class="p-2.5 text-sky-300">${p.morale}%</td>
+          </tr>
+        `;
+      }).join("");
+    }
+
+    function changePlayerPosition(playerId, newPosName) {
+      const p = gameState.squad.find(x => x.id === playerId);
+      if (!p) return;
+      p.pos = newPosName;
+      saveToLocalStorage();
+      renderSquad();
+      renderTacticPreview();
+      renderLivePositionsPanel();
+      update2DBasePositionsFromTactics();
+      drawPitch2D();
+      if (matchRunning) {
+        addCommentary(`Ajuste táctico del DT: ${p.name} pasa a jugar como ${newPosName}.`, "text-amber-300 bg-amber-950/40 font-semibold");
+      }
+    }
+
+    function cyclePlayerStatus(id) {
+      const p = gameState.squad.find(x => x.id === id);
+      if (!p) return;
+      if (p.status === "XI") p.status = "SUB";
+      else if (p.status === "SUB") p.status = "RES";
+      else p.status = "XI";
+      saveToLocalStorage();
+      renderSquad();
+      renderTacticPreview();
+      renderLivePositionsPanel();
+      init2DEntities();
+      drawPitch2D();
+    }
+
+    function autoPickLineup() {
+      const sorted = [...gameState.squad].sort((a, b) => b.ovr - a.ovr);
+      sorted.forEach((p, idx) => {
+        if (idx < 11) p.status = "XI";
+        else if (idx < 18) p.status = "SUB";
+        else p.status = "RES";
+      });
+      saveToLocalStorage();
+      renderAll();
+    }
+
+    function applyPresetFormation(preset) {
+      gameState.tactics.formation = preset;
+      const starters = gameState.squad.filter(p => p.status === "XI");
+      const presetsMap = {
+        "4-3-3": [
+          "1. Arquero", "2. Lateral derecho", "5. Stopper por derecha", "7. Stopper por izquierda", "8. Lateral izquierdo",
+          "10. Mediocampista recuperador", "3. Interior derecho", "9. Interior izquierdo",
+          "15. Puntero derecho", "16. Centrodelantero", "17. Puntero izquierdo"
+        ],
+        "4-3-1-2": [
+          "1. Arquero", "2. Lateral derecho", "5. Stopper por derecha", "7. Stopper por izquierda", "8. Lateral izquierdo",
+          "10. Mediocampista recuperador", "3. Interior derecho", "9. Interior izquierdo",
+          "13. Enganche", "14. Segundo delantero", "16. Centrodelantero"
+        ],
+        "4-4-2": [
+          "1. Arquero", "2. Lateral derecho", "5. Stopper por derecha", "7. Stopper por izquierda", "8. Lateral izquierdo",
+          "3. Interior derecho", "10. Mediocampista recuperador", "11. Mediocampista organizador", "9. Interior izquierdo",
+          "14. Segundo delantero", "16. Centrodelantero"
+        ],
+        "5-3-2": [
+          "1. Arquero", "2. Lateral derecho", "5. Stopper por derecha", "6. Líbero", "7. Stopper por izquierda", "8. Lateral izquierdo",
+          "3. Interior derecho", "10. Mediocampista recuperador", "9. Interior izquierdo",
+          "14. Segundo delantero", "16. Centrodelantero"
+        ]
+      };
+      if (presetsMap[preset]) {
+        starters.forEach((p, idx) => {
+          if (presetsMap[preset][idx]) p.pos = presetsMap[preset][idx];
+        });
+      }
+      saveToLocalStorage();
+      renderSquad();
+      renderTacticPreview();
+      renderLivePositionsPanel();
+      update2DBasePositionsFromTactics();
+      drawPitch2D();
+    }
+
+    function updateTactics() {
+      gameState.tactics.mentality = document.getElementById("tactic-mentality").value;
+      gameState.tactics.passing = document.getElementById("tactic-passing").value;
+      gameState.tactics.pressing = document.getElementById("tactic-pressing").value;
+      gameState.tactics.tackling = document.getElementById("tactic-tackling").value;
+      saveToLocalStorage();
+      renderTacticPreview();
+    }
+
+    // Dibuja los nodos en la pizarra respetando las coordenadas de cada una de las 17 posiciones
+    function renderTacticPreview() {
+      document.getElementById("preview-form-label").innerText = gameState.tactics.formation;
+      const starters = gameState.squad.filter(p => p.status === "XI");
+      const container = document.getElementById("formation-nodes");
+
+      // Pequeño desplazamiento si dos jugadores comparten exactamente el mismo puesto
+      const usedCounts = {};
+      container.innerHTML = starters.map((player) => {
+        const info = getPosInfo(player.pos);
+        usedCounts[info.id] = (usedCounts[info.id] || 0) + 1;
+        const offset = usedCounts[info.id] > 1 ? (usedCounts[info.id] - 1) * 8 : 0;
+        const shortName = player.name.split(" ").slice(-1)[0];
+        return `
+          <div style="left:${Math.min(92, info.px + offset)}%; top:${info.py}%" class="absolute -translate-x-1/2 -translate-y-1/2 flex flex-col items-center transition-all duration-300">
+            <div class="w-7 h-7 rounded-full bg-sky-500 border-2 border-white text-white text-[9px] font-extrabold flex items-center justify-center shadow">
+              ${info.code}
+            </div>
+            <span class="bg-slate-950/90 text-white text-[10px] px-1.5 rounded mt-0.5 font-semibold whitespace-nowrap">${shortName}</span>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function renderLivePositionsPanel() {
+      const grid = document.getElementById("live-positions-grid");
+      if (!grid) return;
+      const starters = gameState.squad.filter(p => p.status === "XI");
+      grid.innerHTML = starters.map((p) => {
+        const info = getPosInfo(p.pos);
+        return `
+          <div class="bg-slate-800/80 border border-slate-700 rounded-lg p-2 flex items-center justify-between gap-2">
+            <div class="truncate">
+              <span class="bg-sky-900 text-sky-300 font-bold px-1.5 py-0.5 rounded text-[10px] mr-1">${info.code}</span>
+              <strong class="text-white">${p.name}</strong>
+            </div>
+            <select onchange="changePlayerPosition(${p.id}, this.value)" class="bg-slate-900 border border-slate-600 rounded px-2 py-1 text-amber-300 font-semibold text-[11px] shrink-0">
+              ${buildPositionOptionsHTML(p.pos)}
+            </select>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function setTrainingFocus(val) { gameState.trainingFocus = val; }
+    function runTrainingSession() {
+      if (gameState.trainingFocus === "tactico") gameState.familiarity = Math.min(100, gameState.familiarity + 5);
+      else if (gameState.trainingFocus === "ofensivo") gameState.morale = Math.min(100, gameState.morale + 3);
+      else gameState.squad.forEach(p => p.stamina = Math.min(100, p.stamina + 12));
+      renderAll();
+      alert("Práctica formal completada con éxito.");
+    }
+
+    function teamTalk(type) {
+      if (type === "exigir") gameState.familiarity = Math.min(100, gameState.familiarity + 3);
+      if (type === "respaldar") gameState.morale = Math.min(100, gameState.morale + 6);
+      renderAll();
+    }
+
+    function renderBoardTab() {
+      document.getElementById("badge-offers").innerText = gameState.incomingOffers.length;
+      const reqList = document.getElementById("transfer-requests-list");
+      reqList.innerHTML = gameState.transferRequests.length === 0 ? `<p class="text-slate-500">Sin pedidos activos.</p>` : gameState.transferRequests.map(r => `
+        <div class="bg-slate-800 p-2.5 rounded-lg border border-slate-700 flex justify-between items-center">
+          <div>
+            <strong class="text-sky-400 block">${r.targetName}</strong>
+            <span class="text-slate-400 text-[11px]">${r.pos} | ${r.profile}</span>
+          </div>
+          <button onclick="approveSignPlayer(${r.id})" class="bg-emerald-600 hover:bg-emerald-500 px-3 py-1 rounded text-white font-bold">Sumar</button>
+        </div>
+      `).join("");
+
+      const offList = document.getElementById("incoming-offers-list");
+      offList.innerHTML = gameState.incomingOffers.length === 0 ? `<p class="text-slate-500">Sin ofertas de venta.</p>` : gameState.incomingOffers.map(o => `
+        <div class="bg-slate-800 p-3 rounded-lg border border-slate-700 space-y-2">
+          <div>
+            <strong class="text-white">${o.playerName} (${o.fee})</strong>
+            <span class="block text-slate-400 text-[11px]">${o.pos} - Oferta de: ${o.buyingClub}</span>
+          </div>
+          <div class="flex gap-2">
+            <button onclick="decideSale(${o.id}, true)" class="flex-1 bg-emerald-600 py-1.5 rounded font-bold text-white">Autorizar Venta</button>
+            <button onclick="decideSale(${o.id}, false)" class="flex-1 bg-rose-700 py-1.5 rounded font-bold text-white">Vetar</button>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    // Pool aleatorio amplio para que nunca repita el mismo refuerzo
+    const RANDOM_REINFORCEMENTS_POOL = [
+      "Rodrigo Rey (Independiente)", "Guido Herrera (Talleres)", "Tomás Marchiori (Vélez)", "Gabriel Arias (Racing)",
+      "Kevin Lomónaco (Independiente)", "Valentín Gómez (Vélez)", "Leonardo Godoy (Estudiantes)", "Marco Di Cesare (Racing)",
+      "Gastón Benavídez (Talleres)", "claudio Aquino (Vélez)", "Santiago Ascacíbar (Estudiantes)", "Rodrigo Echeverría (Huracán)",
+      "Marcelino Moreno (Lanús)", "Juan Nardoni (Racing)", "Rubén Botta (Talleres)", "Matko Miljevic (Argentinos)",
+      "Adrián 'Maravilla' Martínez (Racing)", "Miguel Merentiel (Boca)", "Braian Romero (Vélez)", "Walter Bou (Lanús)",
+      "Sebastián Villa (Ind. Rivadavia)", "jaminton Campaz (Rosario Central)", "Franco Jara (Belgrano)", "Gabriel Ávalos (Independiente)"
+    ];
+
+    function submitTransferRequest() {
+      const pos = document.getElementById("req-position").value;
+      const profile = document.getElementById("req-profile").value;
+      const customName = document.getElementById("req-name").value.trim();
+
+      const available = RANDOM_REINFORCEMENTS_POOL.filter(name =>
+        !gameState.transferRequests.some(r => r.targetName === name)
+      );
+      const poolToUse = available.length > 0 ? available : RANDOM_REINFORCEMENTS_POOL;
+      const randomPick = poolToUse[Math.floor(Math.random() * poolToUse.length)];
+      const targetName = customName || randomPick;
+
+      gameState.transferRequests.unshift({ id: Date.now(), pos, profile, targetName, ready: true });
+      document.getElementById("req-name").value = "";
+      saveToLocalStorage();
+      renderBoardTab();
+    }
+
+    function approveSignPlayer(id) {
+      const req = gameState.transferRequests.find(r => r.id === id);
+      if (!req) return;
+      gameState.squad.push({
+        id: Date.now(),
+        name: req.targetName,
+        pos: req.pos,
+        age: 26,
+        ovr: 81,
+        status: "SUB",
+        stamina: 98,
+        morale: 90
+      });
+      gameState.transferRequests = gameState.transferRequests.filter(r => r.id !== id);
+      saveToLocalStorage();
+      renderAll();
+    }
+
+    function decideSale(id, approved) {
+      const offer = gameState.incomingOffers.find(o => o.id === id);
+      if (!offer) return;
+      if (approved) gameState.squad = gameState.squad.filter(p => p.name !== offer.playerName);
+      gameState.incomingOffers = gameState.incomingOffers.filter(o => o.id !== id);
+      saveToLocalStorage();
+      renderAll();
+    }
+
+    function generateIncomingOffer() {
+      if (gameState.squad.length <= 12) return;
+      const t = gameState.squad[Math.floor(Math.random() * gameState.squad.length)];
+      const buyers = ["Flamengo (Brasil)", "Botafogo (Brasil)", "Monterrey (México)", "Villarreal (España)", "Inter Miami (MLS)", "Palmeiras (Brasil)"];
+      const randomBuyer = buyers[Math.floor(Math.random() * buyers.length)];
+      gameState.incomingOffers.push({ id: Date.now(), playerName: t.name, pos: t.pos, ovr: t.ovr, buyingClub: randomBuyer, fee: `USD ${((t.ovr - 70) * 0.6 + 2.8).toFixed(1)}M` });
+      renderBoardTab();
+    }
+
+    function renderCompetitions() {
+      const sorted = [...gameState.standings].sort((a, b) => b.pts - a.pts);
+      document.getElementById("standings-tbody").innerHTML = sorted.map((t, idx) => `
+        <tr class="${t.id === gameState.managedClubId ? 'bg-sky-900/40 font-bold text-white' : ''}">
+          <td class="p-2.5">${idx + 1}</td>
+          <td class="p-2.5">${t.name}</td>
+          <td class="p-2.5">${t.pj}</td>
+          <td class="p-2.5">${t.g}</td>
+          <td class="p-2.5">${t.e}</td>
+          <td class="p-2.5">${t.p}</td>
+          <td class="p-2.5">${t.gf - t.gc}</td>
+          <td class="p-2.5 font-extrabold text-emerald-400">${t.pts}</td>
+          <td class="p-2.5">${idx < 4 ? '<span class="text-amber-400 font-bold">Libertadores</span>' : idx < 10 ? '<span class="text-sky-400">Sudamericana</span>' : '-'}</td>
+        </tr>
+      `).join("");
+
+      document.getElementById("lib-group-tbody").innerHTML = gameState.libertadoresGroup.map((t, i) => `
+        <tr><td class="p-2.5">${i + 1}°</td><td class="p-2.5 font-bold">${t.name}</td><td class="p-2.5">${t.country}</td><td class="p-2.5">${t.pj}</td><td class="p-2.5 font-bold">${t.pts}</td></tr>
+      `).join("");
+    }
+
+    function showCompSubtab(sub) {
+      document.getElementById("comp-lpf").classList.toggle("hidden", sub !== "lpf");
+      document.getElementById("comp-libertadores").classList.toggle("hidden", sub !== "libertadores");
+      document.getElementById("comp-copaarg").classList.toggle("hidden", sub !== "copaarg");
+    }
+
+    // =========================================================================
+    // MOTOR DE PARTIDO 2D CON COORDENADAS EN TIEMPO REAL DE LAS 17 POSICIONES
+    // =========================================================================
+    let matchLoop = null, matchRunning = false, matchSpeed = 1, matchMinute = 0;
+    let homeGoals = 0, awayGoals = 0, homeShots = 0, awayShots = 0;
+    let ball = { x: 340, y: 210, vx: 2.2, vy: 1.6 };
+    let players2D = [];
+
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    function playSound(type) {
+      if (!audioCtx) return;
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+
+      if (type === 'whistle') {
+        osc.frequency.setValueAtTime(2600, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(1900, audioCtx.currentTime + 0.18);
+        gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.22);
+        osc.start(); osc.stop(audioCtx.currentTime + 0.22);
+      } else if (type === 'goal') {
+        osc.frequency.setValueAtTime(420, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(840, audioCtx.currentTime + 0.45);
+        gain.gain.setValueAtTime(0.22, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
+        osc.start(); osc.stop(audioCtx.currentTime + 0.5);
+      }
+    }
+
+    // Convierte las coordenadas de las 17 posiciones al campo horizontal 2D (680x420)
+    // Local ataca de Izquierda (x=40) a Derecha (x=640)
+    function convertPosToCanvasCoords(posName, isHome) {
+      const info = getPosInfo(posName);
+      const attackDepth = 100 - info.py; // 10 (ARQ) a 86 (DC)
+      const canvasX = isHome
+        ? 35 + (attackDepth / 100) * 560
+        : 645 - (attackDepth / 100) * 560;
+      const canvasY = 30 + (info.px / 100) * 360;
+      return { x: canvasX, y: canvasY, code: info.code };
+    }
+
+    function setupMatchHeader(home, away) {
+      document.getElementById("match-home-name").innerText = home.name;
+      document.getElementById("match-away-name").innerText = away.name;
+      init2DEntities();
+      drawPitch2D();
+    }
+
+    function init2DEntities() {
+      players2D = [];
+      const starters = gameState.squad.filter(p => p.status === "XI").slice(0, 11);
+      starters.forEach((p) => {
+        const c = convertPosToCanvasCoords(p.pos, true);
+        players2D.push({
+          id: p.id,
+          team: "home",
+          label: c.code,
+          name: p.name.split(" ").slice(-1)[0],
+          baseX: c.x,
+          baseY: c.y,
+          x: c.x,
+          y: c.y
+        });
+      });
+
+      const awayDefault = [
+        "1. Arquero", "2. Lateral derecho", "5. Stopper por derecha", "7. Stopper por izquierda", "8. Lateral izquierdo",
+        "10. Mediocampista recuperador", "3. Interior derecho", "9. Interior izquierdo", "13. Enganche",
+        "14. Segundo delantero", "16. Centrodelantero"
+      ];
+      awayDefault.forEach((posName, idx) => {
+        const c = convertPosToCanvasCoords(posName, false);
+        players2D.push({
+          id: 900 + idx,
+          team: "away",
+          label: String(idx + 1),
+          name: "",
+          baseX: c.x,
+          baseY: c.y,
+          x: c.x,
+          y: c.y
+        });
+      });
+      ball = { x: 340, y: 210, vx: 2.2, vy: 1.6 };
+    }
+
+    function update2DBasePositionsFromTactics() {
+      const starters = gameState.squad.filter(p => p.status === "XI").slice(0, 11);
+      starters.forEach((p) => {
+        const entity = players2D.find(e => e.id === p.id && e.team === "home");
+        if (entity) {
+          const c = convertPosToCanvasCoords(p.pos, true);
+          entity.baseX = c.x;
+          entity.baseY = c.y;
+          entity.label = c.code;
+        }
+      });
+    }
+
+    function drawPitch2D() {
+      const canvas = document.getElementById("pitch-canvas");
+      if (!canvas) return;
+      const ctx = canvas.getContext("2d");
+      const w = canvas.width, h = canvas.height;
+
+      for (let i = 0; i < 10; i++) {
+        ctx.fillStyle = i % 2 === 0 ? "#15803d" : "#166534";
+        ctx.fillRect((w / 10) * i, 0, w / 10, h);
+      }
+
+      ctx.strokeStyle = "rgba(255,255,255,0.65)";
+      ctx.lineWidth = 2;
+      ctx.strokeRect(15, 15, w - 30, h - 30);
+      ctx.beginPath(); ctx.moveTo(w / 2, 15); ctx.lineTo(w / 2, h - 15); ctx.stroke();
+      ctx.beginPath(); ctx.arc(w / 2, h / 2, 45, 0, Math.PI * 2); ctx.stroke();
+      ctx.strokeRect(15, h / 2 - 80, 80, 160);
+      ctx.strokeRect(w - 95, h / 2 - 80, 80, 160);
+
+      const club = AFA_CLUBS.find(c => c.id === gameState.managedClubId);
+      players2D.forEach(p => {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, 11, 0, Math.PI * 2);
+        ctx.fillStyle = p.team === "home" ? club.colors[0] : "#ef4444";
+        ctx.fill();
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = p.team === "home" ? club.colors[1] : "#ffffff";
+        ctx.stroke();
+
+        ctx.fillStyle = "#ffffff";
+        ctx.font = "bold 8px Inter";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(p.label, p.x, p.y);
+
+        if (p.team === "home" && p.name) {
+          ctx.fillStyle = "rgba(0,0,0,0.75)";
+          ctx.fillRect(p.x - 22, p.y + 12, 44, 11);
+          ctx.fillStyle = "#e2e8f0";
+          ctx.font = "600 8px Inter";
+          ctx.fillText(p.name, p.x, p.y + 17.5);
+        }
+      });
+
+      ctx.beginPath();
+      ctx.arc(ball.x, ball.y, 5.5, 0, Math.PI * 2);
+      ctx.fillStyle = "#facc15";
+      ctx.fill();
+      ctx.strokeStyle = "#000";
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+    }
+
+    function startOrPauseMatch() {
+      if (matchMinute >= 90) resetMatchState();
+      matchRunning = !matchRunning;
+      if (matchRunning) {
+        playSound('whistle');
+        matchLoop = setInterval(stepMatchSimulation, Math.floor(320 / matchSpeed));
+      } else {
+        clearInterval(matchLoop);
+      }
+    }
+
+    function toggleMatchSpeed() {
+      matchSpeed = matchSpeed === 1 ? 2 : matchSpeed === 2 ? 4 : 1;
+      document.getElementById("btn-match-speed").innerText = `Velocidad: x${matchSpeed}`;
+      if (matchRunning) {
+        clearInterval(matchLoop);
+        matchLoop = setInterval(stepMatchSimulation, Math.floor(320 / matchSpeed));
+      }
+    }
+
+    function stepMatchSimulation() {
+      matchMinute += 0.5;
+      const minInt = Math.floor(matchMinute);
+      document.getElementById("match-timer").innerText = `${String(minInt).padStart(2, '0')}:${matchMinute % 1 === 0 ? '00' : '30'}'`;
+
+      const mentalityShift = gameState.tactics.mentality === "Ofensiva" ? 25 : gameState.tactics.mentality === "Todo o Nada" ? 45 : gameState.tactics.mentality === "Catenaccio" ? -25 : 0;
+
+      players2D.forEach(p => {
+        const shift = p.team === "home" ? mentalityShift : 0;
+        const targetX = p.baseX + shift + (ball.x - 340) * 0.2 + (Math.random() - 0.5) * 6;
+        const targetY = p.baseY + (ball.y - 210) * 0.18 + (Math.random() - 0.5) * 6;
+        p.x += (targetX - p.x) * 0.18;
+        p.y += (targetY - p.y) * 0.18;
+      });
+
+      ball.x += ball.vx * (Math.random() * 3.5 + 1.5);
+      ball.y += ball.vy * (Math.random() * 3.5 + 1.5);
+
+      if (ball.x < 25 || ball.x > 655) ball.vx *= -1;
+      if (ball.y < 25 || ball.y > 395) ball.vy *= -1;
+
+      drawPitch2D();
+
+      if (matchMinute % 4 === 0 && Math.random() < 0.45) {
+        const club = AFA_CLUBS.find(c => c.id === gameState.managedClubId);
+        const opponents = AFA_CLUBS.filter(c => c.id !== gameState.managedClubId);
+        const opp = opponents[(gameState.week - 1) % opponents.length];
+        const starters = gameState.squad.filter(p => p.status === "XI");
+        const scorer = starters[Math.floor(Math.random() * starters.length)] || gameState.squad[0];
+
+        if (Math.random() < 0.56) {
+          homeShots++;
+          ball.x = 625; ball.y = 210;
+          if (Math.random() < 0.32) {
+            homeGoals++;
+            playSound('goal');
+            addCommentary(`${minInt}' ¡GOOOOOL DE ${club.name.toUpperCase()}! Gran intervención de ${scorer.name} (${scorer.pos}).`, "text-emerald-400 font-bold bg-emerald-950/50 border border-emerald-700");
+          } else {
+            addCommentary(`${minInt}' Llegada profunda de ${scorer.name} (${scorer.pos}) que exige al arquero.`, "text-sky-300 bg-slate-800/70");
+          }
+        } else {
+          awayShots++;
+          ball.x = 55; ball.y = 210;
+          if (Math.random() < 0.24) {
+            awayGoals++;
+            playSound('goal');
+            addCommentary(`${minInt}' Gol de ${opp.name}.`, "text-rose-400 font-bold bg-rose-950/50 border border-rose-700");
+          } else {
+            addCommentary(`${minInt}' Corte clave de tu defensa para frenar el avance de ${opp.name}.`, "text-slate-300 bg-slate-800/70");
+          }
+        }
+        document.getElementById("match-score").innerText = `${homeGoals} - ${awayGoals}`;
+      }
+
+      if (matchMinute >= 90) {
+        clearInterval(matchLoop);
+        matchRunning = false;
+        playSound('whistle');
+        addCommentary(`90' ¡Final del partido! Resultado: ${homeGoals} - ${awayGoals}.`, "text-white font-extrabold bg-sky-900");
+        finishMatchAndRecordResult();
+      }
+    }
+
+    function addCommentary(text, classes) {
+      const box = document.getElementById("match-commentary");
+      const div = document.createElement("div");
+      div.className = `p-2 rounded ${classes}`;
+      div.innerText = text;
+      box.prepend(div);
+    }
+
+    function shoutFromBench(msg) {
+      addCommentary(`Orden del DT: "${msg}".`, "text-amber-300 bg-amber-950/40 font-semibold");
+    }
+
+    function makeQuickSub() {
+      const subs = gameState.squad.filter(p => p.status === "SUB");
+      const starters = gameState.squad.filter(p => p.status === "XI");
+      if (subs.length > 0 && starters.length > 0) {
+        const outP = starters[starters.length - 1];
+        const inP = subs[0];
+        const inheritedPos = outP.pos;
+        outP.status = "SUB";
+        inP.status = "XI";
+        inP.pos = inheritedPos;
+        addCommentary(`Cambio en vivo: Ingresa ${inP.name} como ${inheritedPos} por ${outP.name}.`, "text-indigo-300 bg-indigo-950/40 font-semibold");
+        renderSquad();
+        renderTacticPreview();
+        renderLivePositionsPanel();
+        init2DEntities();
+        drawPitch2D();
+      }
+    }
+
+    function finishMatchAndRecordResult() {
+      const club = AFA_CLUBS.find(c => c.id === gameState.managedClubId);
+      const opponents = AFA_CLUBS.filter(c => c.id !== gameState.managedClubId);
+      const opp = opponents[(gameState.week - 1) % opponents.length];
+
+      const myRow = gameState.standings.find(s => s.id === club.id);
+      const oppRow = gameState.standings.find(s => s.id === opp.id);
+      if (myRow && oppRow) {
+        myRow.pj++; oppRow.pj++;
+        myRow.gf += homeGoals; myRow.gc += awayGoals;
+        oppRow.gf += awayGoals; oppRow.gc += homeGoals;
+        if (homeGoals > awayGoals) { myRow.g++; myRow.pts += 3; oppRow.p++; }
+        else if (homeGoals < awayGoals) { oppRow.g++; oppRow.pts += 3; myRow.p++; }
+        else { myRow.e++; oppRow.e++; myRow.pts++; oppRow.pts++; }
+      }
+      gameState.week++;
+      saveToLocalStorage();
+      renderAll();
+    }
+
+    function resetMatchState() {
+      matchMinute = 0; homeGoals = 0; awayGoals = 0; homeShots = 0; awayShots = 0;
+      document.getElementById("match-score").innerText = "0 - 0";
+      document.getElementById("match-timer").innerText = "00:00'";
+      document.getElementById("match-commentary").innerHTML = `<div class="p-2 rounded bg-slate-800/70 text-slate-300">Pitazo inicial en marcha.</div>`;
+      init2DEntities();
+      drawPitch2D();
+    }
+
+    function advanceDay() {
+      switchTab("match");
+      if (!matchRunning) {
+        resetMatchState();
+        startOrPauseMatch();
+      }
+    }
+
+    function switchTab(tabId) {
+      document.querySelectorAll(".tab-content").forEach(el => el.classList.add("hidden"));
+      document.getElementById(`tab-${tabId}`).classList.remove("hidden");
+
+      document.querySelectorAll(".nav-btn").forEach(btn => {
+        if (btn.dataset.tab === tabId) {
+          btn.classList.add("bg-sky-600", "text-white");
+          btn.classList.remove("text-slate-400");
+        } else {
+          btn.classList.remove("bg-sky-600", "text-white");
+          btn.classList.add("text-slate-400");
+        }
+      });
+
+      if (tabId === "match") {
+        renderLivePositionsPanel();
+        drawPitch2D();
+      }
+    }
+
+    function saveToLocalStorage() { localStorage.setItem("DT_ARG_2027_SAVE_V3", JSON.stringify(gameState)); }
+    function exportSaveFile() {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(gameState, null, 2));
+      const a = document.createElement("a");
+      a.setAttribute("href", dataStr);
+      a.setAttribute("download", `DT_Argentino_2027_${gameState.managedClubId}_Sem${gameState.week}.json`);
+      a.click();
+    }
+    function importSaveFile(e) {
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        gameState = JSON.parse(evt.target.result);
+        populateSelectors();
+        renderAll();
+        saveToLocalStorage();
+      };
+      reader.readAsText(e.target.files[0]);
+    }
+
+    window.addEventListener("DOMContentLoaded", () => {
+      const saved = localStorage.getItem("DT_ARG_2027_SAVE_V3");
+      if (saved) {
+        try {
+          gameState = JSON.parse(saved);
+        } catch (e) {
+          initNewGame("CASLA");
+        }
+      } else {
+        initNewGame("CASLA");
+      }
+      populateSelectors();
+      renderAll();
+    });
+  </script>
+</body>
+</html>
