@@ -1423,3 +1423,47 @@
   </script>
 </body>
 </html>
+// Asegurar que los listeners se asignen correctamente cuando el DOM esté listo
+document.addEventListener('DOMContentLoaded', () => {
+    const btnEnviarPedido = document.getElementById('btn-enviar-pedido'); // Ajusta el ID según tu HTML
+    if (btnEnviarPedido) {
+        btnEnviarPedido.addEventListener('click', (e) => {
+            e.preventDefault();
+            enviarPedidoDirigencia();
+        });
+    }
+
+    // Delegación de eventos para botones dinámicos (como Autorizar / Vetar ofertas)
+    document.body.addEventListener('click', (e) => {
+        if (e.target.closest('#btn-autorizar-venta')) {
+            e.preventDefault();
+            autorizarVentaJugador();
+        }
+        if (e.target.closest('#btn-vetar-venta')) {
+            e.preventDefault();
+            vetarVentaJugador();
+        }
+    });
+});
+
+// Funciones globales expuestas para evitar ReferenceError
+window.enviarPedidoDirigencia = function() {
+    const puestoSelect = document.querySelector('select[name="puesto"]'); // o el selector correspondiente
+    const perfilSelect = document.querySelector('select[name="perfil"]');
+    const inputNombre = document.querySelector('input[name="nombre_sugerido"]');
+    
+    // Lógica de procesamiento del pedido
+    console.log("Pedido enviado con éxito");
+    // Actualizar interfaz / mostrar notificación de gestión en curso
+    actualizarGestionesEnCurso();
+};
+
+window.autorizarVentaJugador = function() {
+    console.log("Venta autorizada");
+    // Lógica para remover la oferta y actualizar fondos/plantel
+};
+
+window.vetarVentaJugador = function() {
+    console.log("Venta vetada");
+    // Lógica para rechazar la oferta
+};
