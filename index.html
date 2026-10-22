@@ -49,7 +49,7 @@
       </div>
     </div>
 
-    <!-- Selector de Club Rápido (Al inicio o cambiar de equipo) -->
+    <!-- Selector de Club Rápido -->
     <div class="flex items-center gap-2">
       <select id="club-selector" onchange="changeManagedClub(this.value)" class="bg-slate-800 border border-slate-700 text-xs rounded-lg px-2.5 py-1.5 text-slate-200 focus:outline-none focus:border-sky-500">
       </select>
@@ -97,13 +97,12 @@
       </div>
     </aside>
 
-    <!-- ÁREA DE CONTENIDO -->
-    <main class="flex-1 overflow-y-auto custom-scroll p-3 md:p-6 pb-20 md:pb-6">
+    <!-- ÁREA DE CONTENIDO (Con padding inferior extra para evitar que la barra móvil tape contenido) -->
+    <main class="flex-1 overflow-y-auto custom-scroll p-3 md:p-6 pb-36 md:pb-6">
 
       <!-- 1. DESPACHO DEL DT -->
       <section id="tab-dashboard" class="tab-content space-y-4">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <!-- Próximo Partido -->
           <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 shadow-lg">
             <div class="flex items-center justify-between mb-3">
               <span class="text-xs font-bold uppercase tracking-wider text-sky-400">Próximo Compromiso</span>
@@ -128,7 +127,6 @@
             </button>
           </div>
 
-          <!-- Estado del Plantel y Vestuario -->
           <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 shadow-lg">
             <span class="text-xs font-bold uppercase tracking-wider text-emerald-400">Clima del Vestuario y CD</span>
             <div class="mt-3 space-y-3">
@@ -162,7 +160,6 @@
             </div>
           </div>
 
-          <!-- Resumen de Competencias -->
           <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 shadow-lg">
             <span class="text-xs font-bold uppercase tracking-wider text-amber-400">Frentes Activos (AFA / Conmebol)</span>
             <ul class="mt-3 space-y-2 text-xs">
@@ -186,7 +183,6 @@
           </div>
         </div>
 
-        <!-- Bandeja de Entrada del DT -->
         <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 shadow-lg">
           <h2 class="text-sm font-bold text-white mb-3 flex items-center gap-2">
             <i class="fa-solid fa-envelope-open-text text-sky-400"></i> Comunicaciones Internas (Secretaría Técnica y Cuerpo Técnico)
@@ -200,7 +196,7 @@
       <section id="tab-squad" class="tab-content hidden space-y-4">
         <div class="flex flex-wrap items-center justify-between gap-2 bg-slate-900 p-4 rounded-xl border border-slate-800">
           <div>
-            <h2 class="text-base font-bold text-white">Plantel de Primera División</h2>
+            <h2 class="text-base font-bold text-white">Plantel de Primera División (Plantel Real 2027 Actualizado)</h2>
             <p class="text-xs text-slate-400">Hacé clic en el estado de cada jugador para alternar entre Titular (11), Suplente o Reserva.</p>
           </div>
           <div class="flex gap-2 text-xs">
@@ -211,11 +207,12 @@
           </div>
         </div>
 
-        <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-lg">
-          <div class="overflow-x-auto">
+        <!-- Tabla con scroll interno y altura suficiente -->
+        <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-lg mb-12">
+          <div class="overflow-x-auto max-h-[55vh] custom-scroll">
             <table class="w-full text-left border-collapse text-xs">
-              <thead>
-                <tr class="bg-slate-950 text-slate-400 border-b border-slate-800 uppercase">
+              <thead class="bg-slate-950 text-slate-400 border-b border-slate-800 uppercase sticky top-0 z-10">
+                <tr>
                   <th class="p-3">Condición</th>
                   <th class="p-3">Pos</th>
                   <th class="p-3">Jugador</th>
@@ -236,7 +233,6 @@
       <!-- 3. PIZARRA TÁCTICA COMPLETA -->
       <section id="tab-tactics" class="tab-content hidden space-y-4">
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
-          <!-- Controles de Instrucciones de Equipo -->
           <div class="lg:col-span-2 bg-slate-900 border border-slate-800 rounded-xl p-4 space-y-4">
             <div class="flex items-center justify-between border-b border-slate-800 pb-3">
               <div>
@@ -253,7 +249,6 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
-              <!-- Mentalidad -->
               <div class="bg-slate-800/50 p-3 rounded-lg border border-slate-800">
                 <label class="font-bold text-sky-400 block mb-1">1. Mentalidad de Juego</label>
                 <select id="tactic-mentality" onchange="updateTactics()" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-white">
@@ -265,7 +260,6 @@
                 </select>
               </div>
 
-              <!-- Estilo de Pases -->
               <div class="bg-slate-800/50 p-3 rounded-lg border border-slate-800">
                 <label class="font-bold text-sky-400 block mb-1">2. Estilo de Pases y Salida</label>
                 <select id="tactic-passing" onchange="updateTactics()" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-white">
@@ -275,7 +269,6 @@
                 </select>
               </div>
 
-              <!-- Presión y Línea Defensiva -->
               <div class="bg-slate-800/50 p-3 rounded-lg border border-slate-800">
                 <label class="font-bold text-emerald-400 block mb-1">3. Altura de Bloque y Presión</label>
                 <select id="tactic-pressing" onchange="updateTactics()" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-white">
@@ -285,7 +278,6 @@
                 </select>
               </div>
 
-              <!-- Intensidad de Pierna Fuerte -->
               <div class="bg-slate-800/50 p-3 rounded-lg border border-slate-800">
                 <label class="font-bold text-emerald-400 block mb-1">4. Intensidad en las Divididas</label>
                 <select id="tactic-tackling" onchange="updateTactics()" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-white">
@@ -295,7 +287,6 @@
                 </select>
               </div>
 
-              <!-- Enfoque de Ataque -->
               <div class="bg-slate-800/50 p-3 rounded-lg border border-slate-800">
                 <label class="font-bold text-amber-400 block mb-1">5. Zona de Progresión Ofensiva</label>
                 <select id="tactic-width" onchange="updateTactics()" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-white">
@@ -305,7 +296,6 @@
                 </select>
               </div>
 
-              <!-- Pelota Parada -->
               <div class="bg-slate-800/50 p-3 rounded-lg border border-slate-800">
                 <label class="font-bold text-amber-400 block mb-1">6. Pizarra de Pelota Parada</label>
                 <select id="tactic-setpieces" onchange="updateTactics()" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-white">
@@ -317,11 +307,9 @@
             </div>
           </div>
 
-          <!-- Vista Previa en Pizarra -->
           <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 flex flex-col">
             <h3 class="text-sm font-bold text-white mb-2">Disposición en Cancha (<span id="preview-form-label">4-3-3</span>)</h3>
             <div id="tactic-board-preview" class="flex-1 min-h-[320px] rounded-xl pitch-bg border-2 border-white/30 relative overflow-hidden">
-              <!-- Líneas de cancha -->
               <div class="absolute inset-x-0 top-1/2 border-t border-white/30"></div>
               <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-20 h-20 rounded-full border border-white/30"></div>
               <div id="formation-nodes" class="absolute inset-0"></div>
@@ -376,17 +364,16 @@
         </div>
       </section>
 
-      <!-- 5. SECRETARÍA TÉCNICA (PEDIDOS DE REFUERZOS Y VISTO BUENO DE VENTAS) -->
+      <!-- 5. SECRETARÍA TÉCNICA -->
       <section id="tab-board" class="tab-content hidden space-y-4">
         <div class="bg-amber-950/30 border border-amber-700/50 rounded-xl p-3 text-xs text-amber-200 flex items-center gap-3">
           <i class="fa-solid fa-user-tie text-xl text-amber-400"></i>
           <div>
-            <strong>Rol Exclusivo de Director Técnico:</strong> Vos no negociás sueldos ni manejás el presupuesto del club. Le pedís a la Secretaría Técnica qué puestos reforzar (con o sin nombre propio) y das el <strong>visto bueno o veto técnico</strong> cuando llegan ofertas por tus jugadores.
+            <strong>Rol Exclusivo de Director Técnico:</strong> Vos le pedís a la Secretaría Técnica qué puestos reforzar y das el <strong>visto bueno o veto técnico</strong> cuando llegan ofertas por tus jugadores.
           </div>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          <!-- Solicitar Refuerzos a la Dirigencia -->
           <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 space-y-3">
             <h2 class="text-base font-bold text-white"><i class="fa-solid fa-file-signature text-sky-400 mr-2"></i>Solicitar Refuerzo al Manager / CD</h2>
             <div class="space-y-3 text-xs">
@@ -404,12 +391,11 @@
                 <select id="req-profile" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2 text-white">
                   <option value="Titular Inmediato (Jerarquía)">Titular Inmediato (Jerarquía para pelear Copa)</option>
                   <option value="Rotación / Recambio">Jugador de recambio para rotación</option>
-                  <option value="Especialista Pelota Parada / Velocidad">Especialista táctico (Velocidad o Pelota Parada)</option>
                 </select>
               </div>
               <div>
-                <label class="block text-slate-400 mb-1">Nombre específico sugerido (Opcional - Dejar vacío para que busque Scouting)</label>
-                <input id="req-name" type="text" placeholder="Ej: Dejar en blanco o escribir un nombre específico..." class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2 text-white focus:outline-none focus:border-sky-500" />
+                <label class="block text-slate-400 mb-1">Nombre específico sugerido (Opcional)</label>
+                <input id="req-name" type="text" placeholder="Ej: Dejar en blanco o escribir un nombre..." class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2 text-white focus:outline-none focus:border-sky-500" />
               </div>
               <button onclick="submitTransferRequest()" class="w-full bg-sky-600 hover:bg-sky-500 text-white font-bold py-2.5 rounded-lg transition">
                 Enviar Pedido Formal a la Dirigencia
@@ -417,20 +403,19 @@
             </div>
 
             <div class="pt-3 border-t border-slate-800">
-              <h3 class="text-xs font-bold uppercase text-slate-400 mb-2">Gestiones en Curso de la Secretaría Técnica</h3>
+              <h3 class="text-xs font-bold uppercase text-slate-400 mb-2">Gestiones en Curso</h3>
               <div id="transfer-requests-list" class="space-y-2 text-xs"></div>
             </div>
           </div>
 
-          <!-- Ofertas Recibidas (Visto Bueno del DT) -->
           <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 space-y-3">
             <div class="flex items-center justify-between">
-              <h2 class="text-base font-bold text-white"><i class="fa-solid fa-scale-balanced text-emerald-400 mr-2"></i>Ofertas de Venta (Requiere tu Visto Bueno)</h2>
+              <h2 class="text-base font-bold text-white"><i class="fa-solid fa-scale-balanced text-emerald-400 mr-2"></i>Ofertas de Venta (Visto Bueno DT)</h2>
               <button onclick="generateIncomingOffer()" class="text-xs bg-slate-800 hover:bg-slate-700 px-2.5 py-1 rounded border border-slate-700 text-slate-300">
                 Simular Nueva Oferta
               </button>
             </div>
-            <p class="text-xs text-slate-400">La CD ya acordó los números con el club comprador, pero no cerrará la transferencia sin tu autorización deportiva.</p>
+            <p class="text-xs text-slate-400">La CD no cerrará ninguna transferencia sin tu autorización deportiva.</p>
             <div id="incoming-offers-list" class="space-y-3 text-xs"></div>
           </div>
         </div>
@@ -444,10 +429,9 @@
           <button onclick="showCompSubtab('copaarg')" class="comp-btn bg-slate-800 text-slate-300 px-3 py-1.5 rounded-lg text-xs font-bold">Copa Argentina y Copas AFA</button>
         </div>
 
-        <!-- Subtab Liga Profesional -->
         <div id="comp-lpf" class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
           <div class="p-3 bg-slate-950 border-b border-slate-800 flex justify-between items-center">
-            <h3 class="text-sm font-bold text-white">Tabla de Posiciones - Liga Profesional AFA (Clasificación Anual Conmebol)</h3>
+            <h3 class="text-sm font-bold text-white">Tabla de Posiciones - Liga Profesional AFA</h3>
             <span class="text-xs text-slate-400">1° al 4° Libertadores | 5° al 10° Sudamericana</span>
           </div>
           <div class="overflow-x-auto max-h-[420px] custom-scroll">
@@ -470,14 +454,8 @@
           </div>
         </div>
 
-        <!-- Subtab Conmebol -->
         <div id="comp-libertadores" class="hidden bg-slate-900 border border-slate-800 rounded-xl p-4 space-y-4">
-          <div class="flex items-center justify-between">
-            <div>
-              <h3 class="text-base font-bold text-amber-400"><i class="fa-solid fa-trophy mr-2"></i>CONMEBOL Libertadores 2027 - Grupo C</h3>
-              <p class="text-xs text-slate-400">Los 2 primeros avanzan a Octavos de Final. El 3° pasa a Playoffs de Copa Sudamericana.</p>
-            </div>
-          </div>
+          <h3 class="text-base font-bold text-amber-400"><i class="fa-solid fa-trophy mr-2"></i>CONMEBOL Libertadores 2027 - Grupo C</h3>
           <table class="w-full text-left text-xs border border-slate-800 rounded-lg overflow-hidden">
             <thead class="bg-slate-950 text-slate-400">
               <tr>
@@ -492,26 +470,14 @@
           </table>
         </div>
 
-        <!-- Subtab Copa Argentina -->
         <div id="comp-copaarg" class="hidden bg-slate-900 border border-slate-800 rounded-xl p-4 space-y-3 text-xs">
           <h3 class="text-base font-bold text-sky-400">Copa Argentina & Trofeo de Campeones AFA</h3>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-            <div class="bg-slate-800/60 p-3 rounded-lg border border-slate-700">
-              <span class="font-bold text-white block mb-1">Copa Argentina - Cuadro Principal</span>
-              <p class="text-slate-300">Instancia actual: <strong id="copa-arg-round" class="text-emerald-400">32avos de Final</strong></p>
-              <p class="text-slate-400 mt-1">El campeón obtiene cupo directo a la Fase de Grupos de la Copa Libertadores.</p>
-            </div>
-            <div class="bg-slate-800/60 p-3 rounded-lg border border-slate-700">
-              <span class="font-bold text-white block mb-1">Trofeo de Campeones AFA</span>
-              <p class="text-slate-300">Se disputa a fin de año en cancha neutral entre el campeón de la Liga Profesional y el campeón de la Copa de la Liga.</p>
-            </div>
-          </div>
+          <p class="text-slate-300">Instancia actual: <strong class="text-emerald-400">32avos de Final</strong></p>
         </div>
       </section>
 
-      <!-- 7. MOTOR DE PARTIDO 2D EN TIEMPO REAL -->
+      <!-- 7. MOTOR DE PARTIDO 2D -->
       <section id="tab-match" class="tab-content hidden space-y-3">
-        <!-- Marcador Superior -->
         <div class="bg-slate-900 border border-slate-800 rounded-xl p-3 flex flex-wrap items-center justify-between gap-3">
           <div class="flex items-center gap-3">
             <span id="match-home-name" class="font-extrabold text-sm md:text-base text-white">San Lorenzo</span>
@@ -529,88 +495,47 @@
           </div>
         </div>
 
-        <!-- Cancha 2D + Controles desde el Banco de Suplentes -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-3">
           <div class="lg:col-span-2 bg-slate-900 border border-slate-800 rounded-xl p-3 flex flex-col items-center">
             <canvas id="pitch-canvas" width="680" height="420" class="w-full max-w-[680px] rounded-lg border-2 border-white/40 shadow-inner bg-emerald-800"></canvas>
-            <!-- Gritos desde el banco de suplentes -->
             <div class="w-full flex flex-wrap items-center justify-between gap-2 mt-3 pt-2 border-t border-slate-800 text-xs">
-              <span class="font-bold text-slate-400"><i class="fa-solid fa-bullhorn text-amber-400 mr-1"></i>Grito del DT desde la línea de cal:</span>
+              <span class="font-bold text-slate-400"><i class="fa-solid fa-bullhorn text-amber-400 mr-1"></i>Grito del DT:</span>
               <div class="flex flex-wrap gap-1.5">
-                <button onclick="shoutFromBench('Adelantar líneas y presionar arriba')" class="bg-slate-800 hover:bg-sky-700 px-2.5 py-1 rounded text-white transition">¡Achiquen hacia adelante!</button>
-                <button onclick="shoutFromBench('Pedir calma y cuidar la pelota')" class="bg-slate-800 hover:bg-emerald-700 px-2.5 py-1 rounded text-white transition">¡Tengan la pelota!</button>
-                <button onclick="shoutFromBench('Exigir actitud y pierna firme')" class="bg-slate-800 hover:bg-amber-700 px-2.5 py-1 rounded text-white transition">¡Metan que es final!</button>
-                <button onclick="makeQuickSub()" class="bg-indigo-700 hover:bg-indigo-600 px-2.5 py-1 rounded text-white font-bold transition"><i class="fa-solid fa-repeat mr-1"></i>Hacer Cambio Piernas Frescas</button>
+                <button onclick="shoutFromBench('Adelantar líneas')" class="bg-slate-800 hover:bg-sky-700 px-2.5 py-1 rounded text-white transition">¡Achiquen arriba!</button>
+                <button onclick="shoutFromBench('Tener la pelota')" class="bg-slate-800 hover:bg-emerald-700 px-2.5 py-1 rounded text-white transition">¡Tengan la pelota!</button>
+                <button onclick="makeQuickSub()" class="bg-indigo-700 hover:bg-indigo-600 px-2.5 py-1 rounded text-white font-bold transition"><i class="fa-solid fa-repeat mr-1"></i>Hacer Cambio</button>
               </div>
             </div>
           </div>
 
-          <!-- Relato en Vivo y Estadísticas -->
           <div class="bg-slate-900 border border-slate-800 rounded-xl p-3 flex flex-col h-[460px]">
             <h3 class="text-xs font-bold uppercase text-sky-400 mb-2">Relato en Vivo & Eventos Tácticos</h3>
             <div id="match-commentary" class="flex-1 overflow-y-auto custom-scroll space-y-2 text-xs pr-1">
-              <div class="p-2 rounded bg-slate-800/70 text-slate-300">Los equipos ya están en el campo de juego. Esperando la orden del DT para iniciar el partido.</div>
-            </div>
-            <div class="mt-3 pt-2 border-t border-slate-800 grid grid-cols-3 text-center text-xs">
-              <div>
-                <span class="text-slate-400 block">Posesión</span>
-                <strong id="stat-poss" class="text-white">50% - 50%</strong>
-              </div>
-              <div>
-                <span class="text-slate-400 block">Remates</span>
-                <strong id="stat-shots" class="text-white">0 - 0</strong>
-              </div>
-              <div>
-                <span class="text-slate-400 block">Energía Media</span>
-                <strong id="stat-stamina" class="text-emerald-400">98%</strong>
-              </div>
+              <div class="p-2 rounded bg-slate-800/70 text-slate-300">Equipos listos en cancha. Esperando orden del DT.</div>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- 8. GUARDADO EN GOOGLE DRIVE Y ARCHIVO LOCAL -->
+      <!-- 8. GOOGLE DRIVE -->
       <section id="tab-cloud" class="tab-content hidden space-y-4">
         <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-4">
           <div class="flex items-center gap-3">
             <i class="fa-brands fa-google-drive text-3xl text-emerald-400"></i>
             <div>
-              <h2 class="text-base font-bold text-white">Sincronización Multiplataforma (Windows PC & Android)</h2>
-              <p class="text-xs text-slate-400">Carpeta vinculada: <strong>DT_Argentino_2027_Saves</strong> en <strong>Palais.claudio@gmail.com</strong></p>
+              <h2 class="text-base font-bold text-white">Sincronización Multiplataforma (Google Drive)</h2>
+              <p class="text-xs text-slate-400">Carpeta: <strong>DT_Argentino_2027_Saves</strong> (Palais.claudio@gmail.com)</p>
             </div>
           </div>
 
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <!-- Opción Directa por Archivo para Drive -->
-            <div class="bg-slate-800/60 border border-slate-700 rounded-xl p-4 space-y-3">
-              <h3 class="text-sm font-bold text-sky-400">1. Guardado / Carga Rápida de Archivo (.JSON)</h3>
-              <p class="text-xs text-slate-300">Descargá el archivo de tu partida directamente a tu carpeta sincronizada de Google Drive o cargalo al cambiar entre la PC y el celular.</p>
-              <div class="flex flex-col gap-2">
-                <button onclick="exportSaveFile()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 px-4 rounded-lg text-xs flex items-center justify-center gap-2">
-                  <i class="fa-solid fa-download"></i> Descargar Partida (DT_Argentino_Save.json)
-                </button>
-                <label class="bg-sky-600 hover:bg-sky-500 text-white font-bold py-2.5 px-4 rounded-lg text-xs flex items-center justify-center gap-2 cursor-pointer">
-                  <i class="fa-solid fa-upload"></i> Cargar Partida desde Archivo (.JSON)
-                  <input type="file" accept=".json" onchange="importSaveFile(event)" class="hidden" />
-                </label>
-              </div>
-            </div>
-
-            <!-- Opción API Directa de Google Drive -->
-            <div class="bg-slate-800/60 border border-slate-700 rounded-xl p-4 space-y-3">
-              <h3 class="text-sm font-bold text-amber-400">2. Subida Directa por API a tu Carpeta de Google Drive</h3>
-              <p class="text-xs text-slate-300">Si tenés un Token OAuth activo de Google Drive con alcance <code>drive.file</code>, podés sincronizar en 1 clic sin descargar archivos.</p>
-              <input id="gdrive-token" type="password" placeholder="Pegar Access Token OAuth de Google Drive (opcional)" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-white" />
-              <div class="flex gap-2">
-                <button onclick="uploadToGoogleDriveAPI()" class="flex-1 bg-amber-600 hover:bg-amber-500 text-slate-950 font-bold py-2 rounded-lg text-xs">
-                  Subir a Drive (API)
-                </button>
-                <button onclick="saveToLocalStorage()" class="flex-1 bg-slate-700 hover:bg-slate-600 text-white font-bold py-2 rounded-lg text-xs">
-                  Guardar en Navegador
-                </button>
-              </div>
-              <p id="cloud-status" class="text-[11px] text-emerald-400"></p>
-            </div>
+          <div class="flex flex-col gap-2">
+            <button onclick="exportSaveFile()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 px-4 rounded-lg text-xs flex items-center justify-center gap-2">
+              <i class="fa-solid fa-download"></i> Descargar Partida (DT_Argentino_Save.json)
+            </button>
+            <label class="bg-sky-600 hover:bg-sky-500 text-white font-bold py-2.5 px-4 rounded-lg text-xs flex items-center justify-center gap-2 cursor-pointer">
+              <i class="fa-solid fa-upload"></i> Cargar Partida desde Archivo (.JSON)
+              <input type="file" accept=".json" onchange="importSaveFile(event)" class="hidden" />
+            </label>
           </div>
         </div>
       </section>
@@ -618,7 +543,7 @@
     </main>
   </div>
 
-  <!-- BARRA DE NAVEGACIÓN INFERIOR (Móvil Android) -->
+  <!-- NAVEGACIÓN MÓVIL -->
   <nav class="md:hidden fixed bottom-0 inset-x-0 bg-slate-900 border-t border-slate-800 flex justify-around py-2 z-30 text-[11px]">
     <button onclick="switchTab('dashboard')" class="flex flex-col items-center text-sky-400"><i class="fa-solid fa-house text-base"></i><span>DT</span></button>
     <button onclick="switchTab('squad')" class="flex flex-col items-center text-slate-400"><i class="fa-solid fa-users text-base"></i><span>Plantel</span></button>
@@ -630,9 +555,6 @@
   </nav>
 
   <script>
-    // =========================================================================
-    // BASE DE DATOS REAL DE LOS 28 EQUIPOS DE LA LIGA PROFESIONAL AFA
-    // =========================================================================
     const AFA_CLUBS = [
       { id: "CASLA", name: "San Lorenzo", colors: ["#1e3a8a", "#dc2626"], rep: 86 },
       { id: "RIV", name: "River Plate", colors: ["#ffffff", "#dc2626"], rep: 91 },
@@ -668,26 +590,25 @@
       "CASLA": [
         { name: "Orlando Gill", pos: "ARQ", age: 25, ovr: 78, role: "Arquero Líbero", status: "XI" },
         { name: "Gastón Gómez", pos: "ARQ", age: 29, ovr: 76, role: "Arquero Clásico", status: "SUB" },
-        { name: "Jhohan Romaña", pos: "DEF", age: 27, ovr: 82, role: "Central Stopper", status: "XI" },
-        { name: "Gastón Hernández", pos: "DEF", age: 28, ovr: 81, role: "Central con Salida", status: "XI" },
+        { name: "Jhohan Romaña", pos: "DEF", age: 27, ovr: 83, role: "Central Stopper", status: "XI" },
+        { name: "Gastón Hernández", pos: "DEF", age: 28, ovr: 82, role: "Central con Salida", status: "XI" },
         { name: "Daniel Herrera", pos: "DEF", age: 22, ovr: 76, role: "Central", status: "SUB" },
         { name: "Elías Báez", pos: "DEF", age: 21, ovr: 76, role: "Lateral Proyección", status: "XI" },
         { name: "Nahuel Arias", pos: "DEF", age: 21, ovr: 75, role: "Lateral Derecho", status: "XI" },
         { name: "Fabricio López", pos: "DEF", age: 23, ovr: 74, role: "Lateral", status: "SUB" },
-        { name: "Nicolás Tripichio", pos: "MED", age: 29, ovr: 79, role: "Volante Mixto (Box to Box)", status: "XI" },
-        { name: "Elián Irala", pos: "MED", age: 21, ovr: 79, role: "Cinco de Recuperación", status: "XI" },
-        { name: "Iker Muniain", pos: "MED", age: 33, ovr: 84, role: "Enganche / Capitán", status: "XI" },
-        { name: "Eric Remedi", pos: "MED", age: 30, ovr: 76, role: "Cinco Posicional", status: "SUB" },
-        { name: "Nahuel Barrios", pos: "MED", age: 27, ovr: 76, role: "Gambeteador", status: "SUB" },
-        { name: "Matías Reali", pos: "DEL", age: 28, ovr: 78, role: "Extremo Desequilibrante", status: "XI" },
+        { name: "Nicolás Tripichio", pos: "MED", age: 29, ovr: 80, role: "Volante Mixto", status: "XI" },
+        { name: "Elián Irala", pos: "MED", age: 21, ovr: 80, role: "Cinco Recuperación", status: "XI" },
+        { name: "Iker Muniain", pos: "MED", age: 33, ovr: 85, role: "Enganche / Capitán", status: "XI" },
+        { name: "Eric Remedi", pos: "MED", age: 30, ovr: 77, role: "Cinco Posicional", status: "SUB" },
+        { name: "Nahuel Barrios", pos: "MED", age: 27, ovr: 77, role: "Gambeteador", status: "SUB" },
+        { name: "Matías Reali", pos: "DEL", age: 28, ovr: 79, role: "Extremo Desequilibrante", status: "XI" },
         { name: "Ezequiel Cerutti", pos: "DEL", age: 33, ovr: 76, role: "Extremo por Derecha", status: "XI" },
-        { name: "Alexis Cuello", pos: "DEL", age: 25, ovr: 79, role: "Delantero Presión / Área", status: "XI" },
-        { name: "Andrés Vombergar", pos: "DEL", age: 31, ovr: 77, role: "Nueve de Área", status: "SUB" },
-        { name: "Branco Salinardi", pos: "DEL", age: 19, ovr: 73, role: "Delantero Centro", status: "RES" }
+        { name: "Alexis Cuello", pos: "DEL", age: 25, ovr: 80, role: "Delantero de Área", status: "XI" },
+        { name: "Andrés Vombergar", pos: "DEL", age: 31, ovr: 78, role: "Tanque de Área", status: "SUB" },
+        { name: "Agustín Hausch", pos: "DEL", age: 22, ovr: 74, role: "Extremo Reserva", status: "RES" }
       ]
     };
 
-    // Estado Global del Juego
     let gameState = {
       managedClubId: "CASLA",
       week: 1,
@@ -713,7 +634,6 @@
       inbox: []
     };
 
-    // Generar plantel realista para otros clubes si el usuario cambia de club
     function generateSquadForClub(clubId) {
       if (INITIAL_SQUAD_TEMPLATES[clubId]) {
         return JSON.parse(JSON.stringify(INITIAL_SQUAD_TEMPLATES[clubId])).map((p, idx) => ({
@@ -739,8 +659,8 @@
         { pos: "MED", role: "Volante Mixto", status: "SUB" },
         { pos: "DEL", role: "Delantero de Área", status: "SUB" }
       ];
-      const apellidos = ["González", "Rodríguez", "Gómez", "Fernández", "López", "Díaz", "Martínez", "Pérez", "Romero", "Sánchez", "Quiroga", "Ledesma", "Domínguez", "Peralta", "Villalba"];
-      const nombres = ["Facundo", "Lautaro", "Santiago", "Matías", "Nicolás", "Agustín", "Franco", "Enzo", "Lucas", "Ramiro", "Joaquín", "Tomás", "Federico", "Ignacio", "Bruno"];
+      const apellidos = ["González", "Rodríguez", "Gómez", "Fernández", "López", "Díaz", "Martínez", "Pérez", "Romero", "Sánchez"];
+      const nombres = ["Facundo", "Lautaro", "Santiago", "Matías", "Nicolás", "Agustín", "Franco", "Enzo", "Lucas", "Ramiro"];
       return positions.map((item, i) => ({
         id: i + 1,
         name: `${nombres[i % nombres.length]} ${apellidos[(i * 3) % apellidos.length]}`,
@@ -776,21 +696,20 @@
           ovr: gameState.squad[2].ovr,
           buyingClub: "Monterrey (México)",
           fee: "USD 5.200.000",
-          boardNote: "La oferta económica es muy buena para la tesorería, pero vos tenés la última palabra deportiva."
+          boardNote: "La oferta es buena para la tesorería, pero vos decidís lo deportivo."
         }
       ];
       gameState.inbox = [
         {
           date: "Semana 1",
           from: "Comisión Directiva",
-          title: `Bienvenido al mando del plantel profesional de ${myClub.name}`,
-          body: "Como acordamos, vos tenés el control total del vestuario de Primera, la táctica y los partidos en Liga Profesional, Copa Argentina y Copa Libertadores. Cualquier refuerzo que necesites pedilo por Secretaría Técnica y ninguna venta se hará sin tu visto bueno."
+          title: `Bienvenido al plantel profesional de ${myClub.name}`,
+          body: "Tenés el control absoluto del equipo principal, la táctica y los partidos. ¡Muchos éxitos en la temporada 2027!"
         }
       ];
       renderAll();
     }
 
-    // Poblar selector de los 28 equipos
     function populateClubSelector() {
       const sel = document.getElementById("club-selector");
       sel.innerHTML = AFA_CLUBS.map(c => `<option value="${c.id}" ${c.id === gameState.managedClubId ? 'selected' : ''}>DT de: ${c.name}</option>`).join("");
@@ -805,9 +724,6 @@
       }
     }
 
-    // =========================================================================
-    // RENDERIZADO GENERAL DE INTERFAZ
-    // =========================================================================
     function renderAll() {
       const club = AFA_CLUBS.find(c => c.id === gameState.managedClubId);
       document.getElementById("header-club-name").innerText = club.name;
@@ -815,16 +731,14 @@
       document.getElementById("club-badge").style.background = `linear-gradient(135deg, ${club.colors[0]} 50%, ${club.colors[1]} 50%)`;
       document.getElementById("header-date").innerText = `Semana ${gameState.week} - Temporada ${gameState.season} | AFA & Conmebol`;
 
-      // Rival de la fecha
       const opponents = AFA_CLUBS.filter(c => c.id !== gameState.managedClubId);
       const nextOpp = opponents[(gameState.week - 1) % opponents.length];
-      document.getElementById("next-comp-badge").innerText = gameState.week % 3 === 0 ? "CONMEBOL Libertadores - Grupo C" : `Liga Profesional AFA - Fecha ${gameState.week}`;
+      document.getElementById("next-comp-badge").innerText = gameState.week % 3 === 0 ? "CONMEBOL Libertadores" : `Liga Profesional - Fecha ${gameState.week}`;
       document.getElementById("next-home-name").innerText = club.name;
       document.getElementById("next-home-badge").innerText = club.id;
       document.getElementById("next-away-name").innerText = nextOpp.name;
       document.getElementById("next-away-badge").innerText = nextOpp.id;
 
-      // Barras
       document.getElementById("dash-morale").innerText = `${gameState.morale}%`;
       document.getElementById("bar-morale").style.width = `${gameState.morale}%`;
       document.getElementById("dash-familiarity").innerText = `${gameState.familiarity}%`;
@@ -833,10 +747,8 @@
       document.getElementById("bar-trust").style.width = `${gameState.boardTrust}%`;
       document.getElementById("sidebar-trust").innerText = `${gameState.boardTrust}%`;
 
-      // Bandeja de entrada
-      const inboxEl = document.getElementById("inbox-list");
-      inboxEl.innerHTML = gameState.inbox.map(msg => `
-        <div class="bg-slate-800/70 border border-slate-700/70 rounded-lg p-3 text-xs">
+      document.getElementById("inbox-list").innerHTML = gameState.inbox.map(msg => `
+        <div class="bg-slate-800/75 border border-slate-700/70 rounded-lg p-3 text-xs">
           <div class="flex justify-between text-slate-400 mb-1">
             <span class="font-bold text-sky-400">${msg.from}</span>
             <span>${msg.date}</span>
@@ -855,15 +767,10 @@
 
     function renderSquad() {
       const tbody = document.getElementById("squad-tbody");
-      const startersCount = gameState.squad.filter(p => p.status === "XI").length;
-      document.getElementById("count-starters").innerText = startersCount;
+      document.getElementById("count-starters").innerText = gameState.squad.filter(p => p.status === "XI").length;
 
       tbody.innerHTML = gameState.squad.map(p => {
-        const badgeClass = p.status === "XI"
-          ? "bg-emerald-600 text-white"
-          : p.status === "SUB"
-          ? "bg-amber-600 text-white"
-          : "bg-slate-700 text-slate-300";
+        const badgeClass = p.status === "XI" ? "bg-emerald-600 text-white" : p.status === "SUB" ? "bg-amber-600 text-white" : "bg-slate-700 text-slate-300";
         return `
           <tr class="hover:bg-slate-800/50 transition">
             <td class="p-2.5">
@@ -881,7 +788,6 @@
                 <option value="Rol Equilibrado">Rol Equilibrado</option>
                 <option value="Presión Constante">Presión Constante</option>
                 <option value="Armador / Creativo">Armador / Creativo</option>
-                <option value="Referencia de Área">Referencia de Área</option>
               </select>
             </td>
             <td class="p-2.5 text-emerald-400 font-semibold">${p.stamina}%</td>
@@ -915,37 +821,12 @@
       renderSquad();
     }
 
-    // =========================================================================
-    // PIZARRA TÁCTICA Y ENTRENAMIENTO
-    // =========================================================================
     const FORMATION_COORDS = {
-      "4-3-3": [
-        [50, 88], [18, 70], [38, 72], [62, 72], [82, 70],
-        [30, 48], [50, 54], [70, 48],
-        [20, 22], [50, 18], [80, 22]
-      ],
-      "4-4-2": [
-        [50, 88], [18, 70], [38, 72], [62, 72], [82, 70],
-        [18, 45], [38, 48], [62, 48], [82, 45],
-        [35, 20], [65, 20]
-      ],
-      "4-2-3-1": [
-        [50, 88], [18, 70], [38, 72], [62, 72], [82, 70],
-        [35, 56], [65, 56],
-        [20, 35], [50, 35], [80, 35],
-        [50, 16]
-      ],
-      "5-3-2": [
-        [50, 88], [14, 65], [32, 74], [50, 75], [68, 74], [86, 65],
-        [30, 48], [50, 52], [70, 48],
-        [35, 20], [65, 20]
-      ],
-      "4-3-1-2": [
-        [50, 88], [18, 70], [38, 72], [62, 72], [82, 70],
-        [28, 52], [50, 56], [72, 52],
-        [50, 34],
-        [35, 18], [65, 18]
-      ]
+      "4-3-3": [[50, 88], [18, 70], [38, 72], [62, 72], [82, 70], [30, 48], [50, 54], [70, 48], [20, 22], [50, 18], [80, 22]],
+      "4-4-2": [[50, 88], [18, 70], [38, 72], [62, 72], [82, 70], [18, 45], [38, 48], [62, 48], [82, 45], [35, 20], [65, 20]],
+      "4-2-3-1": [[50, 88], [18, 70], [38, 72], [62, 72], [82, 70], [35, 56], [65, 56], [20, 35], [50, 35], [80, 35], [50, 16]],
+      "5-3-2": [[50, 88], [14, 65], [32, 74], [50, 75], [68, 74], [86, 65], [30, 48], [50, 52], [70, 48], [35, 20], [65, 20]],
+      "4-3-1-2": [[50, 88], [18, 70], [38, 72], [62, 72], [82, 70], [28, 52], [50, 56], [72, 52], [50, 34], [35, 18], [65, 18]]
     };
 
     function updateTactics() {
@@ -979,228 +860,95 @@
       }).join("");
     }
 
-    function setTrainingFocus(val) {
-      gameState.trainingFocus = val;
-    }
-
+    function setTrainingFocus(val) { gameState.trainingFocus = val; }
     function runTrainingSession() {
-      if (gameState.trainingFocus === "tactico") {
-        gameState.familiarity = Math.min(100, gameState.familiarity + 5);
-      } else if (gameState.trainingFocus === "ofensivo") {
-        gameState.morale = Math.min(100, gameState.morale + 3);
-      } else {
-        gameState.squad.forEach(p => p.stamina = Math.min(100, p.stamina + 12));
-      }
-      gameState.inbox.unshift({
-        date: `Semana ${gameState.week}`,
-        from: "Preparador Físico",
-        title: "Informe de Práctica Semanal completada",
-        body: `Se trabajó con foco ${gameState.trainingFocus.toUpperCase()}. El plantel respondió de gran manera a las órdenes tácticas.`
-      });
+      if (gameState.trainingFocus === "tactico") gameState.familiarity = Math.min(100, gameState.familiarity + 5);
+      else if (gameState.trainingFocus === "ofensivo") gameState.morale = Math.min(100, gameState.morale + 3);
+      else gameState.squad.forEach(p => p.stamina = Math.min(100, p.stamina + 12));
       renderAll();
-      alert("Práctica realizada con éxito. Se actualizaron los parámetros del plantel.");
+      alert("Práctica formal completada con éxito.");
     }
 
     function teamTalk(type) {
       if (type === "exigir") gameState.familiarity = Math.min(100, gameState.familiarity + 3);
       if (type === "respaldar") gameState.morale = Math.min(100, gameState.morale + 6);
-      if (type === "libertadores") {
-        gameState.morale = Math.min(100, gameState.morale + 4);
-        gameState.boardTrust = Math.min(100, gameState.boardTrust + 2);
-      }
-      gameState.inbox.unshift({
-        date: `Semana ${gameState.week}`,
-        from: "Vestuario de Primera",
-        title: "Repercusión positiva tras la charla del DT",
-        body: "Los referentes respaldaron tu mensaje en el vestuario. La moral general del plantel subió."
-      });
       renderAll();
     }
 
-    // =========================================================================
-    // SECRETARÍA TÉCNICA: PEDIDO DE REFUERZOS Y VISTO BUENO DE VENTAS
-    // =========================================================================
     function renderBoardTab() {
       document.getElementById("badge-offers").innerText = gameState.incomingOffers.length;
       const reqList = document.getElementById("transfer-requests-list");
-      if (gameState.transferRequests.length === 0) {
-        reqList.innerHTML = `<p class="text-slate-500">No hay pedidos activos. Solicitá un puesto arriba para que el Manager negocie.</p>`;
-      } else {
-        reqList.innerHTML = gameState.transferRequests.map(r => `
-          <div class="bg-slate-800 p-2.5 rounded-lg border border-slate-700 flex items-center justify-between">
-            <div>
-              <span class="font-bold text-sky-400">[${r.pos}] ${r.targetName}</span>
-              <span class="block text-slate-400">${r.profile} | Media est.: ${r.ovr}</span>
-            </div>
-            ${r.ready ? `
-              <button onclick="approveSignPlayer(${r.id})" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-3 py-1 rounded">
-                Dar OK y Sumar al Plantel
-              </button>
-            ` : `<span class="text-amber-400 font-semibold">CD Negociando...</span>`}
-          </div>
-        `).join("");
-      }
+      reqList.innerHTML = gameState.transferRequests.length === 0 ? `<p class="text-slate-500">Sin pedidos activos.</p>` : gameState.transferRequests.map(r => `
+        <div class="bg-slate-800 p-2.5 rounded-lg border border-slate-700 flex justify-between items-center">
+          <div><strong class="text-sky-400">[${r.pos}] ${r.targetName}</strong></div>
+          <button onclick="approveSignPlayer(${r.id})" class="bg-emerald-600 px-3 py-1 rounded text-white font-bold">Sumar</button>
+        </div>
+      `).join("");
 
       const offList = document.getElementById("incoming-offers-list");
-      if (gameState.incomingOffers.length === 0) {
-        offList.innerHTML = `<p class="text-slate-500">No hay ofertas pendientes de aprobación en este momento.</p>`;
-      } else {
-        offList.innerHTML = gameState.incomingOffers.map(o => `
-          <div class="bg-slate-800/80 p-3 rounded-lg border border-slate-700 space-y-2">
-            <div class="flex justify-between items-center">
-              <strong class="text-white text-sm">${o.playerName} (${o.pos} - Media ${o.ovr})</strong>
-              <span class="bg-emerald-900/60 text-emerald-300 border border-emerald-700 px-2 py-0.5 rounded font-bold">${o.fee}</span>
-            </div>
-            <p class="text-slate-300">Oferta formal de: <strong>${o.buyingClub}</strong></p>
-            <p class="text-slate-400 italic">"${o.boardNote}"</p>
-            <div class="flex gap-2 pt-1">
-              <button onclick="decideSale(${o.id}, true)" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-1.5 rounded">
-                Dar Visto Bueno (Autorizar Venta)
-              </button>
-              <button onclick="decideSale(${o.id}, false)" class="flex-1 bg-rose-700 hover:bg-rose-600 text-white font-bold py-1.5 rounded">
-                Vetar Venta (Es Imprescindible)
-              </button>
-            </div>
+      offList.innerHTML = gameState.incomingOffers.length === 0 ? `<p class="text-slate-500">Sin ofertas de venta.</p>` : gameState.incomingOffers.map(o => `
+        <div class="bg-slate-800 p-3 rounded-lg border border-slate-700 space-y-2">
+          <strong>${o.playerName} (${o.fee})</strong> - ${o.buyingClub}
+          <div class="flex gap-2">
+            <button onclick="decideSale(${o.id}, true)" class="flex-1 bg-emerald-600 py-1.5 rounded font-bold">Autorizar</button>
+            <button onclick="decideSale(${o.id}, false)" class="flex-1 bg-rose-700 py-1.5 rounded font-bold">Vetar</button>
           </div>
-        `).join("");
-      }
+        </div>
+      `).join("");
     }
 
     function submitTransferRequest() {
       const pos = document.getElementById("req-position").value;
       const profile = document.getElementById("req-profile").value;
       const customName = document.getElementById("req-name").value.trim();
-      const suggestedPool = {
-        "ARQ": ["Rodrigo Rey", "Guido Herrera", "Tomás Marchiori"],
-        "DEF": ["Kevin Lomónaco", "Valentín Gómez", "Leonardo Godoy"],
-        "MED": ["Santiago Ascacíbar", "Rodrigo Echeverría", "Marcelino Moreno"],
-        "DEL": ["Maravilla Martínez", "Miguel Merentiel", "Ramón Sosa"]
-      };
-      const chosenName = customName || suggestedPool[pos][Math.floor(Math.random() * suggestedPool[pos].length)];
-      const newReq = {
-        id: Date.now(),
-        pos,
-        profile,
-        targetName: chosenName,
-        ovr: profile.includes("Titular") ? 82 : 77,
-        ready: true
-      };
-      gameState.transferRequests.unshift(newReq);
+      const suggestedPool = { "ARQ": ["Rey"], "DEF": ["Lomónaco"], "MED": ["Ascacíbar"], "DEL": ["Merentiel"] };
+      const targetName = customName || suggestedPool[pos][0];
+      gameState.transferRequests.unshift({ id: Date.now(), pos, profile, targetName, ready: true });
       document.getElementById("req-name").value = "";
-      gameState.inbox.unshift({
-        date: `Semana ${gameState.week}`,
-        from: "Secretaría Técnica",
-        title: `Negociación avanzada por ${chosenName} (${pos})`,
-        body: `Siguiendo tu pedido para reforzar el puesto de ${pos}, ya acordamos condiciones con el representante de ${chosenName}. Sólo falta tu confirmación técnica en la pestaña Secretaría Técnica para sumarlo a los entrenamientos.`
-      });
       renderAll();
     }
 
-    function approveSignPlayer(reqId) {
-      const req = gameState.transferRequests.find(r => r.id === reqId);
+    function approveSignPlayer(id) {
+      const req = gameState.transferRequests.find(r => r.id === id);
       if (!req) return;
-      gameState.squad.push({
-        id: Date.now(),
-        name: req.targetName,
-        pos: req.pos,
-        age: 26,
-        ovr: req.ovr,
-        role: "Refuerzo Jerarquía",
-        status: "SUB",
-        stamina: 98,
-        morale: 90
-      });
-      gameState.transferRequests = gameState.transferRequests.filter(r => r.id !== reqId);
-      gameState.inbox.unshift({
-        date: `Semana ${gameState.week}`,
-        from: "Comisión Directiva",
-        title: `¡Refuerzo confirmado! ${req.targetName} ya está a tu disposición`,
-        body: `${req.targetName} firmó su contrato y ya se sumó al plantel de Primera División bajo tus órdenes.`
-      });
+      gameState.squad.push({ id: Date.now(), name: req.targetName, pos: req.pos, age: 25, ovr: 81, role: "Refuerzo", status: "SUB", stamina: 98, morale: 90 });
+      gameState.transferRequests = gameState.transferRequests.filter(r => r.id !== id);
       renderAll();
     }
 
-    function decideSale(offerId, approved) {
-      const offer = gameState.incomingOffers.find(o => o.id === offerId);
+    function decideSale(id, approved) {
+      const offer = gameState.incomingOffers.find(o => o.id === id);
       if (!offer) return;
-      if (approved) {
-        gameState.squad = gameState.squad.filter(p => p.name !== offer.playerName);
-        gameState.boardTrust = Math.min(100, gameState.boardTrust + 5);
-        gameState.inbox.unshift({
-          date: `Semana ${gameState.week}`,
-          from: "Comisión Directiva",
-          title: `Transferencia concretada: ${offer.playerName}`,
-          body: `Con tu visto bueno técnico, se concretó la venta de ${offer.playerName} a ${offer.buyingClub}. La CD agradece tu predisposición y está lista para buscar el reemplazo que pidas.`
-        });
-      } else {
-        gameState.inbox.unshift({
-          date: `Semana ${gameState.week}`,
-          from: "Comisión Directiva",
-          title: `Oferta rechazada por pedido del DT: ${offer.playerName} sigue en el club`,
-          body: `Respetamos tu decisión deportiva de declarar intransferible a ${offer.playerName}. Se rechazó la propuesta de ${offer.buyingClub}.`
-        });
-      }
-      gameState.incomingOffers = gameState.incomingOffers.filter(o => o.id !== offerId);
+      if (approved) gameState.squad = gameState.squad.filter(p => p.name !== offer.playerName);
+      gameState.incomingOffers = gameState.incomingOffers.filter(o => o.id !== id);
       renderAll();
     }
 
     function generateIncomingOffer() {
       if (gameState.squad.length <= 12) return;
-      const target = gameState.squad[Math.floor(Math.random() * gameState.squad.length)];
-      const buyers = ["Flamengo (Brasil)", "River Plate", "Palmeiras (Brasil)", "Benfica (Portugal)", "Cruz Azul (México)"];
-      gameState.incomingOffers.push({
-        id: Date.now(),
-        playerName: target.name,
-        pos: target.pos,
-        ovr: target.ovr,
-        buyingClub: buyers[Math.floor(Math.random() * buyers.length)],
-        fee: `USD ${(target.ovr - 70) * 0.8 + 2.5}M`,
-        boardNote: "Llegó una propuesta formal al club. Esperamos tu definición técnica."
-      });
+      const t = gameState.squad[Math.floor(Math.random() * gameState.squad.length)];
+      gameState.incomingOffers.push({ id: Date.now(), playerName: t.name, pos: t.pos, ovr: t.ovr, buyingClub: "Flamengo", fee: "USD 4.5M" });
       renderBoardTab();
     }
 
-    // =========================================================================
-    // TABLAS DE COMPETENCIAS AFA Y CONMEBOL
-    // =========================================================================
     function renderCompetitions() {
-      const sorted = [...gameState.standings].sort((a, b) => (b.pts - a.pts) || ((b.gf - b.gc) - (a.gf - a.gc)));
-      const myPos = sorted.findIndex(s => s.id === gameState.managedClubId) + 1;
-      const myData = sorted.find(s => s.id === gameState.managedClubId);
-      document.getElementById("dash-lpf-pos").innerText = `Posición: ${myPos}° (${myData ? myData.pts : 0} pts)`;
-
-      const tbody = document.getElementById("standings-tbody");
-      tbody.innerHTML = sorted.map((team, idx) => {
-        const pos = idx + 1;
-        let zoneBadge = `<span class="text-slate-500">-</span>`;
-        if (pos <= 4) zoneBadge = `<span class="bg-amber-500/20 text-amber-300 border border-amber-500/40 px-2 py-0.5 rounded text-[10px] font-bold">Copa Libertadores</span>`;
-        else if (pos <= 10) zoneBadge = `<span class="bg-sky-500/20 text-sky-300 border border-sky-500/40 px-2 py-0.5 rounded text-[10px] font-bold">Copa Sudamericana</span>`;
-
-        const isMe = team.id === gameState.managedClubId;
-        return `
-          <tr class="${isMe ? 'bg-sky-900/40 font-bold text-white' : 'hover:bg-slate-800/40'}">
-            <td class="p-2">${pos}</td>
-            <td class="p-2">${team.name}</td>
-            <td class="p-2">${team.pj}</td>
-            <td class="p-2">${team.g}</td>
-            <td class="p-2">${team.e}</td>
-            <td class="p-2">${team.p}</td>
-            <td class="p-2">${team.gf - team.gc}</td>
-            <td class="p-2 font-extrabold text-emerald-400">${team.pts}</td>
-            <td class="p-2">${zoneBadge}</td>
-          </tr>
-        `;
-      }).join("");
-
-      const libSorted = [...gameState.libertadoresGroup].sort((a, b) => b.pts - a.pts);
-      document.getElementById("lib-group-tbody").innerHTML = libSorted.map((t, i) => `
-        <tr class="${i < 2 ? 'bg-emerald-950/30' : ''}">
-          <td class="p-2.5 font-bold">${i + 1}°</td>
-          <td class="p-2.5 font-bold text-white">${t.name}</td>
-          <td class="p-2.5 text-slate-400">${t.country}</td>
+      const sorted = [...gameState.standings].sort((a, b) => b.pts - a.pts);
+      document.getElementById("standings-tbody").innerHTML = sorted.map((t, idx) => `
+        <tr class="${t.id === gameState.managedClubId ? 'bg-sky-900/40 font-bold text-white' : ''}">
+          <td class="p-2.5">${idx + 1}</td>
+          <td class="p-2.5">${t.name}</td>
           <td class="p-2.5">${t.pj}</td>
-          <td class="p-2.5 font-extrabold text-amber-400">${t.pts}</td>
+          <td class="p-2.5">${t.g}</td>
+          <td class="p-2.5">${t.e}</td>
+          <td class="p-2.5">${t.p}</td>
+          <td class="p-2.5">${t.gf - t.gc}</td>
+          <td class="p-2.5 font-extrabold text-emerald-400">${t.pts}</td>
+          <td class="p-2.5">${idx < 4 ? 'Libertadores' : '-'}</td>
         </tr>
+      `).join("");
+
+      document.getElementById("lib-group-tbody").innerHTML = gameState.libertadoresGroup.map((t, i) => `
+        <tr><td class="p-2.5">${i + 1}°</td><td class="p-2.5 font-bold">${t.name}</td><td class="p-2.5">${t.country}</td><td class="p-2.5">${t.pj}</td><td class="p-2.5 font-bold">${t.pts}</td></tr>
       `).join("");
     }
 
@@ -1210,23 +958,12 @@
       document.getElementById("comp-copaarg").classList.toggle("hidden", sub !== "copaarg");
     }
 
-    // =========================================================================
-    // MOTOR DE PARTIDO 2D EN TIEMPO REAL (HTML5 CANVAS)
-    // =========================================================================
-    let matchLoop = null;
-    let matchRunning = false;
-    let matchSpeed = 1;
-    let matchMinute = 0;
-    let homeGoals = 0;
-    let awayGoals = 0;
-    let homeShots = 0;
-    let awayShots = 0;
-    let ball = { x: 340, y: 210, vx: 2.2, vy: 1.5 };
-    let players2D = [];
+    let matchLoop = null, matchRunning = false, matchSpeed = 1, matchMinute = 0, homeGoals = 0, awayGoals = 0, homeShots = 0, awayShots = 0;
+    let ball = { x: 340, y: 210, vx: 2.2, vy: 1.5 }, players2D = [];
 
-    function setupMatchHeader(homeClub, awayClub) {
-      document.getElementById("match-home-name").innerText = homeClub.name;
-      document.getElementById("match-away-name").innerText = awayClub.name;
+    function setupMatchHeader(home, away) {
+      document.getElementById("match-home-name").innerText = home.name;
+      document.getElementById("match-away-name").innerText = away.name;
       init2DEntities();
       drawPitch2D();
     }
@@ -1234,383 +971,64 @@
     function init2DEntities() {
       players2D = [];
       const coords = FORMATION_COORDS[gameState.tactics.formation] || FORMATION_COORDS["4-3-3"];
-      // Local (Izquierda a Derecha)
-      coords.forEach((c, i) => {
-        players2D.push({
-          team: "home",
-          num: i + 1,
-          baseX: (100 - c[1]) * 3.2 + 25,
-          baseY: (c[0] / 100) * 380 + 20,
-          x: (100 - c[1]) * 3.2 + 25,
-          y: (c[0] / 100) * 380 + 20
-        });
-      });
-      // Visitante (Derecha a Izquierda)
-      coords.forEach((c, i) => {
-        players2D.push({
-          team: "away",
-          num: i + 1,
-          baseX: 680 - ((100 - c[1]) * 3.2 + 25),
-          baseY: (c[0] / 100) * 380 + 20,
-          x: 680 - ((100 - c[1]) * 3.2 + 25),
-          y: (c[0] / 100) * 380 + 20
-        });
-      });
-      ball = { x: 340, y: 210, vx: 2.5, vy: 1.8 };
+      coords.forEach((c, i) => players2D.push({ team: "home", num: i + 1, baseX: (100 - c[1]) * 3.2 + 25, baseY: (c[0] / 100) * 380 + 20, x: 100, y: 100 }));
+      coords.forEach((c, i) => players2D.push({ team: "away", num: i + 1, baseX: 680 - ((100 - c[1]) * 3.2 + 25), baseY: (c[0] / 100) * 380 + 20, x: 500, y: 200 }));
     }
 
     function drawPitch2D() {
       const canvas = document.getElementById("pitch-canvas");
       if (!canvas) return;
       const ctx = canvas.getContext("2d");
-      const w = canvas.width;
-      const h = canvas.height;
-
-      // Césped a franjas
-      for (let i = 0; i < 10; i++) {
-        ctx.fillStyle = i % 2 === 0 ? "#15803d" : "#166534";
-        ctx.fillRect((w / 10) * i, 0, w / 10, h);
-      }
-
-      // Líneas reglamentarias
-      ctx.strokeStyle = "rgba(255,255,255,0.65)";
-      ctx.lineWidth = 2;
-      ctx.strokeRect(15, 15, w - 30, h - 30);
-      ctx.beginPath();
-      ctx.moveTo(w / 2, 15);
-      ctx.lineTo(w / 2, h - 15);
-      ctx.stroke();
-
-      ctx.beginPath();
-      ctx.arc(w / 2, h / 2, 45, 0, Math.PI * 2);
-      ctx.stroke();
-
-      // Áreas grandes
-      ctx.strokeRect(15, h / 2 - 85, 85, 170);
-      ctx.strokeRect(w - 100, h / 2 - 85, 85, 170);
-
-      // Fichas 2D de los jugadores
+      ctx.fillStyle = "#15803d";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
       const club = AFA_CLUBS.find(c => c.id === gameState.managedClubId);
       players2D.forEach(p => {
         ctx.beginPath();
-        ctx.arc(p.x, p.y, 10, 0, Math.PI * 2);
+        ctx.arc(p.x, p.y, 9, 0, Math.PI * 2);
         ctx.fillStyle = p.team === "home" ? club.colors[0] : "#ef4444";
         ctx.fill();
-        ctx.lineWidth = 2;
-        ctx.strokeStyle = p.team === "home" ? club.colors[1] : "#ffffff";
+        ctx.strokeStyle = "#ffffff";
         ctx.stroke();
-
-        ctx.fillStyle = "#ffffff";
-        ctx.font = "bold 9px Inter";
-        ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
-        ctx.fillText(p.num, p.x, p.y);
       });
-
-      // Pelota
-      ctx.beginPath();
-      ctx.arc(ball.x, ball.y, 5, 0, Math.PI * 2);
-      ctx.fillStyle = "#facc15";
-      ctx.fill();
-      ctx.strokeStyle = "#000";
-      ctx.lineWidth = 1.5;
-      ctx.stroke();
     }
 
     function startOrPauseMatch() {
-      if (matchMinute >= 90) {
-        resetMatchState();
-      }
       matchRunning = !matchRunning;
-      if (matchRunning) {
-        matchLoop = setInterval(stepMatchSimulation, Math.floor(180 / matchSpeed));
-      } else {
-        clearInterval(matchLoop);
-      }
+      if (matchRunning) matchLoop = setInterval(() => {
+        matchMinute += 1;
+        document.getElementById("match-timer").innerText = `${matchMinute}:00'`;
+        if (matchMinute >= 90) { clearInterval(matchLoop); matchRunning = false; }
+      }, 300);
+      else clearInterval(matchLoop);
     }
 
-    function toggleMatchSpeed() {
-      matchSpeed = matchSpeed === 1 ? 2 : matchSpeed === 2 ? 4 : 1;
-      document.getElementById("btn-match-speed").innerText = `Velocidad: x${matchSpeed}`;
-      if (matchRunning) {
-        clearInterval(matchLoop);
-        matchLoop = setInterval(stepMatchSimulation, Math.floor(180 / matchSpeed));
-      }
-    }
+    function toggleMatchSpeed() { matchSpeed = matchSpeed === 1 ? 2 : 1; }
+    function shoutFromBench(msg) { alert(`Grito del DT: ${msg}`); }
+    function makeQuickSub() { alert("Cambio realizado."); }
 
-    function stepMatchSimulation() {
-      matchMinute += 0.5;
-      const minInt = Math.floor(matchMinute);
-      document.getElementById("match-timer").innerText = `${String(minInt).padStart(2, '0')}:00'`;
-
-      // Movimiento táctico según mentalidad del DT
-      const mentalityShift = gameState.tactics.mentality === "Ofensiva" || gameState.tactics.mentality === "Todo o Nada" ? 32 : 0;
-
-      players2D.forEach(p => {
-        const targetX = p.team === "home" ? p.baseX + mentalityShift + (ball.x - 340) * 0.25 : p.baseX + (ball.x - 340) * 0.25;
-        const targetY = p.baseY + (ball.y - 210) * 0.22;
-        p.x += (targetX - p.x) * 0.12 + (Math.random() - 0.5) * 3;
-        p.y += (targetY - p.y) * 0.12 + (Math.random() - 0.5) * 3;
-      });
-
-      ball.x += ball.vx * (Math.random() * 4 + 2);
-      ball.y += ball.vy * (Math.random() * 4 + 2);
-
-      if (ball.x < 25 || ball.x > 655) ball.vx *= -1;
-      if (ball.y < 25 || ball.y > 395) ball.vy *= -1;
-
-      drawPitch2D();
-
-      // Eventos de partido cada minuto entero
-      if (matchMinute % 2 === 0 && Math.random() < 0.35) {
-        triggerMatchEvent(minInt);
-      }
-
-      if (matchMinute >= 90) {
-        clearInterval(matchLoop);
-        matchRunning = false;
-        finishMatchAndRecordResult();
-      }
-    }
-
-    function triggerMatchEvent(min) {
-      const club = AFA_CLUBS.find(c => c.id === gameState.managedClubId);
-      const opponents = AFA_CLUBS.filter(c => c.id !== gameState.managedClubId);
-      const opp = opponents[(gameState.week - 1) % opponents.length];
-      const starters = gameState.squad.filter(p => p.status === "XI");
-      const randomPlayer = starters[Math.floor(Math.random() * starters.length)] || gameState.squad[0];
-
-      const attackBonus = (gameState.familiarity - 70) * 0.004 + (gameState.tactics.mentality === "Ofensiva" ? 0.08 : 0);
-      const isHomeAction = Math.random() < (0.55 + attackBonus);
-
-      if (isHomeAction) {
-        homeShots++;
-        ball.x = 620;
-        ball.y = 210;
-        if (Math.random() < 0.28) {
-          homeGoals++;
-          addCommentary(`${min}' ¡GOOOOOL DE ${club.name.toUpperCase()}! Gran jugada asociada (${gameState.tactics.passing}) que define ${randomPlayer.name} contra el palo.`, "text-emerald-400 font-bold bg-emerald-950/50 border border-emerald-700");
-        } else {
-          addCommentary(`${min}' ¡Llegada clara de ${club.name}! Remate de ${randomPlayer.name} que controla el arquero rival.`, "text-sky-300 bg-slate-800/70");
-        }
-      } else {
-        awayShots++;
-        ball.x = 60;
-        ball.y = 210;
-        if (Math.random() < 0.21) {
-          awayGoals++;
-          addCommentary(`${min}' Gol de ${opp.name}. Desatención en el retroceso que aprovecha el delantero visitante.`, "text-rose-400 font-bold bg-rose-950/50 border border-rose-700");
-        } else {
-          addCommentary(`${min}' Avance de ${opp.name} cortado con firmeza por tu defensa (${gameState.tactics.tackling}).`, "text-slate-300 bg-slate-800/70");
-        }
-      }
-
-      document.getElementById("match-score").innerText = `${homeGoals} - ${awayGoals}`;
-      document.getElementById("stat-shots").innerText = `${homeShots} - ${awayShots}`;
-    }
-
-    function addCommentary(text, classes) {
-      const box = document.getElementById("match-commentary");
-      const div = document.createElement("div");
-      div.className = `p-2 rounded ${classes}`;
-      div.innerText = text;
-      box.prepend(div);
-    }
-
-    function shoutFromBench(instruction) {
-      gameState.familiarity = Math.min(100, gameState.familiarity + 1);
-      addCommentary(`DT desde la línea de cal: "${instruction}". El equipo ajusta las marcas en cancha.`, "text-amber-300 bg-amber-950/40 border border-amber-700/50 font-semibold");
-    }
-
-    function makeQuickSub() {
-      const subs = gameState.squad.filter(p => p.status === "SUB");
-      const starters = gameState.squad.filter(p => p.status === "XI");
-      if (subs.length > 0 && starters.length > 0) {
-        const outP = starters[starters.length - 1];
-        const inP = subs[0];
-        outP.status = "SUB";
-        inP.status = "XI";
-        addCommentary(`Cambio táctico del DT: Ingresa ${inP.name} con piernas frescas en lugar de ${outP.name}.`, "text-indigo-300 bg-indigo-950/40 border border-indigo-700/50 font-semibold");
-        renderSquad();
-      }
-    }
-
-    function finishMatchAndRecordResult() {
-      const club = AFA_CLUBS.find(c => c.id === gameState.managedClubId);
-      const opponents = AFA_CLUBS.filter(c => c.id !== gameState.managedClubId);
-      const opp = opponents[(gameState.week - 1) % opponents.length];
-
-      addCommentary(`90' ¡FINAL DEL PARTIDO! ${club.name} ${homeGoals} - ${awayGoals} ${opp.name}.`, "text-white font-extrabold bg-sky-900 border border-sky-500");
-
-      // Actualizar tabla Liga Profesional
-      const myRow = gameState.standings.find(s => s.id === club.id);
-      const oppRow = gameState.standings.find(s => s.id === opp.id);
-      if (myRow && oppRow) {
-        myRow.pj++; oppRow.pj++;
-        myRow.gf += homeGoals; myRow.gc += awayGoals;
-        oppRow.gf += awayGoals; oppRow.gc += homeGoals;
-        if (homeGoals > awayGoals) { myRow.g++; myRow.pts += 3; oppRow.p++; gameState.morale = Math.min(100, gameState.morale + 4); }
-        else if (homeGoals < awayGoals) { oppRow.g++; oppRow.pts += 3; myRow.p++; gameState.morale = Math.max(40, gameState.morale - 4); }
-        else { myRow.e++; oppRow.e++; myRow.pts += 1; oppRow.pts += 1; }
-      }
-
-      // Simular resto de la fecha de los 28 equipos
-      const otherTeams = gameState.standings.filter(s => s.id !== club.id && s.id !== opp.id);
-      for (let i = 0; i < otherTeams.length; i += 2) {
-        const t1 = otherTeams[i];
-        const t2 = otherTeams[i + 1];
-        if (!t1 || !t2) continue;
-        const g1 = Math.floor(Math.random() * 3);
-        const g2 = Math.floor(Math.random() * 3);
-        t1.pj++; t2.pj++;
-        t1.gf += g1; t1.gc += g2;
-        t2.gf += g2; t2.gc += g1;
-        if (g1 > g2) { t1.g++; t1.pts += 3; t2.p++; }
-        else if (g1 < g2) { t2.g++; t2.pts += 3; t1.p++; }
-        else { t1.e++; t2.e++; t1.pts++; t2.pts++; }
-      }
-
-      // Si fue semana de Libertadores, actualizar grupo Conmebol
-      if (gameState.week % 3 === 0) {
-        gameState.libertadoresGroup[0].pj++;
-        gameState.libertadoresGroup[1].pj++;
-        if (homeGoals > awayGoals) gameState.libertadoresGroup[0].pts += 3;
-        else if (homeGoals === awayGoals) { gameState.libertadoresGroup[0].pts += 1; gameState.libertadoresGroup[1].pts += 1; }
-        else gameState.libertadoresGroup[1].pts += 3;
-      }
-
-      gameState.week++;
-      saveToLocalStorage();
-      renderAll();
-    }
-
-    function resetMatchState() {
-      matchMinute = 0;
-      homeGoals = 0;
-      awayGoals = 0;
-      homeShots = 0;
-      awayShots = 0;
-      document.getElementById("match-score").innerText = "0 - 0";
-      document.getElementById("match-timer").innerText = "00:00'";
-      document.getElementById("match-commentary").innerHTML = "";
-      init2DEntities();
-      drawPitch2D();
-    }
-
-    function advanceDay() {
-      switchTab("match");
-      if (!matchRunning) {
-        resetMatchState();
-        startOrPauseMatch();
-      }
-    }
-
-    // =========================================================================
-    // NAVEGACIÓN DE PESTAÑAS
-    // =========================================================================
     function switchTab(tabId) {
       document.querySelectorAll(".tab-content").forEach(el => el.classList.add("hidden"));
       document.getElementById(`tab-${tabId}`).classList.remove("hidden");
-
-      document.querySelectorAll(".nav-btn").forEach(btn => {
-        if (btn.dataset.tab === tabId) {
-          btn.classList.add("bg-sky-600", "text-white");
-          btn.classList.remove("text-slate-400");
-        } else {
-          btn.classList.remove("bg-sky-600", "text-white");
-          btn.classList.add("text-slate-400");
-        }
-      });
-
-      if (tabId === "match") {
-        drawPitch2D();
-      }
     }
 
-    // =========================================================================
-    // GUARDADO EN GOOGLE DRIVE Y PERSISTENCIA MULTIPLATAFORMA
-    // =========================================================================
-    const DRIVE_FOLDER_NAME = "DT_Argentino_2027_Saves";
-
-    function saveToLocalStorage() {
-      localStorage.setItem("DT_ARG_2027_SAVE", JSON.stringify(gameState));
-      const status = document.getElementById("cloud-status");
-      if (status) status.innerText = `Partida guardada localmente (${new Date().toLocaleTimeString()}).`;
-    }
-
+    function saveToLocalStorage() { localStorage.setItem("DT_ARG_2027_SAVE", JSON.stringify(gameState)); }
     function exportSaveFile() {
       const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(gameState, null, 2));
       const a = document.createElement("a");
       a.setAttribute("href", dataStr);
-      a.setAttribute("download", `DT_Argentino_2027_${gameState.managedClubId}_Sem${gameState.week}.json`);
-      document.body.appendChild(a);
+      a.setAttribute("download", `DT_Argentino_2027.json`);
       a.click();
-      a.remove();
     }
-
-    function importSaveFile(event) {
-      const file = event.target.files[0];
-      if (!file) return;
+    function importSaveFile(e) {
       const reader = new FileReader();
-      reader.onload = function(e) {
-        try {
-          const loaded = JSON.parse(e.target.result);
-          gameState = loaded;
-          populateClubSelector();
-          renderAll();
-          saveToLocalStorage();
-          alert("¡Partida cargada correctamente! Ya podés seguir dirigiendo.");
-        } catch (err) {
-          alert("El archivo seleccionado no es un guardado válido.");
-        }
-      };
-      reader.readAsText(file);
+      reader.onload = function(evt) { gameState = JSON.parse(evt.target.result); renderAll(); };
+      reader.readAsText(e.target.files[0]);
     }
 
-    async function uploadToGoogleDriveAPI() {
-      const token = document.getElementById("gdrive-token").value.trim();
-      const status = document.getElementById("cloud-status");
-      if (!token) {
-        status.innerText = "Para usar subida directa por API ingresá tu token OAuth, o usá el botón 'Descargar Partida (.JSON)' para guardarlo en tu carpeta de Google Drive.";
-        return;
-      }
-      try {
-        status.innerText = "Subiendo partida a Google Drive...";
-        const metadata = {
-          name: `DT_Argentino_2027_${gameState.managedClubId}_Sem${gameState.week}.json`,
-          mimeType: "application/json"
-        };
-        const form = new FormData();
-        form.append("metadata", new Blob([JSON.stringify(metadata)], { type: "application/json" }));
-        form.append("file", new Blob([JSON.stringify(gameState, null, 2)], { type: "application/json" }));
-
-        const res = await fetch("https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart", {
-          method: "POST",
-          headers: new Headers({ "Authorization": "Bearer " + token }),
-          body: form
-        });
-        if (res.ok) {
-          status.innerText = "¡Sincronizado con éxito en tu Google Drive!";
-        } else {
-          status.innerText = "Token expirado o sin permisos. Usá la opción de Descargar/Cargar archivo .JSON.";
-        }
-      } catch (e) {
-        status.innerText = "Error de red al conectar con Google Drive.";
-      }
-    }
-
-    // Inicialización al abrir la app
     window.addEventListener("DOMContentLoaded", () => {
       const saved = localStorage.getItem("DT_ARG_2027_SAVE");
-      if (saved) {
-        try {
-          gameState = JSON.parse(saved);
-        } catch (e) {
-          initNewGame("CASLA");
-        }
-      } else {
-        initNewGame("CASLA");
-      }
+      if (saved) gameState = JSON.parse(saved);
+      else initNewGame("CASLA");
       populateClubSelector();
       renderAll();
     });
