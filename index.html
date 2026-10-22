@@ -50,7 +50,7 @@
     </div>
 
     <div class="flex items-center gap-2">
-      <select id="club-selector" onchange="changeManagedClub(this.value)" class="bg-slate-800 border border-slate-700 text-xs rounded-lg px-2.5 py-1.5 text-slate-200 focus:outline-none focus:border-sky-500">
+      <select id="club-selector" onchange="changeManagedClub(this.value)" class="bg-slate-800 border border-slate-700 text-xs rounded-lg px-2.5 py-1.5 text-slate-200 focus:outline-none focus:border-sky-500 cursor-pointer">
       </select>
       <button onclick="advanceDay()" id="btn-continue" class="bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white font-bold text-xs md:text-sm px-4 py-2 rounded-lg shadow-lg flex items-center gap-2 transition cursor-pointer">
         <span>AVANZAR / JUGAR</span>
@@ -61,7 +61,7 @@
 
   <!-- CONTENEDOR PRINCIPAL -->
   <div class="flex-1 flex overflow-hidden">
-    <!-- SIDEBAR DE NAVEGACIÓN (CON CLICS BLINDADOS) -->
+    <!-- SIDEBAR DE NAVEGACIÓN -->
     <aside class="hidden md:flex flex-col w-60 bg-slate-900/90 border-r border-slate-800 shrink-0 justify-between z-10">
       <nav class="p-3 space-y-1">
         <button onclick="switchTab('dashboard')" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold text-left transition bg-sky-600 text-white cursor-pointer" data-tab="dashboard">
@@ -521,13 +521,13 @@
 
   <!-- NAVEGACIÓN MÓVIL -->
   <nav class="md:hidden fixed bottom-0 inset-x-0 bg-slate-900 border-t border-slate-800 flex justify-around py-2 z-30 text-[11px]">
-    <button onclick="switchTab('dashboard')" class="flex flex-col items-center text-sky-400"><i class="fa-solid fa-house text-base"></i><span>DT</span></button>
-    <button onclick="switchTab('squad')" class="flex flex-col items-center text-slate-400"><i class="fa-solid fa-users text-base"></i><span>Plantel</span></button>
-    <button onclick="switchTab('tactics')" class="flex flex-col items-center text-slate-400"><i class="fa-solid fa-chess-board text-base"></i><span>Táctica</span></button>
-    <button onclick="switchTab('board')" class="flex flex-col items-center text-slate-400"><i class="fa-solid fa-briefcase text-base"></i><span>Refuerzos</span></button>
-    <button onclick="switchTab('competitions')" class="flex flex-col items-center text-slate-400"><i class="fa-solid fa-trophy text-base"></i><span>Torneos</span></button>
-    <button onclick="switchTab('match')" class="flex flex-col items-center text-slate-400"><i class="fa-solid fa-futbol text-base"></i><span>2D</span></button>
-    <button onclick="switchTab('cloud')" class="flex flex-col items-center text-slate-400"><i class="fa-brands fa-google-drive text-base"></i><span>Drive</span></button>
+    <button onclick="switchTab('dashboard')" class="flex flex-col items-center text-sky-400 cursor-pointer"><i class="fa-solid fa-house text-base"></i><span>DT</span></button>
+    <button onclick="switchTab('squad')" class="flex flex-col items-center text-slate-400 cursor-pointer"><i class="fa-solid fa-users text-base"></i><span>Plantel</span></button>
+    <button onclick="switchTab('tactics')" class="flex flex-col items-center text-slate-400 cursor-pointer"><i class="fa-solid fa-chess-board text-base"></i><span>Táctica</span></button>
+    <button onclick="switchTab('board')" class="flex flex-col items-center text-slate-400 cursor-pointer"><i class="fa-solid fa-briefcase text-base"></i><span>Refuerzos</span></button>
+    <button onclick="switchTab('competitions')" class="flex flex-col items-center text-slate-400 cursor-pointer"><i class="fa-solid fa-trophy text-base"></i><span>Torneos</span></button>
+    <button onclick="switchTab('match')" class="flex flex-col items-center text-slate-400 cursor-pointer"><i class="fa-solid fa-futbol text-base"></i><span>2D</span></button>
+    <button onclick="switchTab('cloud')" class="flex flex-col items-center text-slate-400 cursor-pointer"><i class="fa-brands fa-google-drive text-base"></i><span>Drive</span></button>
   </nav>
 
   <script>
@@ -610,7 +610,7 @@
     };
 
     let gameState = {
-      version: 6,
+      version: 7,
       managedClubId: "CASLA",
       week: 1,
       season: 2027,
@@ -658,7 +658,7 @@
     }
 
     function initNewGame(clubId = "CASLA") {
-      gameState.version = 6;
+      gameState.version = 7;
       gameState.managedClubId = clubId;
       gameState.squad = generateSquadForClub(clubId);
       gameState.standings = AFA_CLUBS.map(c => ({
@@ -687,7 +687,7 @@
           date: "Semana 1",
           from: "Comisión Directiva",
           title: `Bienvenido al mando de ${myClub.name}`,
-          body: "Configuradas las 17 posiciones tácticas del fútbol argentino. Sistema operativo."
+          body: "Configuradas las 17 posiciones tácticas del fútbol argentino. Botones de secretaría operativos."
         }
       ];
       saveToLocalStorage();
@@ -717,7 +717,7 @@
     }
 
     function renderAll() {
-      if (!gameState.squad || gameState.squad.length === 0 || !gameState.version || gameState.version < 6) {
+      if (!gameState.squad || gameState.squad.length === 0 || !gameState.version || gameState.version < 7) {
         initNewGame(gameState.managedClubId);
         return;
       }
@@ -778,13 +778,13 @@
         return `
           <tr class="hover:bg-slate-800/50 transition">
             <td class="p-2.5">
-              <button onclick="cyclePlayerStatus(${p.id})" class="${badgeClass} font-bold px-2.5 py-1 rounded text-[11px] w-14 text-center cursor-pointer">
+              <button onclick="window.cyclePlayerStatus(${p.id})" class="${badgeClass} font-bold px-2.5 py-1 rounded text-[11px] w-14 text-center cursor-pointer">
                 ${p.status}
               </button>
             </td>
             <td class="p-2.5 font-semibold text-white">${p.name}</td>
             <td class="p-2.5">
-              <select onchange="changePlayerPosition(${p.id}, this.value)" class="bg-slate-800 border border-sky-700/70 rounded px-2 py-1 text-sky-300 font-semibold text-xs w-full max-w-[240px] cursor-pointer">
+              <select onchange="window.changePlayerPosition(${p.id}, this.value)" class="bg-slate-800 border border-sky-700/70 rounded px-2 py-1 text-sky-300 font-semibold text-xs w-full max-w-[240px] cursor-pointer">
                 ${buildPositionOptionsHTML(p.pos)}
               </select>
             </td>
@@ -797,7 +797,7 @@
       }).join("");
     }
 
-    function changePlayerPosition(playerId, newPosName) {
+    window.changePlayerPosition = function(playerId, newPosName) {
       const p = gameState.squad.find(x => x.id === playerId);
       if (!p) return;
       p.pos = newPosName;
@@ -807,9 +807,9 @@
       renderLivePositionsPanel();
       update2DBasePositionsFromTactics();
       drawPitch2D();
-    }
+    };
 
-    function cyclePlayerStatus(id) {
+    window.cyclePlayerStatus = function(id) {
       const p = gameState.squad.find(x => x.id === id);
       if (!p) return;
       if (p.status === "XI") p.status = "SUB";
@@ -821,7 +821,7 @@
       renderLivePositionsPanel();
       init2DEntities();
       drawPitch2D();
-    }
+    };
 
     function autoPickLineup() {
       const sorted = [...gameState.squad].sort((a, b) => b.ovr - a.ovr);
@@ -882,7 +882,8 @@
     }
 
     function renderTacticPreview() {
-      document.getElementById("preview-form-label").innerText = gameState.tactics.formation;
+      const label = document.getElementById("preview-form-label");
+      if (label) label.innerText = gameState.tactics.formation;
       const starters = gameState.squad.filter(p => p.status === "XI");
       const container = document.getElementById("formation-nodes");
       if (!container) return;
@@ -916,7 +917,7 @@
               <span class="bg-sky-900 text-sky-300 font-bold px-1.5 py-0.5 rounded text-[10px] mr-1">${info.code}</span>
               <strong class="text-white">${p.name}</strong>
             </div>
-            <select onchange="changePlayerPosition(${p.id}, this.value)" class="bg-slate-900 border border-slate-600 rounded px-2 py-1 text-amber-300 font-semibold text-[11px] shrink-0 cursor-pointer">
+            <select onchange="window.changePlayerPosition(${p.id}, this.value)" class="bg-slate-900 border border-slate-600 rounded px-2 py-1 text-amber-300 font-semibold text-[11px] shrink-0 cursor-pointer">
               ${buildPositionOptionsHTML(p.pos)}
             </select>
           </div>
@@ -950,7 +951,7 @@
             <strong class="text-sky-400 block">${r.targetName}</strong>
             <span class="text-slate-400 text-[11px]">${r.pos} | ${r.profile}</span>
           </div>
-          <button onclick="approveSignPlayer(${r.id})" class="bg-emerald-600 hover:bg-emerald-500 px-3 py-1 rounded text-white font-bold cursor-pointer">Sumar</button>
+          <button onclick="window.approveSignPlayer(${r.id})" class="bg-emerald-600 hover:bg-emerald-500 px-3 py-1 rounded text-white font-bold cursor-pointer">Sumar</button>
         </div>
       `).join("");
 
@@ -962,8 +963,8 @@
             <span class="block text-slate-400 text-[11px]">${o.pos} - Oferta de: ${o.buyingClub}</span>
           </div>
           <div class="flex gap-2">
-            <button onclick="decideSale(${o.id}, true)" class="flex-1 bg-emerald-600 hover:bg-emerald-500 py-1.5 rounded font-bold text-white cursor-pointer">Autorizar Venta</button>
-            <button onclick="decideSale(${o.id}, false)" class="flex-1 bg-rose-700 hover:bg-rose-600 py-1.5 rounded font-bold text-white cursor-pointer">Vetar</button>
+            <button onclick="window.decideSale(${o.id}, true)" class="flex-1 bg-emerald-600 hover:bg-emerald-500 py-1.5 rounded font-bold text-white cursor-pointer">Autorizar Venta</button>
+            <button onclick="window.decideSale(${o.id}, false)" class="flex-1 bg-rose-700 hover:bg-rose-600 py-1.5 rounded font-bold text-white cursor-pointer">Vetar</button>
           </div>
         </div>
       `).join("");
@@ -978,7 +979,7 @@
       "Sebastián Villa (Ind. Rivadavia)", "Jaminton Campaz (Rosario Central)", "Franco Jara (Belgrano)", "Gabriel Ávalos (Independiente)"
     ];
 
-    function submitTransferRequest() {
+    window.submitTransferRequest = function() {
       const pos = document.getElementById("req-position").value;
       const profile = document.getElementById("req-profile").value;
       const customName = document.getElementById("req-name").value.trim();
@@ -994,9 +995,9 @@
       document.getElementById("req-name").value = "";
       saveToLocalStorage();
       renderBoardTab();
-    }
+    };
 
-    function approveSignPlayer(id) {
+    window.approveSignPlayer = function(id) {
       const req = gameState.transferRequests.find(r => r.id === id);
       if (!req) return;
       gameState.squad.push({
@@ -1012,9 +1013,9 @@
       gameState.transferRequests = gameState.transferRequests.filter(r => r.id !== id);
       saveToLocalStorage();
       renderAll();
-    }
+    };
 
-    function decideSale(id, approved) {
+    window.decideSale = function(id, approved) {
       const offer = gameState.incomingOffers.find(o => o.id === id);
       if (!offer) return;
       if (approved) {
@@ -1024,9 +1025,9 @@
       gameState.incomingOffers = gameState.incomingOffers.filter(o => o.id !== id);
       saveToLocalStorage();
       renderAll();
-    }
+    };
 
-    function generateIncomingOffer() {
+    window.generateIncomingOffer = function() {
       if (gameState.squad.length <= 12) return;
       const t = gameState.squad[Math.floor(Math.random() * gameState.squad.length)];
       const buyers = ["Flamengo (Brasil)", "Botafogo (Brasil)", "Monterrey (México)", "Villarreal (España)", "Inter Miami (MLS)", "Palmeiras (Brasil)"];
@@ -1034,11 +1035,13 @@
       gameState.incomingOffers.push({ id: Date.now(), playerName: t.name, pos: t.pos, ovr: t.ovr, buyingClub: randomBuyer, fee: `USD ${((t.ovr - 70) * 0.6 + 2.8).toFixed(1)}M` });
       saveToLocalStorage();
       renderBoardTab();
-    }
+    };
 
     function renderCompetitions() {
       const sorted = [...gameState.standings].sort((a, b) => b.pts - a.pts);
-      document.getElementById("standings-tbody").innerHTML = sorted.map((t, idx) => `
+      const tbody = document.getElementById("standings-tbody");
+      if (!tbody) return;
+      tbody.innerHTML = sorted.map((t, idx) => `
         <tr class="${t.id === gameState.managedClubId ? 'bg-sky-900/40 font-bold text-white' : ''}">
           <td class="p-2.5">${idx + 1}</td>
           <td class="p-2.5">${t.name}</td>
@@ -1052,9 +1055,12 @@
         </tr>
       `).join("");
 
-      document.getElementById("lib-group-tbody").innerHTML = gameState.libertadoresGroup.map((t, i) => `
-        <tr><td class="p-2.5">${i + 1}°</td><td class="p-2.5 font-bold">${t.name}</td><td class="p-2.5">${t.country}</td><td class="p-2.5">${t.pj}</td><td class="p-2.5 font-bold">${t.pts}</td></tr>
-      `).join("");
+      const libTbody = document.getElementById("lib-group-tbody");
+      if (libTbody) {
+        libTbody.innerHTML = gameState.libertadoresGroup.map((t, i) => `
+          <tr><td class="p-2.5">${i + 1}°</td><td class="p-2.5 font-bold">${t.name}</td><td class="p-2.5">${t.country}</td><td class="p-2.5">${t.pj}</td><td class="p-2.5 font-bold">${t.pts}</td></tr>
+        `).join("");
+      }
     }
 
     function showCompSubtab(sub) {
@@ -1365,9 +1371,10 @@
       }
     }
 
-    function switchTab(tabId) {
+    window.switchTab = function(tabId) {
       document.querySelectorAll(".tab-content").forEach(el => el.classList.add("hidden"));
-      document.getElementById(`tab-${tabId}`).classList.remove("hidden");
+      const tabEl = document.getElementById(`tab-${tabId}`);
+      if (tabEl) tabEl.classList.remove("hidden");
 
       document.querySelectorAll(".nav-btn").forEach(btn => {
         if (btn.dataset.tab === tabId) {
@@ -1385,9 +1392,9 @@
       } else if (tabId === "tactics") {
         renderTacticPreview();
       }
-    }
+    };
 
-    function saveToLocalStorage() { localStorage.setItem("DT_ARG_2027_SAVE_V6", JSON.stringify(gameState)); }
+    function saveToLocalStorage() { localStorage.setItem("DT_ARG_2027_SAVE_V7", JSON.stringify(gameState)); }
     function exportSaveFile() {
       const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(gameState, null, 2));
       const a = document.createElement("a");
@@ -1407,7 +1414,7 @@
     }
 
     window.addEventListener("DOMContentLoaded", () => {
-      const saved = localStorage.getItem("DT_ARG_2027_SAVE_V6");
+      const saved = localStorage.getItem("DT_ARG_2027_SAVE_V7");
       if (saved) {
         try {
           gameState = JSON.parse(saved);
